@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import  QMessageBox
 from form_of_sniffer import Form1
 from scapy.all import *
 import sys
@@ -12,8 +13,22 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         '''
         super().__init__()
         self.setupUi(self)
-        self.pushBatton_start_capture.clicked.connect(self.start_sniffing)
+
+        self.pushBatton_start_capture.clicked.connect(self.check_input_data)
         self.pushBatton_finish_work.clicked.connect(self.close_program)
+
+    def check_input_data(self):
+        if self.lineEdit_interface_capture.text() == '' or self.lineEdit_network_capture.text() == '' or self.spinBox_time_of_capture.value() == self.spinBox_time_of_capture.minimum():
+            mess_box = QMessageBox()
+            mess_box.setWindowTitle("Предупреждение")
+            mess_box.setText("Необходимо ввести все данные для работы")
+            mess_box.setInformativeText("Заполните все входные данные")
+            mess_box.setIcon(QMessageBox.Warning)
+            mess_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+            mess_box.show()
+            mess_box.exec_()
+        else:
+            self.start_sniffing()
 
     def start_sniffing(self):
         '''
@@ -30,6 +45,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.network_of_capture = self.lineEdit_network_capture.text()
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
+
         'Вызов функция, запускающей сниффер'
         start_sniffer(interface=self.interface_of_capture)
     def close_program(self):
