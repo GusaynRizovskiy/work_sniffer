@@ -1,6 +1,6 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import  QMessageBox
-from scapy.layers.inet import IP
+from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network
 from form_of_sniffer import Form1
 from scapy.all import *
@@ -57,6 +57,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_multicast_packets = 0
         self.count_input_packets = 0
         self.count_output_packets = 0
+        self.count_udp_segments = 0
+        self.count_tcp_segments = 0
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
@@ -73,6 +75,10 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_input_packets.setText(f"{self.count_input_packets}")
         # Отображаем количество пакетов исходящих из нашей сеть
         self.label_count_output_packets.setText(f"{self.count_output_packets}")
+        # Отображаем количество udp сегментов
+        self.label_count_udp_segments.setText(f"{self.count_udp_segments}")
+        # Отображаем количество tcp сегментов
+        self.label_count_tcp_segments.setText(f"{self.count_tcp_segments}")
     def close_program(self):
         'Функция отвечающая за закрытие программы'
         self.close()
@@ -98,14 +104,19 @@ def packet_callback(packet):
         # Проверка на исходящие пакеты
         elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
             form.count_output_packets += 1
+    # Проверка на наличие UDP сегментов
+    if UDP in packet:
+        form.count_udp_segments += 1
+    # Проверка на наличие TCP сегментов
+    if TCP in packet:
+        form.count_tcp_segments += 1
+
 
 #'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
 def start_sniffer(interface):
     print("Запуск сниффера пакетов...")
     sniff(filter=f"net {form.network_of_capture}/24",iface=interface, prn=packet_callback, store=False,timeout=form.time_of_capture)
-
-
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
