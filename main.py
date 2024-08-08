@@ -51,10 +51,12 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.interface_of_capture = self.lineEdit_interface_capture.text()
         self.network_of_capture = self.lineEdit_network_capture.text()
 
+        #Переменные, в которых будут хранится данные о количестве различных пакетов
         self.count_loopback_packets = 0
         self.count_capture_packets = 0
         self.count_multicast_packets = 0
         self.count_input_packets = 0
+        self.count_output_packets = 0
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
@@ -69,6 +71,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_multicast_packets.setText(f"{self.count_multicast_packets}")
         #Отображаем количество пакетов входящих в нашу сеть
         self.label_count_input_packets.setText(f"{self.count_input_packets}")
+        # Отображаем количество пакетов исходящих из нашей сеть
+        self.label_count_output_packets.setText(f"{self.count_output_packets}")
     def close_program(self):
         'Функция отвечающая за закрытие программы'
         self.close()
@@ -91,6 +95,9 @@ def packet_callback(packet):
         # Проверка на входящие пакеты
         elif not address_in_network(src_ip,f"{form.network_of_capture}/24") and address_in_network(dst_ip,f"{form.network_of_capture}/24"):
             form.count_input_packets += 1
+        # Проверка на исходящие пакеты
+        elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
+            form.count_output_packets += 1
 
 #'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
