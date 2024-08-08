@@ -1,5 +1,7 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import  QMessageBox
+from scapy.layers.inet import IP
+from utils import address_in_network
 from form_of_sniffer import Form1
 from scapy.all import *
 import sys
@@ -52,6 +54,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_loopback_packets = 0
         self.count_capture_packets = 0
         self.count_multicast_packets = 0
+        self.count_input_packets = 0
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
@@ -64,7 +67,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_holentet_packets.setText(f"{self.count_loopback_packets}")
         # Отображаем количество захваченных пакетов broadcast
         self.label_count_multicast_packets.setText(f"{self.count_multicast_packets}")
-
+        #Отображаем количество пакетов входящих в нашу сеть
+        self.label_count_input_packets.setText(f"{self.count_input_packets}")
     def close_program(self):
         'Функция отвечающая за закрытие программы'
         self.close()
@@ -76,13 +80,17 @@ def packet_callback(packet):
     print(packet.summary())
     form.count_capture_packets+=1
     if packet.haslayer("IP"):
+        src_ip = packet["IP"].src
         dst_ip = packet["IP"].dst
         # Проверка на принадлежность широковещательному адресу
         if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
             form.count_multicast_packets += 1
+        # Проверка на принадлежность локальной петле
         elif dst_ip == '127.0.0.1':
-            # Проверка на принадлежность локальной петле
             form.count_loopback_packets += 1
+        # Проверка на входящие пакеты
+        elif not address_in_network(src_ip,f"{form.network_of_capture}/24") and address_in_network(dst_ip,f"{form.network_of_capture}/24"):
+            form.count_input_packets += 1
 
 #'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
@@ -91,9 +99,9 @@ def start_sniffer(interface):
     sniff(filter=f"net {form.network_of_capture}/24",iface=interface, prn=packet_callback, store=False,timeout=form.time_of_capture)
 
 
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
     form.show()
     sys.exit(app.exec_())
-
