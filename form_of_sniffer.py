@@ -9,6 +9,7 @@
 
 from PyQt5.QtWidgets import QApplication, QMainWindow, QTextEdit
 from PyQt5 import QtCore, QtGui, QtWidgets
+import sys
 class TextEditLogger(QTextEdit):
     def __init__(self, parent=None):
         super().__init__(parent)
