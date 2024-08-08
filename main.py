@@ -18,6 +18,11 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.pushBatton_finish_work.clicked.connect(self.close_program)
 
     def check_input_data(self):
+        '''
+        Метод проверяет что введены все необходимые для работы данные;
+        Если это не так то программа не заработает
+        :return:
+        '''
         if self.lineEdit_interface_capture.text() == '' or self.lineEdit_network_capture.text() == '' or self.spinBox_time_of_capture.value() == self.spinBox_time_of_capture.minimum():
             mess_box = QMessageBox()
             mess_box.setWindowTitle("Предупреждение")
@@ -43,19 +48,25 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.time_of_capture = self.spinBox_time_of_capture.value()
         self.interface_of_capture = self.lineEdit_interface_capture.text()
         self.network_of_capture = self.lineEdit_network_capture.text()
+        self.count_capture_packets = 0
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
         'Вызов функция, запускающей сниффер'
         start_sniffer(interface=self.interface_of_capture)
+
+        self.label_count_capture_packets.setText(f"{self.count_capture_packets}")
+
     def close_program(self):
         'Функция отвечающая за закрытие программы'
         self.close()
 
 
+
 # Функция для обработки перехваченных пакетов
 def packet_callback(packet):
     print(packet.summary())
+    form.count_capture_packets+=1
 
 #'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
