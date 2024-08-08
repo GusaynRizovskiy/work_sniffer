@@ -5,6 +5,7 @@ from utils import address_in_network
 from form_of_sniffer import Form1
 from scapy.all import *
 import sys
+import csv
 #Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя
 class Form_main(QtWidgets.QMainWindow,Form1):
 
@@ -18,6 +19,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 
         self.pushBatton_start_capture.clicked.connect(self.check_input_data)
         self.pushBatton_finish_work.clicked.connect(self.close_program)
+        self.pushButton_save_in_file.clicked.connect(self.save_file_as_csv)
 
     def check_input_data(self):
         '''
@@ -59,6 +61,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_output_packets = 0
         self.count_udp_segments = 0
         self.count_tcp_segments = 0
+        self.data = {}
+
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
@@ -79,6 +83,34 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_udp_segments.setText(f"{self.count_udp_segments}")
         # Отображаем количество tcp сегментов
         self.label_count_tcp_segments.setText(f"{self.count_tcp_segments}")
+
+        #Добавляем данные в словарь, чтобы впоследствии сохранить их в формате csv
+        self.data["Общее число захваченных пакетов:"] = self.count_capture_packets
+        self.data["Число пакетов localhost:"] = self.count_loopback_packets
+        self.data["Число пакетов broadcast:"] = self.count_multicast_packets
+        self.data["Число пакетов, входящих в сеть:"] = self.count_input_packets
+        self.data["Число пакетов, исходящих из сети:"] = self.count_output_packets
+        self.data["Число UDP сегментов:"] = self.count_udp_segments
+        self.data["Число TCP сегментов:"] = self.count_tcp_segments
+
+    #Функция реализующая сохранение данных в формате csv
+    def save_file_as_csv(self):
+        # Открываем файл для записи
+        with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
+            writer = csv.writer(file)
+            # Записываем заголовки
+            writer.writerow(['Параметр перехвата', 'Количество перехваченных объектов'])
+            # Записываем данные из словаря
+            for key, value in self.data.items():
+                writer.writerow([key, value])
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Information)  # Устанавливаем иконку
+        msg_box.setText("Данные успешно сохранены в директории проекта!")  # Основной текст
+        msg_box.setWindowTitle("Успех")  # Заголовок окна
+        msg_box.setStandardButtons(QMessageBox.Ok)  # Кнопка "ОК"
+        # Отображаем сообщение
+        msg_box.exec_()
+
     def close_program(self):
         'Функция отвечающая за закрытие программы'
         self.close()
