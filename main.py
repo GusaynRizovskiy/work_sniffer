@@ -48,14 +48,22 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.time_of_capture = self.spinBox_time_of_capture.value()
         self.interface_of_capture = self.lineEdit_interface_capture.text()
         self.network_of_capture = self.lineEdit_network_capture.text()
+
+        self.count_loopback_packets = 0
         self.count_capture_packets = 0
+        self.count_multicast_packets = 0
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
         'Вызов функция, запускающей сниффер'
         start_sniffer(interface=self.interface_of_capture)
 
+        #Отображаем количество всех захваченных пакетов
         self.label_count_capture_packets.setText(f"{self.count_capture_packets}")
+        #Отображаем количество захваченных пакетов loopback
+        self.label_count_holentet_packets.setText(f"{self.count_loopback_packets}")
+        # Отображаем количество захваченных пакетов broadcast
+        self.label_count_multicast_packets.setText(f"{self.count_multicast_packets}")
 
     def close_program(self):
         'Функция отвечающая за закрытие программы'
@@ -67,6 +75,14 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 def packet_callback(packet):
     print(packet.summary())
     form.count_capture_packets+=1
+    if packet.haslayer("IP"):
+        dst_ip = packet["IP"].dst
+        # Проверка на принадлежность широковещательному адресу
+        if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
+            form.count_multicast_packets += 1
+        elif dst_ip == '127.0.0.1':
+            # Проверка на принадлежность локальной петле
+            form.count_loopback_packets += 1
 
 #'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
