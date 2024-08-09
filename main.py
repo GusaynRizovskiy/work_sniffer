@@ -171,12 +171,19 @@ def packet_callback(packet):
         # Проверка на фрагменированные пакеты
         if packet[IP].frag > 0:
             form.count_fragment_packets += 1
-    # Проверка на наличие UDP сегментов
-    if UDP in packet:
-        form.count_udp_segments += 1
-    # Проверка на наличие TCP сегментов
-    if TCP in packet:
-        form.count_tcp_segments += 1
+        # Проверка на наличие TCP сегментов
+        if packet.haslayer('TCP'):
+            form.count_tcp_segments += 1
+            # Проверка на наличие FIN в TCP
+            if packet[TCP].flags == 'F':
+                form.count_fin_packets += 1
+            # Проверка на наличие SIN в TCP
+            elif packet[TCP].flags == 'S':
+                form.count_sin_packets += 1
+        # Проверка на наличие UDP сегментов
+        elif packet.haslayer('UDP'):
+            form.count_udp_segments += 1
+
 
 
 #'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
@@ -184,7 +191,6 @@ def packet_callback(packet):
 def start_sniffer(interface):
     print("Запуск сниффера пакетов...")
     sniff(filter=f"net {form.network_of_capture}/24",iface=interface, prn=packet_callback, store=False,timeout=form.time_of_capture)
-
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
