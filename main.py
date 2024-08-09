@@ -114,6 +114,11 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.data["Число пакетов, исходящих из сети:"] = self.count_output_packets
         self.data["Число UDP сегментов:"] = self.count_udp_segments
         self.data["Число TCP сегментов:"] = self.count_tcp_segments
+        self.data["Число пакетов с опциями:"] = self.count_options_packets
+        self.data["Число фрагментированных пакетов:"] = self.count_fragment_packets
+        self.data["Общая интенсивность пакетов:"] = self.count_intensivity_packets
+        self.data["Количество пакетов типа FIN:"] = self.count_fin_packets
+        self.data["Количество пакетов типа SIN:"] = self.count_sin_packets
 
     #Функция реализующая сохранение данных в формате csv
     def save_file_as_csv(self):
