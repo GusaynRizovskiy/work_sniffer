@@ -3,7 +3,7 @@ from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import  QMessageBox
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network
-from main_form_of_sniffer import Form1
+from form_of_sniffer import Form1
 from scapy.all import *
 import sys
 import csv
@@ -70,8 +70,6 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_intensivity_packets = 0
         self.count_fin_packets = 0
         self.count_sin_packets = 0
-        self.count_input_flows = 0
-        self.count_output_flows = 0
         self.data = {}
 
         #После каждого запуска снифера предыдущие данные будут очищаться
@@ -107,10 +105,6 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_fin_packets.setText(f"{self.count_fin_packets}")
         # Отображаем количество пакетов SIN
         self.label_count_sin_packets.setText(f"{self.count_sin_packets}")
-        # Отображаем количество портов входящих потоков
-        self.label_count_input_flows.setText(f"{self.count_input_flows}")
-        # Отображаем количество портов исходящих потоков
-        self.label_count_output_flows.setText(f"{self.count_output_flows}")
 
         #Добавляем данные в словарь, чтобы впоследствии сохранить их в формате csv
         self.data["Общее число захваченных пакетов:"] = self.count_capture_packets
