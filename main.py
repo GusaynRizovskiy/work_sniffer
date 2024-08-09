@@ -149,6 +149,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 def packet_callback(packet):
     print(packet.summary())
     form.count_capture_packets+=1
+    form.count_intensivity_packets = form.count_capture_packets/form.time_of_capture
     if packet.haslayer("IP"):
         src_ip = packet["IP"].src
         dst_ip = packet["IP"].dst
@@ -164,8 +165,12 @@ def packet_callback(packet):
         # Проверка на исходящие пакеты
         elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
             form.count_output_packets += 1
+        # Проверка на пакеты с опциями
         if packet[IP].options:
             form.count_options_packets += 1
+        # Проверка на фрагменированные пакеты
+        if packet[IP].frag > 0:
+            form.count_fragment_packets += 1
     # Проверка на наличие UDP сегментов
     if UDP in packet:
         form.count_udp_segments += 1
