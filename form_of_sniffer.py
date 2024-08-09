@@ -362,7 +362,6 @@ class Form1(object):
         self.lineEdit_network_capture.setText(_translate("Dialog", "192.168.1.0"))
         self.label_interface_of_capture.setText(_translate("Dialog", "Интерфейс по которому производить захват"))
         self.label_name_network_capture.setText(_translate("Dialog", "Сеть захвата"))
-        self.lineEdit_interface_capture.setText(_translate("Dialog", "Realtek RTL8822CE 802.11ac PCIe Adapter"))
         self.label_name_time_of_capture.setText(_translate("Dialog", "Период времени захвата пакетов"))
         self.label_name_capture_packets.setText(_translate("Dialog", "Информация о перехваченных пакетах"))
         self.label_obj_information_about_capture.setText(_translate("Dialog", "Подробная информация о статистических характеристиках перехвата"))
