@@ -185,7 +185,6 @@ def packet_callback(packet):
 
 
 
-#'Realtek RTL8822CE 802.11ac PCIe Adapter' - один из интерфейсов в Windows
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
 def start_sniffer(interface):
     print("Запуск сниффера пакетов...")
