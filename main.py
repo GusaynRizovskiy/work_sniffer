@@ -65,6 +65,13 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_output_packets = 0
         self.count_udp_segments = 0
         self.count_tcp_segments = 0
+        self.count_options_packets = 0
+        self.count_fragment_packets = 0
+        self.count_intensivity_packets = 0
+        self.count_fin_packets = 0
+        self.count_sin_packets = 0
+        self.count_input_flows = 0
+        self.count_output_flows = 0
         self.data = {}
 
         #После каждого запуска снифера предыдущие данные будут очищаться
@@ -90,6 +97,20 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_udp_segments.setText(f"{self.count_udp_segments}")
         # Отображаем количество tcp сегментов
         self.label_count_tcp_segments.setText(f"{self.count_tcp_segments}")
+        # Отображаем количество пакетов с опциями
+        self.label_count_options_packets.setText(f"{self.count_options_packets}")
+        # Отображаем количество пакетов  фрагментированных
+        self.label_count_fragment_packets.setText(f"{self.count_fragment_packets}")
+        # Отображаем интенсивность пакетов
+        self.label_intensivity_packets.setText(f"{self.count_intensivity_packets}")
+        # Отображаем количество пакетов Fin
+        self.label_count_fin_packets.setText(f"{self.count_fin_packets}")
+        # Отображаем количество пакетов SIN
+        self.label_count_sin_packets.setText(f"{self.count_sin_packets}")
+        # Отображаем количество портов входящих потоков
+        self.label_count_input_flows.setText(f"{self.count_input_flows}")
+        # Отображаем количество портов исходящих потоков
+        self.label_count_output_flows.setText(f"{self.count_output_flows}")
 
         #Добавляем данные в словарь, чтобы впоследствии сохранить их в формате csv
         self.data["Общее число захваченных пакетов:"] = self.count_capture_packets
@@ -143,6 +164,8 @@ def packet_callback(packet):
         # Проверка на исходящие пакеты
         elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
             form.count_output_packets += 1
+        if packet[IP].options:
+            form.count_options_packets += 1
     # Проверка на наличие UDP сегментов
     if UDP in packet:
         form.count_udp_segments += 1
