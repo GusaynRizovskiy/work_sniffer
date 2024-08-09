@@ -1,8 +1,9 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import  QMessageBox
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network
-from form_of_sniffer import Form1
+from main_form_of_sniffer import Form1
 from scapy.all import *
 import sys
 import csv
@@ -20,6 +21,9 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.pushBatton_start_capture.clicked.connect(self.check_input_data)
         self.pushBatton_finish_work.clicked.connect(self.close_program)
         self.pushButton_save_in_file.clicked.connect(self.save_file_as_csv)
+
+        #Блокируем кнопку сохранения данных файл для корректной работы программы
+        self.pushButton_save_in_file.setEnabled(False)
 
     def check_input_data(self):
         '''
@@ -68,6 +72,9 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 
         'Вызов функция, запускающей сниффер'
         start_sniffer(interface=self.interface_of_capture)
+
+        #Разблокируем кнопку сохранения данных в файл
+        self.pushButton_save_in_file.setEnabled(True)
 
         #Отображаем количество всех захваченных пакетов
         self.label_count_capture_packets.setText(f"{self.count_capture_packets}")
@@ -153,5 +160,8 @@ def start_sniffer(interface):
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
+    palette = QPalette()
+    palette.setBrush(QPalette.Background, QBrush(QPixmap("picture_fon.jpg")))
+    form.setPalette(palette)
     form.show()
     sys.exit(app.exec_())
