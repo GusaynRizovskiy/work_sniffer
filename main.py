@@ -198,3 +198,4 @@ if __name__ == '__main__':
     form.show()
     sys.exit(app.exec_())
 
+#проверка
