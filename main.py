@@ -24,6 +24,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 
         #Блокируем кнопку сохранения данных файл для корректной работы программы
         self.pushButton_save_in_file.setEnabled(False)
+        self.obj_value_lists = []
 
     def check_input_data(self):
         '''
@@ -71,6 +72,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_fin_packets = 0
         self.count_sin_packets = 0
         self.data = {}
+        self.value_lists = []
 
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
@@ -120,16 +122,26 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.data["Количество пакетов типа FIN:"] = self.count_fin_packets
         self.data["Количество пакетов типа SIN:"] = self.count_sin_packets
 
+        self.value_lists = list(self.data.values())
+        self.obj_value_lists.append(self.value_lists)
     #Функция реализующая сохранение данных в формате csv
     def save_file_as_csv(self):
         # Открываем файл для записи
+        print(self.obj_value_lists)
         with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
             writer = csv.writer(file)
             # Записываем заголовки
-            writer.writerow(['Параметр перехвата', 'Количество перехваченных объектов'])
+            writer.writerow([
+                            'Общее число захваченных пакетов','Число пакетов localhost','Число пакетов broadcast',
+                             'Число пакетов, входящих в сеть','Число пакетов, исходящих из сети',
+                             'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
+                             'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
+                             "Количество пакетов типа FIN", 'Количество пакетов типа SIN'
+                             ])
             # Записываем данные из словаря
-            for key, value in self.data.items():
-                writer.writerow([key, value])
+            for i in range(len(self.obj_value_lists)):
+                writer.writerow(self.obj_value_lists[i])
+
         msg_box = QMessageBox()
         msg_box.setIcon(QMessageBox.Information)  # Устанавливаем иконку
         msg_box.setText("Данные успешно сохранены в директории проекта!")  # Основной текст
@@ -139,6 +151,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         msg_box.exec_()
 
     def close_program(self):
+        self.obj_value_lists.clear()
         'Функция отвечающая за закрытие программы'
         self.close()
 
