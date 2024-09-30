@@ -69,6 +69,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_intensivity_packets = 0
         self.count_fin_packets = 0
         self.count_sin_packets = 0
+        self.unique_ports_udp = set()
+        self.unique_ports_tcp = set()
         #Все параметры касательно пакетов, входящих в сеть
         self.count_input_packets = 0
         self.count_input_udp_packets = 0
@@ -140,6 +142,10 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.data["Общая интенсивность пакетов:"] = self.count_intensivity_packets
         self.data["Общее количество пакетов типа FIN:"] = self.count_fin_packets
         self.data["Общее количество пакетов типа SIN:"] = self.count_sin_packets
+        self.data["Количество уникальных портов UDP:"] = len(self.unique_ports_udp)
+        self.data["Количество уникальных портов TCP:"] = len(self.unique_ports_tcp)
+
+
 
         self.data["Число пакетов, входящих в сеть:"] = self.count_input_packets
         self.data["Число UDP сегментов входящих в сеть:"] = self.count_input_udp_packets
@@ -172,6 +178,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
                              'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
                              'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
                              "Количество пакетов типа FIN", 'Количество пакетов типа SIN',
+                             "Количество уникальных портов UDP", "Количество уникальных портов TCP",
                              'Число пакетов, входящих в сеть',"Число UDP сегментов входящих в сеть",
                              "Число TCP сегментов, входящих в сеть", "Число пакетов с опциями, входящих в сеть",
                              "Число фрагментированных пакетов, входящих в сеть", "Интенсивность пакетов, входящих в сеть",
@@ -264,6 +271,7 @@ def packet_callback(packet):
         # Проверка на наличие TCP сегментов
         if packet.haslayer('TCP'):
             form.count_tcp_segments += 1
+            form.unique_ports_tcp.add(packet[TCP].dport)
             # Проверка на наличие FIN в TCP
             if packet[TCP].flags == 'F':
                 form.count_fin_packets += 1
@@ -273,6 +281,7 @@ def packet_callback(packet):
         # Проверка на наличие UDP сегментов
         elif packet.haslayer('UDP'):
             form.count_udp_segments += 1
+            form.unique_ports_udp.add(packet[UDP].dport)
 
 
 
