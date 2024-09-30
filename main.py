@@ -7,7 +7,7 @@ from form_of_sniffer import Form1
 from scapy.all import *
 import sys
 import csv
-#Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя.
+#Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя
 class Form_main(QtWidgets.QMainWindow,Form1):
 
     def __init__(self):
