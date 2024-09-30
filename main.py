@@ -62,8 +62,6 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_loopback_packets = 0
         self.count_capture_packets = 0
         self.count_multicast_packets = 0
-        self.count_input_packets = 0
-        self.count_output_packets = 0
         self.count_udp_segments = 0
         self.count_tcp_segments = 0
         self.count_options_packets = 0
@@ -71,6 +69,25 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.count_intensivity_packets = 0
         self.count_fin_packets = 0
         self.count_sin_packets = 0
+        #Все параметры касательно пакетов, входящих в сеть
+        self.count_input_packets = 0
+        self.count_input_udp_packets = 0
+        self.count_input_tcp_packets = 0
+        self.count_input_fin_packets = 0
+        self.count_input_sin_packets = 0
+        self.count_input_intensivity_packets = 0
+        self.count_input_options_packets = 0
+        self.count_input_fragment_packets = 0
+        #Все параметры касательно пакетов, исходящих из сети
+        self.count_output_packets = 0
+        self.count_output_udp_packets = 0
+        self.count_output_tcp_packets = 0
+        self.count_output_fin_packets = 0
+        self.count_output_sin_packets = 0
+        self.count_output_intensivity_packets = 0
+        self.count_output_options_packets = 0
+        self.count_output_fragment_packets = 0
+
         self.data = {}
         self.value_lists = []
 
@@ -79,6 +96,10 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 
         'Вызов функция, запускающей сниффер'
         start_sniffer(interface=self.interface_of_capture)
+
+        #Подсчет интенсивности входящих и исходящих пакетов.
+        self.count_input_intensivity_packets = self.count_input_packets/ self.time_of_capture
+        self.count_output_intensivity_packets = self.count_output_packets / self.time_of_capture
 
         #Разблокируем кнопку сохранения данных в файл
         self.pushButton_save_in_file.setEnabled(True)
@@ -112,31 +133,53 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.data["Общее число захваченных пакетов:"] = self.count_capture_packets
         self.data["Число пакетов localhost:"] = self.count_loopback_packets
         self.data["Число пакетов broadcast:"] = self.count_multicast_packets
-        self.data["Число пакетов, входящих в сеть:"] = self.count_input_packets
-        self.data["Число пакетов, исходящих из сети:"] = self.count_output_packets
-        self.data["Число UDP сегментов:"] = self.count_udp_segments
-        self.data["Число TCP сегментов:"] = self.count_tcp_segments
-        self.data["Число пакетов с опциями:"] = self.count_options_packets
-        self.data["Число фрагментированных пакетов:"] = self.count_fragment_packets
+        self.data["Общее число UDP сегментов:"] = self.count_udp_segments
+        self.data["Общее число TCP сегментов:"] = self.count_tcp_segments
+        self.data["Общее число пакетов с опциями:"] = self.count_options_packets
+        self.data["Общее число фрагментированных пакетов:"] = self.count_fragment_packets
         self.data["Общая интенсивность пакетов:"] = self.count_intensivity_packets
-        self.data["Количество пакетов типа FIN:"] = self.count_fin_packets
-        self.data["Количество пакетов типа SIN:"] = self.count_sin_packets
+        self.data["Общее количество пакетов типа FIN:"] = self.count_fin_packets
+        self.data["Общее количество пакетов типа SIN:"] = self.count_sin_packets
+
+        self.data["Число пакетов, входящих в сеть:"] = self.count_input_packets
+        self.data["Число UDP сегментов входящих в сеть:"] = self.count_input_udp_packets
+        self.data["Число TCP сегментов, входящих в сеть:"] = self.count_input_tcp_packets
+        self.data["Число пакетов с опциями, входящих в сеть:"] = self.count_input_options_packets
+        self.data["Число фрагментированных пакетов, входящих в сеть:"] = self.count_input_fragment_packets
+        self.data["Интенсивность пакетов, входящих в сеть:"] = self.count_input_intensivity_packets
+        self.data["Количество пакетов типа FIN, входящих в сеть:"] = self.count_input_fin_packets
+        self.data["Количество пакетов типа SIN, входящих в сеть:"] = self.count_input_sin_packets
+
+        self.data["Число пакетов, исходящих из сети:"] = self.count_output_packets
+        self.data["Число UDP сегментов, исходящих из сети:"] = self.count_output_udp_packets
+        self.data["Число TCP сегментов, исходящих из сети:"] = self.count_output_tcp_packets
+        self.data["Число пакетов с опциями, исходящих из сети:"] = self.count_output_options_packets
+        self.data["Число фрагментированных пакетов, исходящих из сети:"] = self.count_output_fragment_packets
+        self.data["Интенсивность пакетов, исходящих из сети:"] = self.count_output_intensivity_packets
+        self.data["Количество пакетов типа FIN, исходящих из сети:"] = self.count_output_fin_packets
+        self.data["Количество пакетов типа SIN, исходящих из сети:"] = self.count_output_sin_packets
 
         self.value_lists = list(self.data.values())
         self.obj_value_lists.append(self.value_lists)
     #Функция реализующая сохранение данных в формате csv
     def save_file_as_csv(self):
         # Открываем файл для записи
-        print(self.obj_value_lists)
         with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
             writer = csv.writer(file)
             # Записываем заголовки
             writer.writerow([
                             'Общее число захваченных пакетов','Число пакетов localhost','Число пакетов broadcast',
-                             'Число пакетов, входящих в сеть','Число пакетов, исходящих из сети',
                              'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
                              'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
-                             "Количество пакетов типа FIN", 'Количество пакетов типа SIN'
+                             "Количество пакетов типа FIN", 'Количество пакетов типа SIN',
+                             'Число пакетов, входящих в сеть',"Число UDP сегментов входящих в сеть",
+                             "Число TCP сегментов, входящих в сеть", "Число пакетов с опциями, входящих в сеть",
+                             "Число фрагментированных пакетов, входящих в сеть", "Интенсивность пакетов, входящих в сеть",
+                             "Количество пакетов типа FIN, входящих в сеть", "Количество пакетов типа SIN, входящих в сеть",
+                             'Число пакетов, исходящих из сети', "Число UDP сегментов, исходящих из сети",
+                             "Число TCP сегментов, исходящих из сети", "Число пакетов с опциями, исходящих из сети",
+                             "Число фрагментированных пакетов, исходящих из сети", "Интенсивность пакетов, исходящих из сети",
+                             "Количество пакетов типа FIN, исходящих из сети", "Количество пакетов типа SIN, исходящих из сети",
                              ])
             # Записываем данные из словаря
             for i in range(len(self.obj_value_lists)):
@@ -155,7 +198,40 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         'Функция отвечающая за закрытие программы'
         self.close()
 
-
+#Рассчет параметров для входящих пакетов
+def parametrs_input_packets_count(packet):
+    if packet.haslayer('TCP'):
+        form.count_input_tcp_packets += 1
+        # Проверка на наличие FIN в TCP
+        if packet[TCP].flags == 'F':
+            form.count_input_fin_packets += 1
+        # Проверка на наличие SIN в TCP
+        elif packet[TCP].flags == 'S':
+            form.count_input_sin_packets += 1
+    elif packet.haslayer('UDP'):
+        form.count_input_udp_packets += 1
+    if packet[IP].frag > 0:
+        form.count_input_fragment_packets += 1
+        # Проверка на пакеты с опциями
+    if packet[IP].options:
+        form.count_input_options_packets += 1
+#Рассчет параметров для исходящих пакетов
+def parametrs_output_packets_count(packet):
+    if packet.haslayer('TCP'):
+        form.count_output_tcp_packets += 1
+        # Проверка на наличие FIN в TCP
+        if packet[TCP].flags == 'F':
+            form.count_output_fin_packets += 1
+        # Проверка на наличие SIN в TCP
+        elif packet[TCP].flags == 'S':
+            form.count_output_sin_packets += 1
+    elif packet.haslayer('UDP'):
+        form.count_output_udp_packets += 1
+    if packet[IP].frag > 0:
+        form.count_output_fragment_packets += 1
+        # Проверка на пакеты с опциями
+    if packet[IP].options:
+        form.count_output_options_packets += 1
 
 # Функция для обработки перехваченных пакетов
 def packet_callback(packet):
@@ -174,9 +250,11 @@ def packet_callback(packet):
         # Проверка на входящие пакеты
         elif not address_in_network(src_ip,f"{form.network_of_capture}/24") and address_in_network(dst_ip,f"{form.network_of_capture}/24"):
             form.count_input_packets += 1
+            parametrs_input_packets_count(packet)
         # Проверка на исходящие пакеты
         elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
             form.count_output_packets += 1
+            parametrs_output_packets_count(packet)
         # Проверка на пакеты с опциями
         if packet[IP].options:
             form.count_options_packets += 1
