@@ -1,7 +1,7 @@
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import  QMessageBox
-from scapy.layers.inet import IP, UDP, TCP
+from scapy.layers.inet import IP, UDP, TCP, Ether
 from utils import address_in_network
 from form_of_sniffer import Form1
 from scapy.all import *
@@ -93,6 +93,9 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.data = {}
         self.value_lists = []
 
+        #список, в который будут помещаться извлеченные данные о каждом пакете
+        self.packets = []
+
         #После каждого запуска снифера предыдущие данные будут очищаться
         self.text_zone.clear()
 
@@ -172,6 +175,13 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         # Открываем файл для записи
         with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
             writer = csv.writer(file)
+            writer.writerow([
+                "LENGTH", "MAC SRC", "MSC_DST","IP SRC", "IP DST", "IP CHECKSUM", "TCP CHECKSUM", "UDP CHECKSUM",
+            ])
+            for i in range(len(self.packets)):
+                #В нашем списке словарей будем отбирать по одному словарю и создавать на его основе список ключей, только нужной информации.
+                self.list_of_values_packet = list(self.packets[i].values())
+                writer.writerow(self.list_of_values_packet)
             # Записываем заголовки
             writer.writerow([
                             'Общее число захваченных пакетов','Число пакетов localhost','Число пакетов broadcast',
@@ -242,47 +252,63 @@ def parametrs_output_packets_count(packet):
 
 # Функция для обработки перехваченных пакетов
 def packet_callback(packet):
+    form.packet = {}
     print(packet.summary())
     form.count_capture_packets+=1
+    packet_len = len(packet)
+    form.packet['pakcet_len'] = packet_len
     form.count_intensivity_packets = form.count_capture_packets/form.time_of_capture
-    if packet.haslayer("IP"):
-        src_ip = packet["IP"].src
-        dst_ip = packet["IP"].dst
-        # Проверка на принадлежность широковещательному адресу
-        if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
-            form.count_multicast_packets += 1
-        # Проверка на принадлежность локальной петле
-        elif dst_ip == '127.0.0.1':
-            form.count_loopback_packets += 1
-        # Проверка на входящие пакеты
-        elif not address_in_network(src_ip,f"{form.network_of_capture}/24") and address_in_network(dst_ip,f"{form.network_of_capture}/24"):
-            form.count_input_packets += 1
-            parametrs_input_packets_count(packet)
-        # Проверка на исходящие пакеты
-        elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
-            form.count_output_packets += 1
-            parametrs_output_packets_count(packet)
-        # Проверка на пакеты с опциями
-        if packet[IP].options:
-            form.count_options_packets += 1
-        # Проверка на фрагменированные пакеты
-        if packet[IP].frag > 0:
-            form.count_fragment_packets += 1
-        # Проверка на наличие TCP сегментов
-        if packet.haslayer('TCP'):
-            form.count_tcp_segments += 1
-            form.unique_ports_tcp.add(packet[TCP].dport)
-            # Проверка на наличие FIN в TCP
-            if packet[TCP].flags == 'F':
-                form.count_fin_packets += 1
-            # Проверка на наличие SIN в TCP
-            elif packet[TCP].flags == 'S':
-                form.count_sin_packets += 1
-        # Проверка на наличие UDP сегментов
-        elif packet.haslayer('UDP'):
-            form.count_udp_segments += 1
-            form.unique_ports_udp.add(packet[UDP].dport)
-
+    if Ether in packet:
+        src_mac = packet[Ether].src
+        dst_mac = packet[Ether].dst
+        form.packet['src_mac'] = src_mac
+        form.packet['dst_mac'] = dst_mac
+        if packet.haslayer("IP"):
+            src_ip = packet["IP"].src
+            dst_ip = packet["IP"].dst
+            ip_checksum = packet[IP].chksum
+            form.packet['ip_src'] = src_ip
+            form.packet['ip_dst'] = dst_ip
+            form.packet['ip.chksum'] = ip_checksum
+            # Проверка на принадлежность широковещательному адресу
+            if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
+                form.count_multicast_packets += 1
+            # Проверка на принадлежность локальной петле
+            elif dst_ip == '127.0.0.1':
+                form.count_loopback_packets += 1
+            # Проверка на входящие пакеты
+            elif not address_in_network(src_ip,f"{form.network_of_capture}/24") and address_in_network(dst_ip,f"{form.network_of_capture}/24"):
+                form.count_input_packets += 1
+                parametrs_input_packets_count(packet)
+            # Проверка на исходящие пакеты
+            elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
+                form.count_output_packets += 1
+                parametrs_output_packets_count(packet)
+            # Проверка на пакеты с опциями
+            if packet[IP].options:
+                form.count_options_packets += 1
+            # Проверка на фрагменированные пакеты
+            if packet[IP].frag > 0:
+                form.count_fragment_packets += 1
+            # Проверка на наличие TCP сегментов
+            if packet.haslayer('TCP'):
+                form.count_tcp_segments += 1
+                form.unique_ports_tcp.add(packet[TCP].dport)
+                tcp_checksum = packet[TCP].chksum
+                form.packet["tcp_chksum"] = tcp_checksum
+                # Проверка на наличие FIN в TCP
+                if packet[TCP].flags == 'F':
+                    form.count_fin_packets += 1
+                # Проверка на наличие SIN в TCP
+                elif packet[TCP].flags == 'S':
+                    form.count_sin_packets += 1
+            # Проверка на наличие UDP сегментов
+            elif packet.haslayer('UDP'):
+                form.count_udp_segments += 1
+                form.unique_ports_udp.add(packet[UDP].dport)
+                udp_checksum = packet[UDP].chksum
+                form.packet["udp_chksum"] = udp_checksum
+    form.packets.append(form.packet)
 
 
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
