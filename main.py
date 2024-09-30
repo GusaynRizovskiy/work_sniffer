@@ -263,51 +263,63 @@ def packet_callback(packet):
         dst_mac = packet[Ether].dst
         form.packet['src_mac'] = src_mac
         form.packet['dst_mac'] = dst_mac
-        if packet.haslayer("IP"):
-            src_ip = packet["IP"].src
-            dst_ip = packet["IP"].dst
-            ip_checksum = packet[IP].chksum
-            form.packet['ip_src'] = src_ip
-            form.packet['ip_dst'] = dst_ip
+    if packet.haslayer("IP"):
+        src_ip = packet["IP"].src
+        dst_ip = packet["IP"].dst
+        ip_checksum = packet[IP].chksum
+        form.packet['ip_src'] = src_ip
+        form.packet['ip_dst'] = dst_ip
+        if ip_checksum == 0:
+            form.packet['ip.chksum'] = 0
+        else:
             form.packet['ip.chksum'] = ip_checksum
-            # Проверка на принадлежность широковещательному адресу
-            if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
-                form.count_multicast_packets += 1
-            # Проверка на принадлежность локальной петле
-            elif dst_ip == '127.0.0.1':
-                form.count_loopback_packets += 1
-            # Проверка на входящие пакеты
-            elif not address_in_network(src_ip,f"{form.network_of_capture}/24") and address_in_network(dst_ip,f"{form.network_of_capture}/24"):
-                form.count_input_packets += 1
-                parametrs_input_packets_count(packet)
-            # Проверка на исходящие пакеты
-            elif  address_in_network(src_ip,f"{form.network_of_capture}/24") and not address_in_network(dst_ip,f"{form.network_of_capture}/24"):
-                form.count_output_packets += 1
-                parametrs_output_packets_count(packet)
-            # Проверка на пакеты с опциями
-            if packet[IP].options:
-                form.count_options_packets += 1
-            # Проверка на фрагменированные пакеты
-            if packet[IP].frag > 0:
-                form.count_fragment_packets += 1
-            # Проверка на наличие TCP сегментов
-            if packet.haslayer('TCP'):
-                form.count_tcp_segments += 1
-                form.unique_ports_tcp.add(packet[TCP].dport)
-                tcp_checksum = packet[TCP].chksum
+        # Проверка на принадлежность широковещательному адресу
+        if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
+            form.count_multicast_packets += 1
+        # Проверка на принадлежность локальной петле
+        elif dst_ip == '127.0.0.1':
+            form.count_loopback_packets += 1
+        # Проверка на входящие пакеты
+        elif not address_in_network(src_ip, f"{form.network_of_capture}/24") and address_in_network(dst_ip,
+                                                                                                    f"{form.network_of_capture}/24"):
+            form.count_input_packets += 1
+            parametrs_input_packets_count(packet)
+        # Проверка на исходящие пакеты
+        elif address_in_network(src_ip, f"{form.network_of_capture}/24") and not address_in_network(dst_ip,
+                                                                                                    f"{form.network_of_capture}/24"):
+            form.count_output_packets += 1
+            parametrs_output_packets_count(packet)
+        # Проверка на пакеты с опциями
+        if packet[IP].options:
+            form.count_options_packets += 1
+        # Проверка на фрагменированные пакеты
+        if packet[IP].frag > 0:
+            form.count_fragment_packets += 1
+        # Проверка на наличие TCP сегментов
+        if packet.haslayer('TCP'):
+            form.count_tcp_segments += 1
+            form.unique_ports_tcp.add(packet[TCP].dport)
+            tcp_checksum = packet[TCP].chksum
+            if tcp_checksum == 0:
+                form.packet["tcp_chksum"] = 0
+            else:
                 form.packet["tcp_chksum"] = tcp_checksum
-                # Проверка на наличие FIN в TCP
-                if packet[TCP].flags == 'F':
-                    form.count_fin_packets += 1
-                # Проверка на наличие SIN в TCP
-                elif packet[TCP].flags == 'S':
-                    form.count_sin_packets += 1
-            # Проверка на наличие UDP сегментов
-            elif packet.haslayer('UDP'):
-                form.count_udp_segments += 1
-                form.unique_ports_udp.add(packet[UDP].dport)
-                udp_checksum = packet[UDP].chksum
+            # Проверка на наличие FIN в TCP
+            if packet[TCP].flags == 'F':
+                form.count_fin_packets += 1
+            # Проверка на наличие SIN в TCP
+            elif packet[TCP].flags == 'S':
+                form.count_sin_packets += 1
+        # Проверка на наличие UDP сегментов
+        elif packet.haslayer('UDP'):
+            form.count_udp_segments += 1
+            form.unique_ports_udp.add(packet[UDP].dport)
+            udp_checksum = packet[UDP].chksum
+            if udp_checksum == 0:
+                form.packet["udp_chksum"] = 0
+            else:
                 form.packet["udp_chksum"] = udp_checksum
+            print(udp_checksum)
     form.packets.append(form.packet)
 
 
