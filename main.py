@@ -130,6 +130,10 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.label_count_sin_packets.setText(f"{self.count_sin_packets}")
 
         #Добавляем данные в словарь, чтобы впоследствии сохранить их в формате csv
+        #нет необходимости в словаре, замени на список, и доавляй лишь значения, это сократит код, оставь 
+        #комментарий по поводу того в каком порядке значения добавляются в список
+        #измени название списка на self.data_one_intervals
+        #измени название общего списка на self.data_all_intervals
         self.data["Общее число захваченных пакетов:"] = self.count_capture_packets
         self.data["Число пакетов localhost:"] = self.count_loopback_packets
         self.data["Число пакетов broadcast:"] = self.count_multicast_packets
@@ -162,6 +166,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.value_lists = list(self.data.values())
         self.obj_value_lists.append(self.value_lists)
     #Функция реализующая сохранение данных в формате csv
+    # В перспективе можно организовать сохранение в определенную директрорию с возможностью ее выбора
     def save_file_as_csv(self):
         # Открываем файл для записи
         with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
@@ -200,7 +205,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 
 #Рассчет параметров для входящих пакетов
 def parametrs_input_packets_count(packet):
-    if packet.haslayer('TCP'):
+    if packet.haslayer('TCP')
         form.count_input_tcp_packets += 1
         # Проверка на наличие FIN в TCP
         if packet[TCP].flags == 'F':
@@ -277,6 +282,7 @@ def packet_callback(packet):
 
 
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
+#Попробуй убрать функцию и перенести реализацию в start_sniffing
 def start_sniffer(interface):
     print("Запуск сниффера пакетов...")
     sniff(filter=f"net {form.network_of_capture}/24",iface=interface, prn=packet_callback, store=False,timeout=form.time_of_capture)
