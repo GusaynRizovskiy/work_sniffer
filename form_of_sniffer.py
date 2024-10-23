@@ -114,11 +114,19 @@ class Form1(object):
         self.Label_Analizator_Packets_2.setObjectName("Label_Analizator_Packets_2")
         self.pushBatton_start_capture = QtWidgets.QPushButton(Dialog)
         self.pushBatton_start_capture.setGeometry(QtCore.QRect(1340, 280, 211, 51))
+
+        self.pushBatton_stop_sniffing = QtWidgets.QPushButton(Dialog)
+        self.pushBatton_stop_sniffing.setGeometry(QtCore.QRect(1340, 220, 211, 51))
+
         font = QtGui.QFont()
         font.setFamily("Segoe UI Variable Small")
         font.setPointSize(14)
         self.pushBatton_start_capture.setFont(font)
         self.pushBatton_start_capture.setObjectName("pushBatton_start_capture")
+
+        self.pushBatton_stop_sniffing.setFont(font)
+        self.pushBatton_stop_sniffing.setObjectName("pushBatton_stop_sniffing")
+
         self.layoutWidget1 = QtWidgets.QWidget(Dialog)
         self.layoutWidget1.setGeometry(QtCore.QRect(40, 340, 381, 321))
         self.layoutWidget1.setObjectName("layoutWidget1")
@@ -368,6 +376,9 @@ class Form1(object):
         self.pushButton_save_in_file.setText(_translate("Dialog", " Сохранить в файл"))
         self.Label_Analizator_Packets_2.setText(_translate("Dialog", "<html><head/><body><p><span style=\" font-size:18pt;\">Входные данные</span></p></body></html>"))
         self.pushBatton_start_capture.setText(_translate("Dialog", "Начать захват"))
+
+        self.pushBatton_stop_sniffing.setText(_translate("Dialog", "Прекратить"))
+
         self.label_name_count_capture_packets.setText(_translate("Dialog", "Количество перехваченных пакетов"))
         self.label_name_count_holenet_packets.setText(_translate("Dialog", "Количество пакетов localhost"))
         self.label_name_count_multicast_packets.setText(_translate("Dialog", "Количество пакетов broadcast"))
