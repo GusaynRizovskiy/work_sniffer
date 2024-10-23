@@ -58,7 +58,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.time_of_capture = self.spinBox_time_of_capture.value()
         self.interface_of_capture = self.lineEdit_interface_capture.text()
         self.network_of_capture = self.lineEdit_network_capture.text()
-        for i in range(3):
+        for i in range(6):
             # После каждого запуска снифера предыдущие данные будут очищаться
             self.text_zone.clear()
             #Переменные, в которых будут хранится данные о количестве различных пакетов
@@ -95,7 +95,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             self.data_one_interval = []
 
             'Вызов функция, запускающей сниффер'
-            start_sniffer(interface=self.interface_of_capture)
+            sniff(filter=f"net {form.network_of_capture}/24", iface=self.interface_of_capture, prn=packet_callback, store=False, timeout=form.time_of_capture)
 
             #Подсчет интенсивности входящих и исходящих пакетов.
             self.count_input_intensivity_packets = self.count_input_packets/ self.time_of_capture
@@ -129,13 +129,10 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             # Отображаем количество пакетов SIN
             self.label_count_sin_packets.setText(f"{self.count_sin_packets}")
 
-            #Добавляем данные в словарь, чтобы впоследствии сохранить их в формате csv
-            #нет необходимости в словаре, замени на список, и доавляй лишь значения, это сократит код, оставь
-            #комментарий по поводу того в каком порядке значения добавляются в список
-            #измени название списка на self.data_one_intervals
-            #измени название общего списка на self.data_all_intervals
 
-            #Данные в спсок добавляются в следующем порядке:
+            #Добавляем данные за данный интервал в список, чтобы позже добавить общий список интервалов
+            #Данные в список добавляются в следующем порядке:
+
             #-Общее число захваченных пакетов #
             self.data_one_interval.append(self.count_capture_packets)
             #-Число пакетов localhost
@@ -213,7 +210,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
                              "Число фрагментированных пакетов, исходящих из сети", "Интенсивность пакетов, исходящих из сети",
                              "Количество пакетов типа FIN, исходящих из сети", "Количество пакетов типа SIN, исходящих из сети",
                              ])
-            # Записываем данные из словаря
+            # Записываем данные из списков
             for i in range(len(self.data_all_intervals)):
                 writer.writerow(self.data_all_intervals[i])
 
@@ -310,9 +307,7 @@ def packet_callback(packet):
 
 #Функция запускающая сканирование и перехват пакетов(сниффинг)
 #Попробуй убрать функцию и перенести реализацию в start_sniffing
-def start_sniffer(interface):
-    print("Запуск сниффера пакетов...")
-    sniff(filter=f"net {form.network_of_capture}/24",iface=interface, prn=packet_callback, store=False,timeout=form.time_of_capture)
+
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
