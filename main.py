@@ -58,137 +58,140 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.time_of_capture = self.spinBox_time_of_capture.value()
         self.interface_of_capture = self.lineEdit_interface_capture.text()
         self.network_of_capture = self.lineEdit_network_capture.text()
-        for i in range(6):
-            # После каждого запуска снифера предыдущие данные будут очищаться
-            self.text_zone.clear()
-            #Переменные, в которых будут хранится данные о количестве различных пакетов
-            self.count_loopback_packets = 0
-            self.count_capture_packets = 0
-            self.count_multicast_packets = 0
-            self.count_udp_segments = 0
-            self.count_tcp_segments = 0
-            self.count_options_packets = 0
-            self.count_fragment_packets = 0
-            self.count_intensivity_packets = 0
-            self.count_fin_packets = 0
-            self.count_sin_packets = 0
-            #Все параметры касательно пакетов, входящих в сеть
-            self.count_input_packets = 0
-            self.count_input_udp_packets = 0
-            self.count_input_tcp_packets = 0
-            self.count_input_fin_packets = 0
-            self.count_input_sin_packets = 0
-            self.count_input_intensivity_packets = 0
-            self.count_input_options_packets = 0
-            self.count_input_fragment_packets = 0
-            #Все параметры касательно пакетов, исходящих из сети
-            self.count_output_packets = 0
-            self.count_output_udp_packets = 0
-            self.count_output_tcp_packets = 0
-            self.count_output_fin_packets = 0
-            self.count_output_sin_packets = 0
-            self.count_output_intensivity_packets = 0
-            self.count_output_options_packets = 0
-            self.count_output_fragment_packets = 0
+        if not self.pushBatton_stop_sniffing.isChecked():
+            while True:
+                # После каждого запуска снифера предыдущие данные будут очищаться
+                self.text_zone.clear()
+                #Переменные, в которых будут хранится данные о количестве различных пакетов
+                self.count_loopback_packets = 0
+                self.count_capture_packets = 0
+                self.count_multicast_packets = 0
+                self.count_udp_segments = 0
+                self.count_tcp_segments = 0
+                self.count_options_packets = 0
+                self.count_fragment_packets = 0
+                self.count_intensivity_packets = 0
+                self.count_fin_packets = 0
+                self.count_sin_packets = 0
+                #Все параметры касательно пакетов, входящих в сеть
+                self.count_input_packets = 0
+                self.count_input_udp_packets = 0
+                self.count_input_tcp_packets = 0
+                self.count_input_fin_packets = 0
+                self.count_input_sin_packets = 0
+                self.count_input_intensivity_packets = 0
+                self.count_input_options_packets = 0
+                self.count_input_fragment_packets = 0
+                #Все параметры касательно пакетов, исходящих из сети
+                self.count_output_packets = 0
+                self.count_output_udp_packets = 0
+                self.count_output_tcp_packets = 0
+                self.count_output_fin_packets = 0
+                self.count_output_sin_packets = 0
+                self.count_output_intensivity_packets = 0
+                self.count_output_options_packets = 0
+                self.count_output_fragment_packets = 0
 
-            #Список, сохраняющий информацию об характеристиках одного интервала агрегирования
-            self.data_one_interval = []
+                #Список, сохраняющий информацию об характеристиках одного интервала агрегирования
+                self.data_one_interval = []
 
-            'Вызов функция, запускающей сниффер'
-            sniff(filter=f"net {form.network_of_capture}/24", iface=self.interface_of_capture, prn=packet_callback, store=False, timeout=form.time_of_capture)
+                'Вызов функция, запускающей сниффер'
+                sniff(filter=f"net {form.network_of_capture}/24", iface=self.interface_of_capture, prn=packet_callback, store=False, timeout=form.time_of_capture)
 
-            #Подсчет интенсивности входящих и исходящих пакетов.
-            self.count_input_intensivity_packets = self.count_input_packets/ self.time_of_capture
-            self.count_output_intensivity_packets = self.count_output_packets / self.time_of_capture
+                #Подсчет интенсивности входящих и исходящих пакетов.
+                self.count_input_intensivity_packets = self.count_input_packets/ self.time_of_capture
+                self.count_output_intensivity_packets = self.count_output_packets / self.time_of_capture
 
-            #Разблокируем кнопку сохранения данных в файл
-            self.pushButton_save_in_file.setEnabled(True)
+                #Разблокируем кнопку сохранения данных в файл
+                self.pushButton_save_in_file.setEnabled(True)
 
-            #Отображаем количество всех захваченных пакетов
-            self.label_count_capture_packets.setText(f"{self.count_capture_packets}")
-            #Отображаем количество захваченных пакетов loopback
-            self.label_count_holentet_packets.setText(f"{self.count_loopback_packets}")
-            # Отображаем количество захваченных пакетов broadcast
-            self.label_count_multicast_packets.setText(f"{self.count_multicast_packets}")
-            #Отображаем количество пакетов входящих в нашу сеть
-            self.label_count_input_packets.setText(f"{self.count_input_packets}")
-            # Отображаем количество пакетов исходящих из нашей сеть
-            self.label_count_output_packets.setText(f"{self.count_output_packets}")
-            # Отображаем количество udp сегментов
-            self.label_count_udp_segments.setText(f"{self.count_udp_segments}")
-            # Отображаем количество tcp сегментов
-            self.label_count_tcp_segments.setText(f"{self.count_tcp_segments}")
-            # Отображаем количество пакетов с опциями
-            self.label_count_options_packets.setText(f"{self.count_options_packets}")
-            # Отображаем количество пакетов  фрагментированных
-            self.label_count_fragment_packets.setText(f"{self.count_fragment_packets}")
-            # Отображаем интенсивность пакетов
-            self.label_intensivity_packets.setText(f"{self.count_intensivity_packets}")
-            # Отображаем количество пакетов Fin
-            self.label_count_fin_packets.setText(f"{self.count_fin_packets}")
-            # Отображаем количество пакетов SIN
-            self.label_count_sin_packets.setText(f"{self.count_sin_packets}")
+                #Отображаем количество всех захваченных пакетов
+                self.label_count_capture_packets.setText(f"{self.count_capture_packets}")
+                #Отображаем количество захваченных пакетов loopback
+                self.label_count_holentet_packets.setText(f"{self.count_loopback_packets}")
+                # Отображаем количество захваченных пакетов broadcast
+                self.label_count_multicast_packets.setText(f"{self.count_multicast_packets}")
+                #Отображаем количество пакетов входящих в нашу сеть
+                self.label_count_input_packets.setText(f"{self.count_input_packets}")
+                # Отображаем количество пакетов исходящих из нашей сеть
+                self.label_count_output_packets.setText(f"{self.count_output_packets}")
+                # Отображаем количество udp сегментов
+                self.label_count_udp_segments.setText(f"{self.count_udp_segments}")
+                # Отображаем количество tcp сегментов
+                self.label_count_tcp_segments.setText(f"{self.count_tcp_segments}")
+                # Отображаем количество пакетов с опциями
+                self.label_count_options_packets.setText(f"{self.count_options_packets}")
+                # Отображаем количество пакетов  фрагментированных
+                self.label_count_fragment_packets.setText(f"{self.count_fragment_packets}")
+                # Отображаем интенсивность пакетов
+                self.label_intensivity_packets.setText(f"{self.count_intensivity_packets}")
+                # Отображаем количество пакетов Fin
+                self.label_count_fin_packets.setText(f"{self.count_fin_packets}")
+                # Отображаем количество пакетов SIN
+                self.label_count_sin_packets.setText(f"{self.count_sin_packets}")
 
 
-            #Добавляем данные за данный интервал в список, чтобы позже добавить общий список интервалов
-            #Данные в список добавляются в следующем порядке:
+                #Добавляем данные за данный интервал в список, чтобы позже добавить общий список интервалов
+                #Данные в список добавляются в следующем порядке:
 
-            #-Общее число захваченных пакетов #
-            self.data_one_interval.append(self.count_capture_packets)
-            #-Число пакетов localhost
-            self.data_one_interval.append(self.count_loopback_packets)
-            #-Число пакетов broadcast
-            self.data_one_interval.append(self.count_multicast_packets)
-            #-Общее число UDP сегментов
-            self.data_one_interval.append(self.count_udp_segments)
-            #-Общее число TCP сегментов
-            self.data_one_interval.append(self.count_tcp_segments)
-            #-Общее число пакетов с опциями
-            self.data_one_interval.append(self.count_options_packets)
-            #-Общее число фрагментированных пакетов
-            self.data_one_interval.append(self.count_fragment_packets)
-            #-Общая интенсивность пакетов
-            self.data_one_interval.append(self.count_intensivity_packets)
-            #-Общее количество пакетов типа FIN
-            self.data_one_interval.append(self.count_fin_packets)
-            #-Общее количество пакетов типа SIN
-            self.data_one_interval.append(self.count_sin_packets)
-            #-Число пакетов, входящих в сеть
-            self.data_one_interval.append(self.count_input_packets)
-            #-Число UDP сегментов входящих в сеть
-            self.data_one_interval.append(self.count_input_udp_packets)
-            #-Число TCP сегментов, входящих в сеть
-            self.data_one_interval.append(self.count_input_tcp_packets)
-            #-Число пакетов с опциями, входящих в сеть
-            self.data_one_interval.append(self.count_input_options_packets)
-            #-Число фрагментированных пакетов, входящих в сеть
-            self.data_one_interval.append(self.count_input_fragment_packets)
-            #-Интенсивность пакетов, входящих в сеть
-            self.data_one_interval.append(self.count_input_intensivity_packets)
-            #-Количество пакетов типа FIN, входящих в сеть
-            self.data_one_interval.append(self.count_input_fin_packets)
-            #-Количество пакетов типа SIN, входящих в сеть
-            self.data_one_interval.append(self.count_input_sin_packets)
-            #-Число пакетов, исходящих из сети
-            self.data_one_interval.append(self.count_output_packets)
-            #-Число UDP сегментов, исходящих из сети
-            self.data_one_interval.append(self.count_output_udp_packets)
-            #-Число TCP сегментов, исходящих из сети
-            self.data_one_interval.append(self.count_output_tcp_packets)
-            #-Число пакетов с опциями, исходящих из сети
-            self.data_one_interval.append(self.count_output_options_packets)
-            #-Число фрагментированных пакетов, исходящих из сети
-            self.data_one_interval.append(self.count_output_fragment_packets)
-            #-Интенсивность пакетов, исходящих из сети
-            self.data_one_interval.append(self.count_output_intensivity_packets)
-            #-Количество пакетов типа FIN, исходящих из сети
-            self.data_one_interval.append(self.count_output_fin_packets)
-            #-Количество пакетов типа SIN, исходящих из сети
-            self.data_one_interval.append(self.count_output_sin_packets)
+                #-Общее число захваченных пакетов #
+                self.data_one_interval.append(self.count_capture_packets)
+                #-Число пакетов localhost
+                self.data_one_interval.append(self.count_loopback_packets)
+                #-Число пакетов broadcast
+                self.data_one_interval.append(self.count_multicast_packets)
+                #-Общее число UDP сегментов
+                self.data_one_interval.append(self.count_udp_segments)
+                #-Общее число TCP сегментов
+                self.data_one_interval.append(self.count_tcp_segments)
+                #-Общее число пакетов с опциями
+                self.data_one_interval.append(self.count_options_packets)
+                #-Общее число фрагментированных пакетов
+                self.data_one_interval.append(self.count_fragment_packets)
+                #-Общая интенсивность пакетов
+                self.data_one_interval.append(self.count_intensivity_packets)
+                #-Общее количество пакетов типа FIN
+                self.data_one_interval.append(self.count_fin_packets)
+                #-Общее количество пакетов типа SIN
+                self.data_one_interval.append(self.count_sin_packets)
+                #-Число пакетов, входящих в сеть
+                self.data_one_interval.append(self.count_input_packets)
+                #-Число UDP сегментов входящих в сеть
+                self.data_one_interval.append(self.count_input_udp_packets)
+                #-Число TCP сегментов, входящих в сеть
+                self.data_one_interval.append(self.count_input_tcp_packets)
+                #-Число пакетов с опциями, входящих в сеть
+                self.data_one_interval.append(self.count_input_options_packets)
+                #-Число фрагментированных пакетов, входящих в сеть
+                self.data_one_interval.append(self.count_input_fragment_packets)
+                #-Интенсивность пакетов, входящих в сеть
+                self.data_one_interval.append(self.count_input_intensivity_packets)
+                #-Количество пакетов типа FIN, входящих в сеть
+                self.data_one_interval.append(self.count_input_fin_packets)
+                #-Количество пакетов типа SIN, входящих в сеть
+                self.data_one_interval.append(self.count_input_sin_packets)
+                #-Число пакетов, исходящих из сети
+                self.data_one_interval.append(self.count_output_packets)
+                #-Число UDP сегментов, исходящих из сети
+                self.data_one_interval.append(self.count_output_udp_packets)
+                #-Число TCP сегментов, исходящих из сети
+                self.data_one_interval.append(self.count_output_tcp_packets)
+                #-Число пакетов с опциями, исходящих из сети
+                self.data_one_interval.append(self.count_output_options_packets)
+                #-Число фрагментированных пакетов, исходящих из сети
+                self.data_one_interval.append(self.count_output_fragment_packets)
+                #-Интенсивность пакетов, исходящих из сети
+                self.data_one_interval.append(self.count_output_intensivity_packets)
+                #-Количество пакетов типа FIN, исходящих из сети
+                self.data_one_interval.append(self.count_output_fin_packets)
+                #-Количество пакетов типа SIN, исходящих из сети
+                self.data_one_interval.append(self.count_output_sin_packets)
 
-            #Получили список характеристик за один интервал агрегирования
-            #Добавляем его к общему списку за все интервалы агрегирования
-            self.data_all_intervals.append(self.data_one_interval)
+                #Получили список характеристик за один интервал агрегирования
+                #Добавляем его к общему списку за все интервалы агрегирования
+                self.data_all_intervals.append(self.data_one_interval)
+        else:
+            print("Работа сниффера прекращена")
     #Функция реализующая сохранение данных в формате csv
     # В перспективе можно организовать сохранение в определенную директрорию с возможностью ее выбора
     def save_file_as_csv(self):
@@ -264,7 +267,6 @@ def parametrs_output_packets_count(packet):
 
 # Функция для обработки перехваченных пакетов
 def packet_callback(packet):
-    print(packet.summary())
     form.count_capture_packets+=1
     form.count_intensivity_packets = form.count_capture_packets/form.time_of_capture
     if packet.haslayer("IP"):
