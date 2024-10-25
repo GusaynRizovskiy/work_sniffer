@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import  QMessageBox
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network
 from form_of_sniffer import Form1
+from datetime import datetime
 from scapy.all import *
 import sys
 import csv
@@ -49,10 +50,13 @@ class Worker(QtCore.QObject):
             self.count_output_intensivity_packets = 0
             self.count_output_options_packets = 0
             self.count_output_fragment_packets = 0
+            #Время начала захвата
+            self.time_begin = datetime.now().strftime('%H:%M:%S')
             # Выполнение длительной задачи
             sniff(filter=f"net {form.network_of_capture}/24", iface=form.interface_of_capture,
                   prn=self.packet_callback, store=False, timeout=form.time_of_capture)
-
+            # Время окончания захвата
+            self.time_end = datetime.now().strftime('%H:%M:%S')
             # Подсчет интенсивности входящих и исходящих пакетов.
             self.count_input_intensivity_packets = self.count_input_packets / form.time_of_capture
             self.count_output_intensivity_packets = self.count_output_packets / form.time_of_capture
@@ -60,6 +64,8 @@ class Worker(QtCore.QObject):
             # Добавляем данные за данный интервал в список, чтобы позже добавить общий список интервалов
             # Данные в список добавляются в следующем порядке:
 
+            #Время захвата первого пакета
+            self.data_one_interval.append(f"{self.time_begin}-{self.time_end}")
             # -Общее число захваченных пакетов #
             self.data_one_interval.append(self.count_capture_packets)
             # -Число пакетов localhost
@@ -115,8 +121,7 @@ class Worker(QtCore.QObject):
 
             #Добавляем информацию об одном интервале в список всех интервалов
             self.data_all_intervals.append(self.data_one_interval)
-            print("Интервал агрегирования завершен.")
-            print(self.data_one_interval)
+            print("-----------------------------------Интервал агрегирования завершен--------------------------------------------")
         self.finished.emit()  # Отправка сигнала о завершении
 
     def stop(self):
@@ -280,6 +285,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             writer = csv.writer(file)
             # Записываем заголовки
             writer.writerow([
+                            'Время захвата пакетов',
                             'Общее число захваченных пакетов','Число пакетов localhost','Число пакетов broadcast',
                              'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
                              'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
