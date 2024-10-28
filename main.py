@@ -261,7 +261,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.time_of_capture = self.spinBox_time_of_capture.value()
         self.interface_of_capture = self.lineEdit_interface_capture.text()
         self.network_of_capture = self.lineEdit_network_capture.text()
-
+        self.pushBatton_finish_work.setEnabled(False)
+        self.pushBatton_start_capture.setEnabled(False)
         self.text_zone.clear()
         #Запускаем фоновый поток, в котором выполняются все операции
         if not self.thread.isRunning():
@@ -272,11 +273,13 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             self.worker.stop()  # Отправка сигнала для остановки
             self.thread.quit()  # Завершение потока
             self.thread.wait()  # Ожидание завершения потока
+            self.pushBatton_stop_sniffing.setEnabled(False)
 
     def on_finished(self):
         print("Снифер завершил свою работу")
-        print("Общий список за все интервалы агрегирования:",self.worker.data_all_intervals)
         self.pushButton_save_in_file.setEnabled(True)
+        self.pushBatton_finish_work.setEnabled(True)
+        self.pushBatton_start_capture.setEnabled(True)
     #Функция реализующая сохранение данных в формате csv
     # В перспективе можно организовать сохранение в определенную директрорию с возможностью ее выбора
     def save_file_as_csv(self):
