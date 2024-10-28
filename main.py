@@ -274,7 +274,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             self.thread.quit()  # Завершение потока
             self.thread.wait()  # Ожидание завершения потока
             self.pushBatton_stop_sniffing.setEnabled(False)
-
+    #функция выолняется при завершении работы сниффера
     def on_finished(self):
         print("Снифер завершил свою работу")
         self.pushButton_save_in_file.setEnabled(True)
