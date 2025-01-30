@@ -321,13 +321,12 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.close()
 
 if __name__ == '__main__':
-    if __name__ == '__main__':
-        if getattr(sys, 'frozen', False):
-            base_path = sys._MEIPASS  # Путь к временной директории при запуске из EXE
-        else:
-            base_path = os.path.dirname(__file__)
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS  # Путь к временной директории при запуске из EXE
+    else:
+        base_path = os.path.dirname(__file__)
 
-        image_path = os.path.join(base_path, 'fon', 'picture_fon.jpg')
+    image_path = os.path.join(base_path, 'fon', 'picture_fon.jpg')
 
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
