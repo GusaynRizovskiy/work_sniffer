@@ -89,42 +89,46 @@ class Worker(QtCore.QObject):
 
     def prepare_data_interval(self):
         """Подготовка данных для текущего интервала."""
-        # Сбор данных в указанном порядке для этого интервала.
-        interval_data_formatting = [
-            f"{self.time_begin}-{self.time_end}",
-            self.count_capture_packets,
-            self.count_loopback_packets,
-            self.count_multicast_packets,
-            self.count_udp_segments,
-            self.count_tcp_segments,
-            self.count_options_packets,
-            self.count_fragment_packets,
-            self.count_intensivity_packets,
-            self.count_fin_packets,
-            self.count_sin_packets,
-            # Данные о входящих пакетах
-            self.count_input_packets,
-            self.count_input_udp_packets,
-            self.count_input_tcp_packets,
-            self.count_input_options_packets,
-            self.count_input_fragment_packets,
-            self.count_input_intensivity_packets,
-            self.count_input_fin_packets,
-            self.count_input_sin_packets,
-            # Данные о исходящих пакетах
-            self.count_output_packets,
-            self.count_output_udp_packets,
-            self.count_output_tcp_packets,
-            self.count_output_options_packets,
-            self.count_output_fragment_packets,
-            self.count_output_intensivity_packets,
-            self.count_output_fin_packets,
-            self.count_output_sin_packets,
-        ]
+        try:
+            # Сбор данных в указанном порядке для этого интервала.
+            interval_data_formatting = [
+                f"{self.time_begin}-{self.time_end}",
+                self.count_capture_packets,
+                self.count_loopback_packets,
+                self.count_multicast_packets,
+                self.count_udp_segments,
+                self.count_tcp_segments,
+                self.count_options_packets,
+                self.count_fragment_packets,
+                self.count_intensivity_packets,
+                self.count_fin_packets,
+                self.count_sin_packets,
+                # Данные о входящих пакетах
+                self.count_input_packets,
+                self.count_input_udp_packets,
+                self.count_input_tcp_packets,
+                self.count_input_options_packets,
+                self.count_input_fragment_packets,
+                self.count_input_intensivity_packets,
+                self.count_input_fin_packets,
+                self.count_input_sin_packets,
+                # Данные о исходящих пакетах
+                self.count_output_packets,
+                self.count_output_udp_packets,
+                self.count_output_tcp_packets,
+                self.count_output_options_packets,
+                self.count_output_fragment_packets,
+                self.count_output_intensivity_packets,
+                self.count_output_fin_packets,
+                self.count_output_sin_packets,
+            ]
 
-        # Добавление отформатированных данных в список одного интервала.
-        for data in interval_data_formatting:
-            self.data_one_interval.append(data)
+            # Добавление отформатированных данных в список одного интервала.
+            for data in interval_data_formatting:
+                self.data_one_interval.append(data)
+
+        except Exception as e:
+            print(f"Произошла ошибка при подготовке данных интервала: {e}")
 
     def stop(self):
         self.is_running = False  # Установка флага для остановки
