@@ -320,19 +320,12 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         'Функция отвечающая за закрытие программы'
         self.close()
 
-if __name__ == '__main__':
-    if getattr(sys, 'frozen', False):
-        base_path = sys._MEIPASS  # Путь к временной директории при запуске из EXE
-    else:
-        base_path = os.path.dirname(__file__)
-
-    image_path = os.path.join(base_path, 'fon', 'picture_fon.jpg')
-
+if __name__ == "__main__":
+    import sys
     app = QtWidgets.QApplication(sys.argv)
-    form = Form_main()
-    palette = QPalette()
-    palette.setBrush(QPalette.Background, QBrush(QPixmap(image_path)))
-    form.setPalette(palette)
-    form.show()
+    first_part = QtWidgets.QDialog()
+    ui = Form1()
+    ui.setupUi(first_part)
+    first_part.show()
     sys.exit(app.exec_())
 
