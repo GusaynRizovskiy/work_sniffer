@@ -185,40 +185,54 @@ class Worker(QtCore.QObject):
         except Exception as e:
             print(f"Произошла ошибка при обработке пакета: {e}")
 
-    def parametrs_input_packets_count(self,packet):
-        if packet.haslayer('TCP'):
-            self.count_input_tcp_packets += 1
-            # Проверка на наличие FIN в TCP
-            if packet[TCP].flags == 'F':
-                self.count_input_fin_packets += 1
-            # Проверка на наличие SIN в TCP
-            elif packet[TCP].flags == 'S':
-                self.count_input_sin_packets += 1
-        elif packet.haslayer('UDP'):
-            self.count_input_udp_packets += 1
-        if packet[IP].frag > 0:
-            self.count_input_fragment_packets += 1
+    def parametrs_input_packets_count(self, packet):
+        """Рассчет параметров для входящих пакетов."""
+        try:
+            if packet.haslayer('TCP'):
+                self.count_input_tcp_packets += 1
+                # Проверка на наличие FIN в TCP
+                if packet[TCP].flags == 'F':
+                    self.count_input_fin_packets += 1
+                # Проверка на наличие SIN в TCP
+                elif packet[TCP].flags == 'S':
+                    self.count_input_sin_packets += 1
+            elif packet.haslayer('UDP'):
+                self.count_input_udp_packets += 1
+
+            if packet[IP].frag > 0:
+                self.count_input_fragment_packets += 1
+
             # Проверка на пакеты с опциями
-        if packet[IP].options:
-            self.count_input_options_packets += 1
+            if packet[IP].options:
+                self.count_input_options_packets += 1
+
+        except Exception as e:
+            print(f"Произошла ошибка при обработке входящего пакета: {e}")
 
     # Рассчет параметров для исходящих пакетов
-    def parametrs_output_packets_count(self,packet):
-        if packet.haslayer('TCP'):
-            self.count_output_tcp_packets += 1
-            # Проверка на наличие FIN в TCP
-            if packet[TCP].flags == 'F':
-                self.count_output_fin_packets += 1
-            # Проверка на наличие SIN в TCP
-            elif packet[TCP].flags == 'S':
-                self.count_output_sin_packets += 1
-        elif packet.haslayer('UDP'):
-            self.count_output_udp_packets += 1
-        if packet[IP].frag > 0:
-            self.count_output_fragment_packets += 1
+    def parametrs_output_packets_count(self, packet):
+        """Рассчет параметров для исходящих пакетов."""
+        try:
+            if packet.haslayer('TCP'):
+                self.count_output_tcp_packets += 1
+                # Проверка на наличие FIN в TCP
+                if packet[TCP].flags == 'F':
+                    self.count_output_fin_packets += 1
+                # Проверка на наличие SIN в TCP
+                elif packet[TCP].flags == 'S':
+                    self.count_output_sin_packets += 1
+            elif packet.haslayer('UDP'):
+                self.count_output_udp_packets += 1
+
+            if packet[IP].frag > 0:
+                self.count_output_fragment_packets += 1
+
             # Проверка на пакеты с опциями
-        if packet[IP].options:
-            self.count_output_options_packets += 1
+            if packet[IP].options:
+                self.count_output_options_packets += 1
+
+        except Exception as e:
+            print(f"Произошла ошибка при обработке исходящего пакета: {e}")
 
 
 #Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя.
