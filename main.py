@@ -345,42 +345,70 @@ class Form_main(QtWidgets.QMainWindow,Form1):
     #Функция реализующая сохранение данных в формате csv
     # В перспективе можно организовать сохранение в определенную директрорию с возможностью ее выбора
     def save_file_as_csv(self):
-        # Открываем файл для записи
-        with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
-            writer = csv.writer(file)
-            # Записываем заголовки
-            writer.writerow([
-                            'Время захвата пакетов',
-                            'Общее число захваченных пакетов','Число пакетов localhost','Число пакетов broadcast',
-                             'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
-                             'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
-                             "Количество пакетов типа FIN", 'Количество пакетов типа SIN',
-                             'Число пакетов, входящих в сеть',"Число UDP сегментов входящих в сеть",
-                             "Число TCP сегментов, входящих в сеть", "Число пакетов с опциями, входящих в сеть",
-                             "Число фрагментированных пакетов, входящих в сеть", "Интенсивность пакетов, входящих в сеть",
-                             "Количество пакетов типа FIN, входящих в сеть", "Количество пакетов типа SIN, входящих в сеть",
-                             'Число пакетов, исходящих из сети', "Число UDP сегментов, исходящих из сети",
-                             "Число TCP сегментов, исходящих из сети", "Число пакетов с опциями, исходящих из сети",
-                             "Число фрагментированных пакетов, исходящих из сети", "Интенсивность пакетов, исходящих из сети",
-                             "Количество пакетов типа FIN, исходящих из сети", "Количество пакетов типа SIN, исходящих из сети",
-                             ])
-            # Записываем данные из списков
-            print(self.worker.data_all_intervals)
-            for i in range(len(self.worker.data_all_intervals)):
-                writer.writerow(self.worker.data_all_intervals[i])
+        """Сохранение данных в CSV файл."""
+        try:
+            # Проверяем, есть ли данные для сохранения
+            if not self.worker.data_all_intervals:
+                raise ValueError("Нет данных для сохранения.")
 
-        msg_box = QMessageBox()
-        msg_box.setIcon(QMessageBox.Information)  # Устанавливаем иконку
-        msg_box.setText("Данные успешно сохранены в директории проекта!")  # Основной текст
-        msg_box.setWindowTitle("Успех")  # Заголовок окна
-        msg_box.setStandardButtons(QMessageBox.Ok)  # Кнопка "ОК"
-        # Отображаем сообщение
-        msg_box.exec_()
+            # Открываем файл для записи
+            with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
+                writer = csv.writer(file)
+                # Записываем заголовки
+                writer.writerow([
+                    'Время захвата пакетов',
+                    'Общее число захваченных пакетов', 'Число пакетов localhost', 'Число пакетов broadcast',
+                    'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
+                    'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
+                    "Количество пакетов типа FIN", 'Количество пакетов типа SIN',
+                    'Число пакетов, входящих в сеть', "Число UDP сегментов входящих в сеть",
+                    "Число TCP сегментов, входящих в сеть", "Число пакетов с опциями, входящих в сеть",
+                    "Число фрагментированных пакетов, входящих в сеть", "Интенсивность пакетов, входящих в сеть",
+                    "Количество пакетов типа FIN, входящих в сеть", "Количество пакетов типа SIN, входящих в сеть",
+                    'Число пакетов, исходящих из сети', "Число UDP сегментов, исходящих из сети",
+                    "Число TCP сегментов, исходящих из сети", "Число пакетов с опциями, исходящих из сети",
+                    "Число фрагментированных пакетов, исходящих из сети", "Интенсивность пакетов, исходящих из сети",
+                    "Количество пакетов типа FIN, исходящих из сети", "Количество пакетов типа SIN, исходящих из сети",
+                ])
+                # Записываем данные из списков
+                for i in range(len(self.worker.data_all_intervals)):
+                    writer.writerow(self.worker.data_all_intervals[i])
+
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Information)  # Устанавливаем иконку
+            msg_box.setText("Данные успешно сохранены в директории проекта!")  # Основной текст
+            msg_box.setWindowTitle("Успех")  # Заголовок окна
+            msg_box.setStandardButtons(QMessageBox.Ok)  # Кнопка "ОК"
+            # Отображаем сообщение
+            msg_box.exec_()
+
+        except ValueError as ve:
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setText(str(ve))
+            msg_box.setWindowTitle("Ошибка")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
+        except Exception as e:
+            print(f"Произошла ошибка при сохранении файла: {e}")
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Critical)
+            msg_box.setText("Произошла ошибка при сохранении данных.")
+            msg_box.setWindowTitle("Ошибка")
+            msg_box.setStandardButtons(QMessageBox.Ok)
+            msg_box.exec_()
 
     def close_program(self):
-        self.worker.data_all_intervals.clear()
-        'Функция отвечающая за закрытие программы'
-        self.close()
+        """Функция отвечающая за закрытие программы."""
+        try:
+            if self.worker.data_all_intervals:
+                self.worker.data_all_intervals.clear()  # Очистка данных перед закрытием
+
+            self.close()  # Закрытие окна приложения
+
+        except Exception as e:
+            print(f"Произошла ошибка при закрытии программы: {e}")
+
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
