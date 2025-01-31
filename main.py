@@ -311,6 +311,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             mess_box.exec_()
 
     def start_sniffing(self):
+        self.pushBatton_stop_sniffing.setEnabled(True)
         '''
         Метод считывает данные для работы, такие как:
             -время до которого необходимо перехватывать пакеты
