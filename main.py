@@ -83,9 +83,15 @@ class Worker(QtCore.QObject):
 
     def calculate_intensities(self):
         """Расчет интенсивности входящих и исходящих пакетов."""
-        if form.time_of_capture > 0:  # Предотвращение деления на ноль
-            self.count_input_intensivity_packets = (self.count_input_packets / form.time_of_capture)
-            self.count_output_intensivity_packets = (self.count_output_packets / form.time_of_capture)
+        try:
+            if form.time_of_capture > 0:  # Предотвращение деления на ноль
+                self.count_input_intensivity_packets = (self.count_input_packets / form.time_of_capture)
+                self.count_output_intensivity_packets = (self.count_output_packets / form.time_of_capture)
+            else:
+                print("Время захвата должно быть больше нуля для расчета интенсивности.")
+
+        except Exception as e:
+            print(f"Произошла ошибка при расчете интенсивности пакетов: {e}")
 
     def prepare_data_interval(self):
         """Подготовка данных для текущего интервала."""
