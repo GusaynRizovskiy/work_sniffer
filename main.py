@@ -320,12 +320,12 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         'Функция отвечающая за закрытие программы'
         self.close()
 
-if __name__ == "__main__":
-    import sys
+if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
-    first_part = QtWidgets.QDialog()
-    ui = Form1()
-    ui.setupUi(first_part)
-    first_part.show()
+    form = Form_main()
+    palette = QPalette()
+    palette.setBrush(QPalette.Background, QBrush(QPixmap("picture_fon.jpg")))
+    form.setPalette(palette)
+    form.show()
     sys.exit(app.exec_())
 
