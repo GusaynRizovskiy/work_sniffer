@@ -296,28 +296,52 @@ class Form_main(QtWidgets.QMainWindow,Form1):
             -сеть, перехват пакетов которой необходимо произвести
         :return:
         '''
-        self.time_of_capture = self.spinBox_time_of_capture.value()
-        self.interface_of_capture = self.lineEdit_interface_capture.text()
-        self.network_of_capture = self.lineEdit_network_capture.text()
-        self.pushBatton_finish_work.setEnabled(False)
-        self.pushBatton_start_capture.setEnabled(False)
-        self.text_zone.clear()
-        #Запускаем фоновый поток, в котором выполняются все операции
-        if not self.thread.isRunning():
-            self.thread.start()
-    #Останавливаем фоновый поток
+        try:
+            self.time_of_capture = self.spinBox_time_of_capture.value()
+            self.interface_of_capture = self.lineEdit_interface_capture.text().strip()
+            self.network_of_capture = self.lineEdit_network_capture.text().strip()
+
+            # Проверка на корректность введенных данных
+            if not self.time_of_capture > 0:
+                raise ValueError("Время захвата должно быть больше нуля.")
+
+            if not self.interface_of_capture:
+                raise ValueError("Необходимо указать интерфейс для захвата.")
+
+            if not self.network_of_capture:
+                raise ValueError("Необходимо указать сеть для захвата.")
+
+            self.pushBatton_finish_work.setEnabled(False)
+            self.pushBatton_start_capture.setEnabled(False)
+            self.text_zone.clear()
+
+            # Запускаем фоновый поток, в котором выполняются все операции
+            if not self.thread.isRunning():
+                self.thread.start()
+
+        except ValueError as ve:
+            print(f"Ошибка ввода: {ve}")
+        except Exception as e:
+            print(f"Произошла ошибка при запуске сниффера: {e}")
+
+    # Останавливаем фоновый поток
     def stop_sniffing(self):
-        if self.thread.isRunning():
-            self.worker.stop()  # Отправка сигнала для остановки
-            self.thread.quit()  # Завершение потока
-            self.thread.wait()  # Ожидание завершения потока
-            self.pushBatton_stop_sniffing.setEnabled(False)
-    #функция выолняется при завершении работы сниффера
+        try:
+            if self.thread.isRunning():
+                self.worker.stop()  # Отправка сигнала для остановки
+                self.thread.quit()  # Завершение потока
+                self.thread.wait()  # Ожидание завершения потока
+                self.pushBatton_stop_sniffing.setEnabled(False)
+        except Exception as e:
+            print(f"Произошла ошибка при остановке сниффера: {e}")
+
+    # Функция выполняется при завершении работы сниффера
     def on_finished(self):
         print("Снифер завершил свою работу")
         self.pushButton_save_in_file.setEnabled(True)
         self.pushBatton_finish_work.setEnabled(True)
         self.pushBatton_start_capture.setEnabled(True)
+
     #Функция реализующая сохранение данных в формате csv
     # В перспективе можно организовать сохранение в определенную директрорию с возможностью ее выбора
     def save_file_as_csv(self):
