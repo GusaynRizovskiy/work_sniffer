@@ -36,7 +36,7 @@ class Form1(object):
         self.text_zone = TextEditLogger(self)
         self.text_zone.setGeometry(QtCore.QRect(40, 300, 800, 371))
         self.text_zone.setObjectName("text_zone")
-        sys.stdout = self.text_zone
+
         # Последняя команда как раз перенаправляет отображаемую информацию
 
         self.pushBatton_finish_work = QtWidgets.QPushButton(Dialog)
