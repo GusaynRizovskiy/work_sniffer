@@ -133,45 +133,57 @@ class Worker(QtCore.QObject):
     def stop(self):
         self.is_running = False  # Установка флага для остановки
 
-    def packet_callback(self,packet):
-        print(packet)
-        self.count_capture_packets += 1
-        self.count_intensivity_packets = self.count_capture_packets / form.time_of_capture
-        if packet.haslayer("IP"):
-            src_ip = packet["IP"].src
-            dst_ip = packet["IP"].dst
-            # Проверка на принадлежность широковещательному адресу
-            if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
-                self.count_multicast_packets += 1
-            # Проверка на принадлежность локальной петле
-            elif dst_ip == '127.0.0.1':
-                self.count_loopback_packets += 1
-            # Проверка на входящие пакеты
-            elif not address_in_network(src_ip, f"{form.network_of_capture}/24") and address_in_network(dst_ip, f"{form.network_of_capture}/24"):
-                self.count_input_packets += 1
-                self.parametrs_input_packets_count(packet)
-            # Проверка на исходящие пакеты
-            elif address_in_network(src_ip, f"{form.network_of_capture}/24") and not address_in_network(dst_ip, f"{form.network_of_capture}/24"):
-                self.count_output_packets += 1
-                self.parametrs_output_packets_count(packet)
-            # Проверка на пакеты с опциями
-            if packet[IP].options:
-                self.count_options_packets += 1
-            # Проверка на фрагменированные пакеты
-            if packet[IP].frag > 0:
-                self.count_fragment_packets += 1
-            # Проверка на наличие TCP сегментов
-            if packet.haslayer('TCP'):
-                self.count_tcp_segments += 1
-                # Проверка на наличие FIN в TCP
-                if packet[TCP].flags == 'F':
-                    self.count_fin_packets += 1
-                # Проверка на наличие SIN в TCP
-                elif packet[TCP].flags == 'S':
-                    self.count_sin_packets += 1
-            # Проверка на наличие UDP сегментов
-            elif packet.haslayer('UDP'):
-                self.count_udp_segments += 1
+    def packet_callback(self, packet):
+        """Обработка захваченного пакета."""
+        try:
+            print(packet)
+            self.count_capture_packets += 1
+            self.count_intensivity_packets = self.count_capture_packets / form.time_of_capture
+
+            if packet.haslayer("IP"):
+                src_ip = packet["IP"].src
+                dst_ip = packet["IP"].dst
+
+                # Проверка на принадлежность широковещательному адресу
+                if dst_ip == "255.255.255.255" or dst_ip.endswith(".255"):
+                    self.count_multicast_packets += 1
+                # Проверка на принадлежность локальной петле
+                elif dst_ip == '127.0.0.1':
+                    self.count_loopback_packets += 1
+                # Проверка на входящие пакеты
+                elif not address_in_network(src_ip, f"{form.network_of_capture}/24") and address_in_network(dst_ip,
+                                                                                                            f"{form.network_of_capture}/24"):
+                    self.count_input_packets += 1
+                    self.parametrs_input_packets_count(packet)
+                # Проверка на исходящие пакеты
+                elif address_in_network(src_ip, f"{form.network_of_capture}/24") and not address_in_network(dst_ip,
+                                                                                                            f"{form.network_of_capture}/24"):
+                    self.count_output_packets += 1
+                    self.parametrs_output_packets_count(packet)
+
+                # Проверка на пакеты с опциями
+                if packet[IP].options:
+                    self.count_options_packets += 1
+                # Проверка на фрагментированные пакеты
+                if packet[IP].frag > 0:
+                    self.count_fragment_packets += 1
+
+                # Проверка на наличие TCP сегментов
+                if packet.haslayer('TCP'):
+                    self.count_tcp_segments += 1
+                    # Проверка на наличие FIN в TCP
+                    if packet[TCP].flags == 'F':
+                        self.count_fin_packets += 1
+                    # Проверка на наличие SIN в TCP
+                    elif packet[TCP].flags == 'S':
+                        self.count_sin_packets += 1
+
+                # Проверка на наличие UDP сегментов
+                elif packet.haslayer('UDP'):
+                    self.count_udp_segments += 1
+
+        except Exception as e:
+            print(f"Произошла ошибка при обработке пакета: {e}")
 
     def parametrs_input_packets_count(self,packet):
         if packet.haslayer('TCP'):
