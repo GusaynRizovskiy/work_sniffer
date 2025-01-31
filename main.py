@@ -270,23 +270,45 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         #Блокируем кнопку сохранения данных файл для корректной работы программы
         self.pushButton_save_in_file.setEnabled(False)
         #Список, в котором будет сохраняться характеристики за каждый интервал агрегирования
+
     def check_input_data(self):
         '''
-        Метод проверяет что введены все необходимые для работы данные;
-        Если это не так то программа не заработает
+        Метод проверяет, что введены все необходимые для работы данные;
+        Если это не так, то программа не заработает.
         :return:
         '''
-        if self.lineEdit_interface_capture.text() == '' or self.lineEdit_network_capture.text() == '' or self.spinBox_time_of_capture.value() == self.spinBox_time_of_capture.minimum():
-            mess_box = QMessageBox()
-            mess_box.setWindowTitle("Предупреждение")
-            mess_box.setText("Необходимо ввести все данные для работы")
-            mess_box.setInformativeText("Заполните все входные данные")
-            mess_box.setIcon(QMessageBox.Warning)
-            mess_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
-            mess_box.show()
-            mess_box.exec_()
-        else:
+        try:
+            interface = self.lineEdit_interface_capture.text().strip()
+            network = self.lineEdit_network_capture.text().strip()
+            time_of_capture = self.spinBox_time_of_capture.value()
+
+            # Проверка на пустые поля и минимальное значение времени захвата
+            if not interface or not network or time_of_capture == self.spinBox_time_of_capture.minimum():
+                mess_box = QMessageBox()
+                mess_box.setWindowTitle("Предупреждение")
+                mess_box.setText("Необходимо ввести все данные для работы.")
+                mess_box.setInformativeText("Заполните все входные данные.")
+                mess_box.setIcon(QMessageBox.Warning)
+                mess_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+                mess_box.exec_()
+            # Если все проверки пройдены, запускаем сниффер
             self.start_sniffing()
+
+        except ValueError as ve:
+            mess_box = QMessageBox()
+            mess_box.setWindowTitle("Ошибка ввода")
+            mess_box.setText(str(ve))
+            mess_box.setIcon(QMessageBox.Warning)
+            mess_box.setStandardButtons(QMessageBox.Ok)
+            mess_box.exec_()
+        except Exception as e:
+            print(f"Произошла ошибка: {e}")
+            mess_box = QMessageBox()
+            mess_box.setWindowTitle("Ошибка")
+            mess_box.setText("Произошла непредвиденная ошибка.")
+            mess_box.setIcon(QMessageBox.Critical)
+            mess_box.setStandardButtons(QMessageBox.Ok)
+            mess_box.exec_()
 
     def start_sniffing(self):
         '''
