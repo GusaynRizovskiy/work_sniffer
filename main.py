@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
-from PyQt5.QtWidgets import QMessageBox, QFileDialog  # <--- НОВОЕ: Добавляем QFileDialog
+from PyQt5.QtWidgets import QMessageBox, QFileDialog
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network
 from form_of_sniffer import Form1
@@ -38,7 +38,11 @@ class Worker(QtCore.QObject):
                 sniff(filter=f"net {form.network_of_capture}", iface=form.interface_of_capture,
                       prn=self.packet_callback, store=False, timeout=form.time_of_capture)
             except Exception as e:
-                print(f"Ошибка при захвате пакетов: {e}")
+                # Внутренняя ошибка Worker, которая может произойти во время сниффинга
+                # Важно: здесь мы уже внутри потока, и основная обработка ошибок запуска
+                # будет происходить в Form_main.start_sniffing.
+                # Тем не менее, это полезно для ошибок, которые могут возникнуть ПОСЛЕ успешного старта.
+                print(f"Ошибка в процессе захвата пакетов: {e}")
                 self.is_running = False  # Останавливаем поток при ошибке захвата
                 self.finished.emit()  # Отправляем сигнал о завершении
                 return
@@ -320,8 +324,10 @@ class Form_main(QtWidgets.QMainWindow, Form1):
                 self.interface_display_to_internal_map[display_name] = internal_name
 
         except Exception as e:
-            QMessageBox.critical(self, "Ошибка", f"Не удалось получить список интерфейсов: {e}\n"
-                                                 "Убедитесь, что Scapy установлен корректно и у вас есть необходимые права.")
+            # Более информативное сообщение об ошибке при загрузке интерфейсов
+            QMessageBox.critical(self, "Ошибка загрузки интерфейсов",
+                                 f"Не удалось получить список сетевых интерфейсов: {e}\n"
+                                 "Пожалуйста, убедитесь, что WinPcap/Npcap установлен(а) (для Windows) и у программы есть необходимые права (например, запуск от имени администратора).")
 
     def check_input_data(self):
         '''
@@ -397,6 +403,7 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             self.worker.data_all_intervals.clear()
 
             if not self.thread.isRunning():
+                # Пробуем запустить поток. Если Scapy выдаст ошибку, она будет поймана ниже.
                 self.thread.start()
             else:
                 QMessageBox.information(self, "Информация",
@@ -405,12 +412,30 @@ class Form_main(QtWidgets.QMainWindow, Form1):
                 self.pushBatton_stop_sniffing.setEnabled(True)
                 return
 
-        except ValueError as ve:
-            QMessageBox.warning(self, "Ошибка ввода", str(ve))
-            self.pushBatton_start_capture.setEnabled(True)
         except Exception as e:
-            QMessageBox.critical(self, "Ошибка", f"Произошла ошибка при запуске сниффера: {e}")
-            self.pushBatton_start_capture.setEnabled(True)
+            # --- НОВОЕ: Улучшенная обработка ошибок запуска Scapy ---
+            error_message = f"Не удалось начать сниффинг: {e}"
+            if "No such device" in str(e) or "interface" in str(e).lower():
+                error_message = (f"Выбранный сетевой интерфейс не найден или недоступен.\n"
+                                 f"Возможно, он был отключен, или указано неверное имя интерфейса.\n"
+                                 f"Попробуйте выбрать другой интерфейс или перезапустить программу.")
+            elif "Permission denied" in str(e) or "You don't have enough privileges" in str(e):
+                error_message = (f"Недостаточно прав для запуска сниффинга.\n"
+                                 f"Пожалуйста, запустите программу от имени администратора (для Windows) "
+                                 f"или с root-правами (для Linux/macOS).")
+            elif "WinPcap is not installed" in str(e) or "Npcap is not installed" in str(e) or "libpcap" in str(e):
+                error_message = (f"Не удалось найти библиотеку захвата пакетов (WinPcap/Npcap/libpcap).\n"
+                                 f"Убедитесь, что она установлена и настроена корректно.")
+            else:
+                error_message = (f"Произошла непредвиденная ошибка при попытке начать сниффинг: {e}\n"
+                                 f"Пожалуйста, проверьте конфигурацию Scapy и права доступа.")
+
+            QMessageBox.critical(self, "Ошибка запуска сниффера", error_message)
+            self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку обратно
+            self.pushBatton_stop_sniffing.setEnabled(False)  # Выключаем кнопку стоп, так как ничего не запущено
+            self.pushBatton_finish_work.setEnabled(True)
+
+    # ----------------------------------------------------------------------
 
     def stop_sniffing(self):
         """Останавливает фоновый поток сниффинга."""
@@ -443,34 +468,23 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             if not self.worker.data_all_intervals:
                 raise ValueError("Нет данных для сохранения.")
 
-            # --- НОВОЕ: Открываем диалоговое окно для выбора файла ---
             options = QFileDialog.Options()
-            # Добавим опцию, чтобы избежать автоматического добавления расширения при сохранении
-            # если оно уже указано пользователем, но все равно будем его принудительно добавлять
-            # если пользователь его не указал.
             options |= QFileDialog.DontUseNativeDialog
 
-            # Предлагаем имя файла по умолчанию, например "sniffing_data.csv"
             file_name, _ = QFileDialog.getSaveFileName(self,
-                                                       "Сохранить данные сниффинга",  # Заголовок окна
-                                                       "sniffing_data.csv",  # Имя файла по умолчанию
-                                                       "CSV Files (*.csv);;All Files (*)",  # Фильтры файлов
+                                                       "Сохранить данные сниффинга",
+                                                       "sniffing_data.csv",
+                                                       "CSV Files (*.csv);;All Files (*)",
                                                        options=options)
 
             if not file_name:  # Если пользователь отменил выбор файла
                 QMessageBox.information(self, "Отмена", "Сохранение файла отменено.")
                 return
 
-            # Убедимся, что файл имеет расширение .csv
             if not file_name.endswith('.csv'):
                 file_name += '.csv'
-            # --------------------------------------------------------
 
-            # Открываем файл для записи по выбранному пути
-            # Используем кодировку 'utf-8' для лучшей совместимости,
-            # но если 'windows-1251' необходима для конкретных систем,
-            # её можно оставить. 'utf-8' более предпочтительна для CSV.
-            with open(file_name, 'w', newline='', encoding='utf-8') as file:  # <--- ИЗМЕНЕНО: file_name и encoding
+            with open(file_name, 'w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
                 # Записываем заголовки
                 writer.writerow([
@@ -494,7 +508,7 @@ class Form_main(QtWidgets.QMainWindow, Form1):
 
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Information)
-            msg_box.setText(f"Данные успешно сохранены в файл: {file_name}")  # <--- ИЗМЕНЕНО СООБЩЕНИЕ
+            msg_box.setText(f"Данные успешно сохранены в файл: {file_name}")
             msg_box.setWindowTitle("Успех")
             msg_box.setStandardButtons(QMessageBox.Ok)
             msg_box.exec_()
