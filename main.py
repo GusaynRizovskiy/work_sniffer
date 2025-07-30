@@ -2,16 +2,17 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import QMessageBox
 from scapy.layers.inet import IP, UDP, TCP
-from utils import address_in_network  # Предполагается, что utils.py существует
+from utils import address_in_network  # Ваш обновленный utils.py
 from form_of_sniffer import Form1  # Ваш сгенерированный файл UI
 from datetime import datetime
-from scapy.all import *  # Теперь используем get_working_ifaces() из scapy.all
+from scapy.all import *  # Убедитесь, что get_working_ifaces() доступен
 import sys
 import csv
-import platform  # Импортируем модуль platform для определения ОС
+import platform
+import ipaddress  # <--- НОВОЕ: Импортируем ipaddress для валидации ввода
 
 
-# Класс, который будет наследоваться от Qobject и выполнять основную работу программы
+# Класс, который будет наследоваться от QObject и выполнять основную работу программы
 class Worker(QtCore.QObject):
     finished = QtCore.pyqtSignal()  # Сигнал для указания завершения
 
@@ -31,8 +32,9 @@ class Worker(QtCore.QObject):
             # Захват пакетов с указанным фильтром и интерфейсом
             self.time_begin = datetime.now().strftime('%H:%M:%S')
             try:
-                # Используем глобальные переменные form.network_of_capture и form.time_of_capture
-                sniff(filter=f"net {form.network_of_capture}/24", iface=form.interface_of_capture,
+                # Используем глобальные переменные form.network_of_capture (которая теперь включает маску) и form.time_of_capture
+                # Scapy самостоятельно понимает CIDR-нотацию в фильтре
+                sniff(filter=f"net {form.network_of_capture}", iface=form.interface_of_capture,  # <--- ИЗМЕНЕН ФИЛЬТР
                       prn=self.packet_callback, store=False, timeout=form.time_of_capture)
             except Exception as e:
                 print(f"Ошибка при захвате пакетов: {e}")
@@ -171,13 +173,14 @@ class Worker(QtCore.QObject):
                 elif dst_ip == '127.0.0.1':
                     self.count_loopback_packets += 1
                 # Проверка на входящие пакеты
-                elif not address_in_network(src_ip, f"{form.network_of_capture}/24") and address_in_network(dst_ip,
-                                                                                                            f"{form.network_of_capture}/24"):
+                # Используем network_of_capture, которая теперь является полной CIDR-нотацией
+                elif not address_in_network(src_ip, form.network_of_capture) and address_in_network(dst_ip,
+                                                                                                    form.network_of_capture):  # <--- ИЗМЕНЕННЫЙ ВЫЗОВ
                     self.count_input_packets += 1
                     self.parametrs_input_packets_count(packet)
                 # Проверка на исходящие пакеты
-                elif address_in_network(src_ip, f"{form.network_of_capture}/24") and not address_in_network(dst_ip,
-                                                                                                            f"{form.network_of_capture}/24"):
+                elif address_in_network(src_ip, form.network_of_capture) and not address_in_network(dst_ip,
+                                                                                                    form.network_of_capture):  # <--- ИЗМЕНЕННЫЙ ВЫЗОВ
                     self.count_output_packets += 1
                     self.parametrs_output_packets_count(packet)
 
@@ -263,7 +266,7 @@ class Worker(QtCore.QObject):
             pass
 
 
-# Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя.
+# Основной класс, в котором происходит создание экземпляра формы и считывание данных пользователя.
 class Form_main(QtWidgets.QMainWindow, Form1):
 
     def __init__(self):
@@ -301,8 +304,6 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             self.comboBox_interface.clear()
             self.interface_display_to_internal_map.clear()
 
-            # get_working_ifaces() возвращает объекты NetworkInterface,
-            # которые имеют атрибуты 'name' (техническое имя) и 'description' (дружественное имя)
             interfaces = get_working_ifaces()
 
             if not interfaces:
@@ -330,46 +331,34 @@ class Form_main(QtWidgets.QMainWindow, Form1):
         try:
             # Теперь интерфейс берется из QComboBox
             selected_display_name = self.comboBox_interface.currentText().strip()
-            network = self.lineEdit_network_capture.text().strip()
+            network_cidr = self.lineEdit_network_capture.text().strip()  # Читаем CIDR-нотацию
+
             time_of_capture = self.spinBox_time_of_capture.value()
 
             # Проверка на пустые поля и минимальное значение времени захвата
             if not selected_display_name:  # Проверяем, что интерфейс выбран
-                mess_box = QMessageBox()
-                mess_box.setWindowTitle("Предупреждение")
-                mess_box.setText("Необходимо выбрать сетевой интерфейс.")
-                mess_box.setInformativeText("Выберите один из доступных интерфейсов в выпадающем списке.")
-                mess_box.setIcon(QMessageBox.Warning)
-                mess_box.setStandardButtons(QMessageBox.Ok)
-                mess_box.exec_()
+                QMessageBox.warning(self, "Предупреждение", "Необходимо выбрать сетевой интерфейс.")
                 return  # Выходим, если интерфейс не выбран
-            elif not network or time_of_capture == self.spinBox_time_of_capture.minimum():
-                mess_box = QMessageBox()
-                mess_box.setWindowTitle("Предупреждение")
-                mess_box.setText("Необходимо ввести все данные для работы.")
-                mess_box.setInformativeText("Заполните все входные данные (сеть и время захвата).")
-                mess_box.setIcon(QMessageBox.Warning)
-                mess_box.setStandardButtons(QMessageBox.Ok)
-                mess_box.exec_()
+            elif not network_cidr or time_of_capture == self.spinBox_time_of_capture.minimum():
+                QMessageBox.warning(self, "Предупреждение", "Необходимо ввести все данные для работы.")
                 return  # Выходим, если другие поля не заполнены
+
+            # Дополнительная проверка на валидность CIDR-нотации
+            try:
+                ipaddress.ip_network(network_cidr, strict=False)  # <--- НОВАЯ ВАЛИДАЦИЯ
+            except ValueError:
+                QMessageBox.warning(self, "Ошибка ввода",
+                                    "Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
+                return
+
             # Если все проверки пройдены, запускаем сниффер
             self.start_sniffing()
 
         except ValueError as ve:
-            mess_box = QMessageBox()
-            mess_box.setWindowTitle("Ошибка ввода")
-            mess_box.setText(str(ve))
-            mess_box.setIcon(QMessageBox.Warning)
-            mess_box.setStandardButtons(QMessageBox.Ok)
-            mess_box.exec_()
+            QMessageBox.warning(self, "Ошибка ввода", str(ve))
         except Exception as e:
             print(f"Произошла ошибка: {e}")
-            mess_box = QMessageBox()
-            mess_box.setWindowTitle("Ошибка")
-            mess_box.setText("Произошла непредвиденная ошибка при проверке данных.")
-            mess_box.setIcon(QMessageBox.Critical)
-            mess_box.setStandardButtons(QMessageBox.Ok)
-            mess_box.exec_()
+            QMessageBox.critical(self, "Ошибка", f"Произошла непредвиденная ошибка при проверке данных: {e}")
 
     def start_sniffing(self):
         self.pushBatton_stop_sniffing.setEnabled(True)
@@ -383,24 +372,25 @@ class Form_main(QtWidgets.QMainWindow, Form1):
         try:
             self.time_of_capture = self.spinBox_time_of_capture.value()
 
-            # Получаем отображаемое имя из ComboBox
             selected_display_name = self.comboBox_interface.currentText().strip()
-            # Находим соответствующее внутреннее имя Scapy
             self.interface_of_capture = self.interface_display_to_internal_map.get(
                 selected_display_name, selected_display_name
-            )  # Fallback to display name if somehow not in map (shouldn't happen)
+            )
 
+            # Теперь network_of_capture будет хранить полную CIDR-нотацию
             self.network_of_capture = self.lineEdit_network_capture.text().strip()
 
-            # Проверка на корректность введенных данных
+            # Проверка на корректность введенных данных (повторная, но быстрая)
             if not self.time_of_capture > 0:
                 raise ValueError("Время захвата должно быть больше нуля.")
-
-            if not self.interface_of_capture:  # Дополнительная проверка на пустой интерфейс
+            if not self.interface_of_capture:
                 raise ValueError("Необходимо выбрать интерфейс для захвата.")
-
             if not self.network_of_capture:
                 raise ValueError("Необходимо указать сеть для захвата.")
+            try:  # Еще раз проверяем CIDR
+                ipaddress.ip_network(self.network_of_capture, strict=False)
+            except ValueError:
+                raise ValueError("Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
 
             self.pushBatton_finish_work.setEnabled(False)
             self.pushBatton_start_capture.setEnabled(False)
@@ -410,8 +400,6 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             if not self.thread.isRunning():
                 self.thread.start()
             else:
-                # Если поток уже запущен, возможно, пользователь пытается запустить снова
-                # Можно добавить логику для перезапуска или просто игнорировать
                 print("Сниффер уже запущен.")
 
 
