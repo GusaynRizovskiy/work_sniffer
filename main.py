@@ -1,15 +1,16 @@
+# -*- coding: utf-8 -*-
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QFileDialog  # <--- НОВОЕ: Добавляем QFileDialog
 from scapy.layers.inet import IP, UDP, TCP
-from utils import address_in_network  # Ваш обновленный utils.py
-from form_of_sniffer import Form1  # Ваш сгенерированный файл UI
+from utils import address_in_network
+from form_of_sniffer import Form1
 from datetime import datetime
-from scapy.all import *  # Убедитесь, что get_working_ifaces() доступен
+from scapy.all import *
 import sys
 import csv
 import platform
-import ipaddress  # <--- НОВОЕ: Импортируем ipaddress для валидации ввода
+import ipaddress
 
 
 # Класс, который будет наследоваться от QObject и выполнять основную работу программы
@@ -158,9 +159,6 @@ class Worker(QtCore.QObject):
         try:
             # print(packet.summary()) # Для отладки, можно раскомментировать
             self.count_capture_packets += 1
-            # Общая интенсивность пакетов рассчитывается в конце интервала,
-            # но если нужно видеть текущую, то можно тут:
-            # self.count_intensivity_packets = self.count_capture_packets / form.time_of_capture if form.time_of_capture > 0 else 0
 
             if packet.haslayer("IP"):
                 src_ip = packet["IP"].src
@@ -200,10 +198,10 @@ class Worker(QtCore.QObject):
                 if packet.haslayer('TCP'):
                     self.count_tcp_segments += 1
                     # Проверка на наличие FIN в TCP
-                    if packet[TCP].flags.has('F'):  # Используем has() для проверки флагов
+                    if packet[TCP].flags.has('F'):
                         self.count_fin_packets += 1
                     # Проверка на наличие SIN в TCP
-                    elif packet[TCP].flags.has('S'):  # Используем has() для проверки флагов
+                    elif packet[TCP].flags.has('S'):
                         self.count_sin_packets += 1
 
                 # Проверка на наличие UDP сегментов
@@ -211,7 +209,6 @@ class Worker(QtCore.QObject):
                     self.count_udp_segments += 1
 
         except Exception as e:
-            # Пропускаем пакеты, которые не могут быть разобраны, или другие ошибки
             # print(f"Произошла ошибка при обработке пакета: {e}")
             pass
 
@@ -396,36 +393,34 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             self.pushBatton_start_capture.setEnabled(False)
             self.text_zone.clear()  # Очищаем текстовую область
 
-            # --- ИЗМЕНЕНИЕ: Очищаем data_all_intervals перед каждым НОВЫМ запуском сниффинга ---
+            # Очищаем data_all_intervals перед каждым НОВЫМ запуском сниффинга
             self.worker.data_all_intervals.clear()
-            # -----------------------------------------------------------------------------------
 
             if not self.thread.isRunning():
                 self.thread.start()
             else:
                 QMessageBox.information(self, "Информация",
                                         "Сниффер уже запущен. Сначала остановите его, чтобы начать новый захват.")
-                self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку обратно, если уже запущен
-                self.pushBatton_stop_sniffing.setEnabled(True)  # Убеждаемся, что кнопка стоп активна
-                return  # Выходим, если сниффер уже запущен
+                self.pushBatton_start_capture.setEnabled(True)
+                self.pushBatton_stop_sniffing.setEnabled(True)
+                return
 
         except ValueError as ve:
             QMessageBox.warning(self, "Ошибка ввода", str(ve))
-            self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку, если была ошибка валидации
+            self.pushBatton_start_capture.setEnabled(True)
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка при запуске сниффера: {e}")
-            self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку, если была непредвиденная ошибка
+            self.pushBatton_start_capture.setEnabled(True)
 
     def stop_sniffing(self):
         """Останавливает фоновый поток сниффинга."""
         try:
             if self.thread.isRunning():
-                self.worker.stop()  # Отправка сигнала для остановки Worker
-                self.thread.quit()  # Завершение потока
-                self.thread.wait()  # Ожидание завершения потока
+                self.worker.stop()
+                self.thread.quit()
+                self.thread.wait()
                 self.pushBatton_stop_sniffing.setEnabled(False)
                 QMessageBox.information(self, "Сниффер", "Сниффинг остановлен.")
-                # После остановки, включаем кнопку "Начать захват" и "Сохранить в файл"
                 self.pushBatton_start_capture.setEnabled(True)
                 self.pushButton_save_in_file.setEnabled(True)
                 self.pushBatton_finish_work.setEnabled(True)
@@ -440,9 +435,6 @@ class Form_main(QtWidgets.QMainWindow, Form1):
         self.pushButton_save_in_file.setEnabled(True)
         self.pushBatton_finish_work.setEnabled(True)
         self.pushBatton_start_capture.setEnabled(True)
-        # Эта очистка data_all_intervals здесь больше не является основной,
-        # так как она происходит в start_sniffing, но может быть оставлена как дополнительная мера
-        # self.worker.data_all_intervals.clear()
 
     def save_file_as_csv(self):
         """Сохранение данных в CSV файл."""
@@ -451,8 +443,34 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             if not self.worker.data_all_intervals:
                 raise ValueError("Нет данных для сохранения.")
 
-            # Открываем файл для записи
-            with open('data.csv', 'w', newline='', encoding='windows-1251') as file:
+            # --- НОВОЕ: Открываем диалоговое окно для выбора файла ---
+            options = QFileDialog.Options()
+            # Добавим опцию, чтобы избежать автоматического добавления расширения при сохранении
+            # если оно уже указано пользователем, но все равно будем его принудительно добавлять
+            # если пользователь его не указал.
+            options |= QFileDialog.DontUseNativeDialog
+
+            # Предлагаем имя файла по умолчанию, например "sniffing_data.csv"
+            file_name, _ = QFileDialog.getSaveFileName(self,
+                                                       "Сохранить данные сниффинга",  # Заголовок окна
+                                                       "sniffing_data.csv",  # Имя файла по умолчанию
+                                                       "CSV Files (*.csv);;All Files (*)",  # Фильтры файлов
+                                                       options=options)
+
+            if not file_name:  # Если пользователь отменил выбор файла
+                QMessageBox.information(self, "Отмена", "Сохранение файла отменено.")
+                return
+
+            # Убедимся, что файл имеет расширение .csv
+            if not file_name.endswith('.csv'):
+                file_name += '.csv'
+            # --------------------------------------------------------
+
+            # Открываем файл для записи по выбранному пути
+            # Используем кодировку 'utf-8' для лучшей совместимости,
+            # но если 'windows-1251' необходима для конкретных систем,
+            # её можно оставить. 'utf-8' более предпочтительна для CSV.
+            with open(file_name, 'w', newline='', encoding='utf-8') as file:  # <--- ИЗМЕНЕНО: file_name и encoding
                 writer = csv.writer(file)
                 # Записываем заголовки
                 writer.writerow([
@@ -476,7 +494,7 @@ class Form_main(QtWidgets.QMainWindow, Form1):
 
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Information)
-            msg_box.setText("Данные успешно сохранены в файл data.csv в директории проекта!")
+            msg_box.setText(f"Данные успешно сохранены в файл: {file_name}")  # <--- ИЗМЕНЕНО СООБЩЕНИЕ
             msg_box.setWindowTitle("Успех")
             msg_box.setStandardButtons(QMessageBox.Ok)
             msg_box.exec_()
