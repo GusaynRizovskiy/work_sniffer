@@ -1,0 +1,543 @@
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:309 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 15:07:17 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 15:07:17 - INFO - __main__ - __init__ - Line:297 - Приложение Form_main инициализировано.
+2025-07-30 15:07:38 - INFO - __main__ - check_input_data - Line:336 - Начата проверка входных данных.
+2025-07-30 15:07:38 - INFO - __main__ - check_input_data - Line:355 - Входные данные успешно проверены: Интерфейс='WAN Miniport (Network Monitor)', Сеть='192.168.1.0/24', Время='4'
+2025-07-30 15:07:38 - INFO - __main__ - start_sniffing - Line:376 - Попытка начать сниффинг.
+2025-07-30 15:07:38 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало инициализации сниффера...
+2025-07-30 15:07:38 - INFO - __main__ - start_sniffing - Line:388 - Инициализация сниффера...
+2025-07-30 15:07:38 - INFO - __main__ - start_sniffing - Line:404 - UI очищен, кнопки заблокированы.
+2025-07-30 15:07:38 - DEBUG - __main__ - start_sniffing - Line:407 - Данные для записи сброшены.
+2025-07-30 15:07:38 - INFO - __main__ - start_sniffing - Line:411 - Рабочий поток запущен.
+2025-07-30 15:07:38 - INFO - __main__ - run - Line:33 - Рабочий поток Worker запущен.
+2025-07-30 15:07:38 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:07:38 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Сниффинг запущен...
+2025-07-30 15:07:38 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:07:38 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:07:38 (длительность 4 с.)
+2025-07-30 15:07:38 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:07:38 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:07:38 (длительность 4 с.)
+2025-07-30 15:07:42 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:07:42 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:07:42 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:07:42 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:07:42 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:07:42 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:07:42 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:07:42 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:07:42 (длительность 4 с.)
+2025-07-30 15:07:42 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:07:42 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:07:42 (длительность 4 с.)
+2025-07-30 15:07:46 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:07:46 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:07:46 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:07:46 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:07:46 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:07:46 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:07:46 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:07:46 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:07:46 (длительность 4 с.)
+2025-07-30 15:07:46 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:07:46 (длительность 4 с.)
+2025-07-30 15:07:46 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:07:50 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:07:50 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:07:50 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:07:50 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:07:50 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:07:50 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:07:50 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:07:50 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:07:50 (длительность 4 с.)
+2025-07-30 15:07:50 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:07:50 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:07:50 (длительность 4 с.)
+2025-07-30 15:07:54 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:07:54 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:07:54 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:07:54 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:07:54 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:07:54 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:07:54 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:07:54 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:07:54 (длительность 4 с.)
+2025-07-30 15:07:54 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:07:54 (длительность 4 с.)
+2025-07-30 15:07:54 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:07:58 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:07:58 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:07:58 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:07:58 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:07:58 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:07:58 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:07:58 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:07:58 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:07:58 (длительность 4 с.)
+2025-07-30 15:07:58 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:07:58 (длительность 4 с.)
+2025-07-30 15:07:58 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:08:02 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:08:02 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:08:02 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:08:02 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:08:02 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:08:02 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:08:02 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:08:02 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:08:02 (длительность 4 с.)
+2025-07-30 15:08:02 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:08:02 (длительность 4 с.)
+2025-07-30 15:08:02 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:08:06 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:08:06 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:08:06 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:08:06 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:08:06 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:08:06 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:08:06 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:08:06 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:08:06 (длительность 4 с.)
+2025-07-30 15:08:06 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:08:06 (длительность 4 с.)
+2025-07-30 15:08:06 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:08:10 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:08:10 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:08:10 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:08:10 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:08:10 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:08:10 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:08:10 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:08:10 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:08:10 (длительность 4 с.)
+2025-07-30 15:08:10 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:08:10 (длительность 4 с.)
+2025-07-30 15:08:10 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:08:14 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:08:14 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:08:14 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:08:14 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:08:14 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:08:14 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:08:14 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:08:14 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:08:14 (длительность 4 с.)
+2025-07-30 15:08:14 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:08:14 (длительность 4 с.)
+2025-07-30 15:08:14 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:08:18 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:08:18 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:08:18 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:08:18 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:08:18 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:08:18 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:08:18 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:08:18 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:08:18 (длительность 4 с.)
+2025-07-30 15:08:18 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:08:18 (длительность 4 с.)
+2025-07-30 15:08:18 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:08:21 - INFO - __main__ - stop_sniffing - Line:449 - Пользователь запросил остановку сниффинга.
+2025-07-30 15:08:21 - INFO - __main__ - stop - Line:170 - Получен запрос на остановку рабочего потока Worker.
+2025-07-30 15:08:22 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:08:22 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:08:22 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:08:22 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:08:22 - INFO - __main__ - run - Line:73 - Рабочий поток Worker завершил работу.
+2025-07-30 15:08:22 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:08:22 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Сниффер завершил свою работу.
+2025-07-30 15:08:22 - INFO - __main__ - on_finished - Line:476 - Рабочий поток Worker завершил работу (сигнал finished).
+2025-07-30 15:08:25 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Сниффинг остановлен пользователем.
+2025-07-30 15:08:25 - INFO - __main__ - stop_sniffing - Line:458 - Сниффинг успешно остановлен.
+2025-07-30 15:08:27 - INFO - __main__ - close_program - Line:545 - Запрошено закрытие программы.
+2025-07-30 15:08:27 - INFO - __main__ - close_program - Line:554 - Приложение закрыто.
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:309 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 15:14:40 - INFO - __main__ - populate_interfaces_combo_box - Line:327 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 15:14:40 - INFO - __main__ - __init__ - Line:297 - Приложение Form_main инициализировано.
+2025-07-30 15:14:43 - INFO - __main__ - check_input_data - Line:336 - Начата проверка входных данных.
+2025-07-30 15:14:43 - INFO - __main__ - check_input_data - Line:355 - Входные данные успешно проверены: Интерфейс='WAN Miniport (Network Monitor)', Сеть='192.168.1.0/24', Время='4'
+2025-07-30 15:14:43 - INFO - __main__ - start_sniffing - Line:376 - Попытка начать сниффинг.
+2025-07-30 15:14:43 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало инициализации сниффера...
+2025-07-30 15:14:43 - INFO - __main__ - start_sniffing - Line:388 - Инициализация сниффера...
+2025-07-30 15:14:43 - INFO - __main__ - start_sniffing - Line:404 - UI очищен, кнопки заблокированы.
+2025-07-30 15:14:43 - DEBUG - __main__ - start_sniffing - Line:407 - Данные для записи сброшены.
+2025-07-30 15:14:43 - INFO - __main__ - start_sniffing - Line:411 - Рабочий поток запущен.
+2025-07-30 15:14:43 - INFO - __main__ - run - Line:33 - Рабочий поток Worker запущен.
+2025-07-30 15:14:43 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Сниффинг запущен...
+2025-07-30 15:14:43 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:14:43 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:14:43 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:14:43 (длительность 4 с.)
+2025-07-30 15:14:43 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:14:43 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:14:43 (длительность 4 с.)
+2025-07-30 15:14:47 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:14:47 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:14:47 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:14:47 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:14:47 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:14:47 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:14:47 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:14:47 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:14:47 (длительность 4 с.)
+2025-07-30 15:14:47 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:14:47 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:14:47 (длительность 4 с.)
+2025-07-30 15:14:51 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:14:51 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:14:51 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:14:51 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:14:51 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:14:51 - DEBUG - __main__ - initialize_packet_counts - Line:105 - Счетчики пакетов сброшены.
+2025-07-30 15:14:51 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:14:51 - INFO - __main__ - run - Line:44 - Начало интервала агрегирования: 15:14:51 (длительность 4 с.)
+2025-07-30 15:14:51 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:14:51 (длительность 4 с.)
+2025-07-30 15:14:51 - DEBUG - __main__ - run - Line:48 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:14:54 - INFO - __main__ - stop_sniffing - Line:449 - Пользователь запросил остановку сниффинга.
+2025-07-30 15:14:54 - INFO - __main__ - stop - Line:170 - Получен запрос на остановку рабочего потока Worker.
+2025-07-30 15:14:55 - DEBUG - __main__ - run - Line:52 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:14:55 - DEBUG - __main__ - calculate_intensities - Line:116 - Интенсивность пакетов рассчитана.
+2025-07-30 15:14:55 - DEBUG - __main__ - prepare_data_interval - Line:160 - Данные интервала подготовлены.
+2025-07-30 15:14:55 - INFO - __main__ - run - Line:70 - Интервал агрегирования завершен.
+2025-07-30 15:14:55 - INFO - __main__ - run - Line:73 - Рабочий поток Worker завершил работу.
+2025-07-30 15:14:56 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:14:56 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Сниффер завершил свою работу.
+2025-07-30 15:14:56 - INFO - __main__ - on_finished - Line:476 - Рабочий поток Worker завершил работу (сигнал finished).
+2025-07-30 15:14:58 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Сниффинг остановлен пользователем.
+2025-07-30 15:14:58 - INFO - __main__ - stop_sniffing - Line:458 - Сниффинг успешно остановлен.
+2025-07-30 15:15:00 - INFO - __main__ - save_file_as_csv - Line:483 - Пользователь запросил сохранение данных в CSV.
+2025-07-30 15:15:06 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Начато сохранение данных в файл: C:/Users/spide/Pycharm_Projects/work_sniffer/sniffing_data.csv
+2025-07-30 15:15:06 - INFO - __main__ - save_file_as_csv - Line:507 - Сохранение данных в файл: C:/Users/spide/Pycharm_Projects/work_sniffer/sniffing_data.csv
+2025-07-30 15:15:06 - INFO - __main__ - save_file_as_csv - Line:527 - Данные успешно записаны в файл: C:/Users/spide/Pycharm_Projects/work_sniffer/sniffing_data.csv
+2025-07-30 15:15:10 - DEBUG - __main__ - update_status_text_zone - Line:305 - Сообщение отправлено в UI: Данные успешно сохранены в: C:/Users/spide/Pycharm_Projects/work_sniffer/sniffing_data.csv
+2025-07-30 15:15:11 - INFO - __main__ - close_program - Line:545 - Запрошено закрытие программы.
+2025-07-30 15:15:11 - INFO - __main__ - close_program - Line:554 - Приложение закрыто.
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:301 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 15:20:51 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 15:20:51 - INFO - __main__ - __init__ - Line:289 - Приложение Form_main инициализировано.
+2025-07-30 15:20:51 - INFO - root - <module> - Line:571 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 15:20:56 - INFO - __main__ - check_input_data - Line:328 - Начата проверка входных данных.
+2025-07-30 15:20:56 - INFO - __main__ - check_input_data - Line:345 - Входные данные успешно проверены: Интерфейс='WAN Miniport (Network Monitor)', Сеть='192.168.1.0/24', Время='4'
+2025-07-30 15:20:56 - INFO - __main__ - start_sniffing - Line:364 - Попытка начать сниффинг.
+2025-07-30 15:20:56 - DEBUG - __main__ - update_status_text_zone - Line:297 - Сообщение отправлено в UI: Начало инициализации сниффера...
+2025-07-30 15:20:56 - INFO - __main__ - start_sniffing - Line:376 - Инициализация сниффера...
+2025-07-30 15:20:56 - INFO - __main__ - start_sniffing - Line:392 - UI очищен, кнопки заблокированы.
+2025-07-30 15:20:56 - DEBUG - __main__ - start_sniffing - Line:395 - Данные для записи сброшены.
+2025-07-30 15:20:56 - INFO - __main__ - start_sniffing - Line:399 - Рабочий поток запущен.
+2025-07-30 15:20:56 - INFO - __main__ - run - Line:33 - Рабочий поток Worker запущен.
+2025-07-30 15:20:56 - DEBUG - __main__ - initialize_packet_counts - Line:102 - Счетчики пакетов сброшены.
+2025-07-30 15:20:56 - DEBUG - __main__ - run - Line:38 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 15:20:56 - INFO - __main__ - run - Line:43 - Начало интервала агрегирования: 15:20:56 (длительность 4 с.)
+2025-07-30 15:20:56 - DEBUG - __main__ - run - Line:47 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.1.0/24, timeout=4
+2025-07-30 15:20:56 - DEBUG - __main__ - update_status_text_zone - Line:297 - Сообщение отправлено в UI: Сниффинг запущен...
+2025-07-30 15:20:56 - DEBUG - __main__ - update_status_text_zone - Line:297 - Сообщение отправлено в UI: Начало интервала агрегирования: 15:20:56 (длительность 4 с.)
+2025-07-30 15:20:59 - INFO - __main__ - stop_sniffing - Line:435 - Пользователь запросил остановку сниффинга.
+2025-07-30 15:20:59 - INFO - __main__ - stop - Line:165 - Получен запрос на остановку рабочего потока Worker.
+2025-07-30 15:21:00 - DEBUG - __main__ - run - Line:51 - Захват пакетов завершен для текущего интервала.
+2025-07-30 15:21:00 - DEBUG - __main__ - calculate_intensities - Line:113 - Интенсивность пакетов рассчитана.
+2025-07-30 15:21:00 - DEBUG - __main__ - prepare_data_interval - Line:156 - Данные интервала подготовлены.
+2025-07-30 15:21:00 - INFO - __main__ - run - Line:67 - Интервал агрегирования завершен.
+2025-07-30 15:21:00 - INFO - __main__ - run - Line:70 - Рабочий поток Worker завершил работу.
+2025-07-30 15:21:01 - DEBUG - __main__ - update_status_text_zone - Line:297 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 15:21:01 - DEBUG - __main__ - update_status_text_zone - Line:297 - Сообщение отправлено в UI: Сниффер завершил свою работу.
+2025-07-30 15:21:01 - INFO - __main__ - on_finished - Line:460 - Рабочий поток Worker завершил работу (сигнал finished).
+2025-07-30 15:21:02 - DEBUG - __main__ - update_status_text_zone - Line:297 - Сообщение отправлено в UI: Сниффинг остановлен пользователем.
+2025-07-30 15:21:02 - INFO - __main__ - stop_sniffing - Line:444 - Сниффинг успешно остановлен.
+2025-07-30 15:21:03 - INFO - __main__ - close_program - Line:527 - Запрошено закрытие программы.
+2025-07-30 15:21:03 - INFO - __main__ - close_program - Line:536 - Приложение закрыто.
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:301 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 15:43:59 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 15:43:59 - INFO - __main__ - __init__ - Line:289 - Приложение Form_main инициализировано.
+2025-07-30 15:43:59 - INFO - root - <module> - Line:571 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:301 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 15:49:07 - INFO - __main__ - populate_interfaces_combo_box - Line:319 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 15:49:07 - INFO - __main__ - __init__ - Line:289 - Приложение Form_main инициализировано.
+2025-07-30 15:49:07 - INFO - root - <module> - Line:571 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:513 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:12:00 - INFO - __main__ - populate_interfaces_combo_box - Line:531 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:12:00 - INFO - __main__ - __init__ - Line:383 - Приложение Form_main инициализировано.
+2025-07-30 17:12:00 - INFO - root - <module> - Line:809 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:520 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:28:54 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:28:54 - INFO - __main__ - __init__ - Line:396 - Приложение Form_main инициализировано.
+2025-07-30 17:28:54 - INFO - root - <module> - Line:807 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:520 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:30:48 - INFO - __main__ - populate_interfaces_combo_box - Line:541 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:30:48 - INFO - __main__ - __init__ - Line:396 - Приложение Form_main инициализировано.
+2025-07-30 17:30:48 - INFO - root - <module> - Line:807 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:519 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 10')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 9')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Realtek RTL8822CE 802.11ac PCIe Adapter' (Внутреннее: 'Беспроводная сеть')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter #2' (Внутреннее: 'Подключение по локальной сети* 2')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter' (Внутреннее: 'Подключение по локальной сети* 1')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet 2')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Kaspersky VPN' (Внутреннее: 'Подключение по локальной сети')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:35:42 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Realtek Gaming GbE Family Controller' (Внутреннее: 'Ethernet')
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:35:42 - INFO - __main__ - populate_interfaces_combo_box - Line:545 - ComboBox содержит 12 элементов после заполнения.
+2025-07-30 17:35:42 - INFO - __main__ - __init__ - Line:396 - Приложение Form_main инициализировано.
+2025-07-30 17:35:42 - INFO - root - <module> - Line:812 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:519 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 10')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 9')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Realtek RTL8822CE 802.11ac PCIe Adapter' (Внутреннее: 'Беспроводная сеть')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter #2' (Внутреннее: 'Подключение по локальной сети* 2')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter' (Внутреннее: 'Подключение по локальной сети* 1')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet 2')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Kaspersky VPN' (Внутреннее: 'Подключение по локальной сети')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:38:40 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Realtek Gaming GbE Family Controller' (Внутреннее: 'Ethernet')
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:38:40 - INFO - __main__ - populate_interfaces_combo_box - Line:545 - ComboBox содержит 12 элементов после заполнения.
+2025-07-30 17:38:40 - INFO - __main__ - __init__ - Line:396 - Приложение Form_main инициализировано.
+2025-07-30 17:38:40 - INFO - root - <module> - Line:812 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:520 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 10')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 9')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'Realtek RTL8822CE 802.11ac PCIe Adapter' (Внутреннее: 'Беспроводная сеть')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter #2' (Внутреннее: 'Подключение по локальной сети* 2')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter' (Внутреннее: 'Подключение по локальной сети* 1')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet 2')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'Kaspersky VPN' (Внутреннее: 'Подключение по локальной сети')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:49:50 - DEBUG - __main__ - populate_interfaces_combo_box - Line:539 - Добавляем интерфейс в ComboBox: 'Realtek Gaming GbE Family Controller' (Внутреннее: 'Ethernet')
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:49:50 - INFO - __main__ - populate_interfaces_combo_box - Line:544 - ComboBox содержит 12 элементов после заполнения.
+2025-07-30 17:49:50 - INFO - __main__ - __init__ - Line:396 - Приложение Form_main инициализировано.
+2025-07-30 17:49:50 - INFO - root - <module> - Line:814 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:519 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 10')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 9')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Realtek RTL8822CE 802.11ac PCIe Adapter' (Внутреннее: 'Беспроводная сеть')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter #2' (Внутреннее: 'Подключение по локальной сети* 2')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter' (Внутреннее: 'Подключение по локальной сети* 1')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet 2')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Kaspersky VPN' (Внутреннее: 'Подключение по локальной сети')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 17:51:00 - DEBUG - __main__ - populate_interfaces_combo_box - Line:538 - Добавляем интерфейс в ComboBox: 'Realtek Gaming GbE Family Controller' (Внутреннее: 'Ethernet')
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:542 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 17:51:00 - INFO - __main__ - populate_interfaces_combo_box - Line:545 - ComboBox содержит 12 элементов после заполнения.
+2025-07-30 17:51:00 - INFO - __main__ - __init__ - Line:396 - Приложение Form_main инициализировано.
+2025-07-30 17:51:00 - INFO - root - <module> - Line:812 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:538 - Попытка заполнить список сетевых интерфейсов.
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 10')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 10)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 9')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 9)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'Realtek RTL8822CE 802.11ac PCIe Adapter' (Внутреннее: 'Беспроводная сеть')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: Realtek RTL8822CE 802.11ac PCIe Adapter (Внутреннее имя: Беспроводная сеть)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter #2' (Внутреннее: 'Подключение по локальной сети* 2')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter #2 (Внутреннее имя: Подключение по локальной сети* 2)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'Microsoft Wi-Fi Direct Virtual Adapter' (Внутреннее: 'Подключение по локальной сети* 1')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: Microsoft Wi-Fi Direct Virtual Adapter (Внутреннее имя: Подключение по локальной сети* 1)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet 2')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet 2)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'Kaspersky VPN' (Внутреннее: 'Подключение по локальной сети')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: Kaspersky VPN (Внутреннее имя: Подключение по локальной сети)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-07-30 18:14:49 - DEBUG - __main__ - populate_interfaces_combo_box - Line:557 - Добавляем интерфейс в ComboBox: 'Realtek Gaming GbE Family Controller' (Внутреннее: 'Ethernet')
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:561 - Найден интерфейс: Realtek Gaming GbE Family Controller (Внутреннее имя: Ethernet)
+2025-07-30 18:14:49 - INFO - __main__ - populate_interfaces_combo_box - Line:563 - ComboBox содержит 12 элементов после заполнения.
+2025-07-30 18:14:49 - INFO - __main__ - __init__ - Line:413 - Приложение Form_main инициализировано.
+2025-07-30 18:14:49 - INFO - root - <module> - Line:830 - Фоновое изображение успешно загружено: fon/picture_fon.jpg
+2025-07-30 18:15:33 - INFO - __main__ - check_input_data - Line:573 - Начата проверка входных данных.
+2025-07-30 18:15:33 - INFO - __main__ - check_input_data - Line:591 - Входные данные успешно проверены: Интерфейс='WAN Miniport (Network Monitor)', Сеть='192.168.4.0/24', Время='2'
+2025-07-30 18:15:33 - INFO - __main__ - start_sniffing - Line:610 - Попытка начать сниффинг.
+2025-07-30 18:15:33 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Начало инициализации сниффера...
+2025-07-30 18:15:33 - INFO - __main__ - start_sniffing - Line:630 - Инициализация сниффера...
+2025-07-30 18:15:33 - INFO - __main__ - start_sniffing - Line:651 - UI очищен, кнопки заблокированы.
+2025-07-30 18:15:33 - DEBUG - __main__ - start_sniffing - Line:654 - Данные для записи сброшены.
+2025-07-30 18:15:33 - INFO - __main__ - start_sniffing - Line:658 - Рабочий поток запущен.
+2025-07-30 18:15:33 - INFO - __main__ - run - Line:36 - Рабочий поток Worker запущен.
+2025-07-30 18:15:33 - DEBUG - __main__ - initialize_packet_counts - Line:136 - Счетчики пакетов сброшены.
+2025-07-30 18:15:33 - DEBUG - __main__ - run - Line:41 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 18:15:33 - INFO - __main__ - run - Line:46 - Начало интервала агрегирования: 18:15:33 (длительность 2 с.)
+2025-07-30 18:15:33 - DEBUG - __main__ - run - Line:58 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.4.0/24, timeout=2
+2025-07-30 18:15:33 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Сниффинг запущен...
+2025-07-30 18:15:33 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Начало интервала агрегирования: 18:15:33 (длительность 2 с.)
+2025-07-30 18:15:35 - DEBUG - __main__ - run - Line:63 - Захват пакетов завершен для текущего интервала.
+2025-07-30 18:15:35 - DEBUG - __main__ - calculate_intensities - Line:149 - Интенсивность пакетов рассчитана.
+2025-07-30 18:15:35 - DEBUG - __main__ - prepare_data_interval - Line:194 - Данные интервала подготовлены для CSV.
+2025-07-30 18:15:35 - INFO - __main__ - run - Line:101 - Интервал агрегирования завершен.
+2025-07-30 18:15:35 - DEBUG - __main__ - update_metrics_table - Line:449 - Метрики добавлены в таблицу: ['18:15:33-18:15:35', '0', '0', '0', '0', '0', '0', '0', '0.00']
+2025-07-30 18:15:35 - DEBUG - __main__ - initialize_packet_counts - Line:136 - Счетчики пакетов сброшены.
+2025-07-30 18:15:35 - DEBUG - __main__ - update_intensity_graph - Line:472 - График интенсивности обновлен: 0.0 пак/с
+2025-07-30 18:15:35 - DEBUG - __main__ - run - Line:41 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 18:15:35 - DEBUG - __main__ - update_traffic_direction_graph - Line:501 - График входящего/исходящего трафика обновлен: Вх=0.0, Исх=0.0
+2025-07-30 18:15:35 - INFO - __main__ - run - Line:46 - Начало интервала агрегирования: 18:15:35 (длительность 2 с.)
+2025-07-30 18:15:35 - DEBUG - __main__ - update_protocol_distribution_graph - Line:531 - График соотношения TCP/UDP обновлен: TCP=0.00%, UDP=0.00%
+2025-07-30 18:15:35 - DEBUG - __main__ - run - Line:58 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.4.0/24, timeout=2
+2025-07-30 18:15:35 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 18:15:35 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Начало интервала агрегирования: 18:15:35 (длительность 2 с.)
+2025-07-30 18:15:37 - DEBUG - __main__ - run - Line:63 - Захват пакетов завершен для текущего интервала.
+2025-07-30 18:15:37 - DEBUG - __main__ - calculate_intensities - Line:149 - Интенсивность пакетов рассчитана.
+2025-07-30 18:15:37 - DEBUG - __main__ - prepare_data_interval - Line:194 - Данные интервала подготовлены для CSV.
+2025-07-30 18:15:37 - INFO - __main__ - run - Line:101 - Интервал агрегирования завершен.
+2025-07-30 18:15:37 - DEBUG - __main__ - update_metrics_table - Line:449 - Метрики добавлены в таблицу: ['18:15:35-18:15:37', '0', '0', '0', '0', '0', '0', '0', '0.00']
+2025-07-30 18:15:37 - DEBUG - __main__ - initialize_packet_counts - Line:136 - Счетчики пакетов сброшены.
+2025-07-30 18:15:37 - DEBUG - __main__ - update_intensity_graph - Line:472 - График интенсивности обновлен: 0.0 пак/с
+2025-07-30 18:15:37 - DEBUG - __main__ - run - Line:41 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 18:15:37 - DEBUG - __main__ - update_traffic_direction_graph - Line:501 - График входящего/исходящего трафика обновлен: Вх=0.0, Исх=0.0
+2025-07-30 18:15:37 - INFO - __main__ - run - Line:46 - Начало интервала агрегирования: 18:15:37 (длительность 2 с.)
+2025-07-30 18:15:37 - DEBUG - __main__ - update_protocol_distribution_graph - Line:531 - График соотношения TCP/UDP обновлен: TCP=0.00%, UDP=0.00%
+2025-07-30 18:15:37 - DEBUG - __main__ - run - Line:58 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.4.0/24, timeout=2
+2025-07-30 18:15:37 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 18:15:37 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Начало интервала агрегирования: 18:15:37 (длительность 2 с.)
+2025-07-30 18:15:39 - DEBUG - __main__ - run - Line:63 - Захват пакетов завершен для текущего интервала.
+2025-07-30 18:15:39 - DEBUG - __main__ - calculate_intensities - Line:149 - Интенсивность пакетов рассчитана.
+2025-07-30 18:15:39 - DEBUG - __main__ - prepare_data_interval - Line:194 - Данные интервала подготовлены для CSV.
+2025-07-30 18:15:39 - INFO - __main__ - run - Line:101 - Интервал агрегирования завершен.
+2025-07-30 18:15:39 - DEBUG - __main__ - initialize_packet_counts - Line:136 - Счетчики пакетов сброшены.
+2025-07-30 18:15:39 - DEBUG - __main__ - run - Line:41 - Счетчики пакетов инициализированы для нового интервала.
+2025-07-30 18:15:39 - INFO - __main__ - run - Line:46 - Начало интервала агрегирования: 18:15:39 (длительность 2 с.)
+2025-07-30 18:15:39 - DEBUG - __main__ - update_metrics_table - Line:449 - Метрики добавлены в таблицу: ['18:15:37-18:15:39', '0', '0', '0', '0', '0', '0', '0', '0.00']
+2025-07-30 18:15:39 - DEBUG - __main__ - run - Line:58 - Начало захвата пакетов: iface=Подключение по локальной сети* 10, filter=192.168.4.0/24, timeout=2
+2025-07-30 18:15:39 - DEBUG - __main__ - update_intensity_graph - Line:472 - График интенсивности обновлен: 0.0 пак/с
+2025-07-30 18:15:39 - DEBUG - __main__ - update_traffic_direction_graph - Line:501 - График входящего/исходящего трафика обновлен: Вх=0.0, Исх=0.0
+2025-07-30 18:15:39 - DEBUG - __main__ - update_protocol_distribution_graph - Line:531 - График соотношения TCP/UDP обновлен: TCP=0.00%, UDP=0.00%
+2025-07-30 18:15:39 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 18:15:39 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Начало интервала агрегирования: 18:15:39 (длительность 2 с.)
+2025-07-30 18:15:40 - INFO - __main__ - stop_sniffing - Line:694 - Пользователь запросил остановку сниффинга.
+2025-07-30 18:15:40 - INFO - __main__ - stop - Line:203 - Получен запрос на остановку рабочего потока Worker.
+2025-07-30 18:15:41 - DEBUG - __main__ - run - Line:63 - Захват пакетов завершен для текущего интервала.
+2025-07-30 18:15:41 - DEBUG - __main__ - calculate_intensities - Line:149 - Интенсивность пакетов рассчитана.
+2025-07-30 18:15:41 - DEBUG - __main__ - prepare_data_interval - Line:194 - Данные интервала подготовлены для CSV.
+2025-07-30 18:15:41 - INFO - __main__ - run - Line:101 - Интервал агрегирования завершен.
+2025-07-30 18:15:41 - INFO - __main__ - run - Line:104 - Рабочий поток Worker завершил работу.
+2025-07-30 18:15:41 - DEBUG - __main__ - update_metrics_table - Line:449 - Метрики добавлены в таблицу: ['18:15:39-18:15:41', '0', '0', '0', '0', '0', '0', '0', '0.00']
+2025-07-30 18:15:41 - DEBUG - __main__ - update_intensity_graph - Line:472 - График интенсивности обновлен: 0.0 пак/с
+2025-07-30 18:15:41 - DEBUG - __main__ - update_traffic_direction_graph - Line:501 - График входящего/исходящего трафика обновлен: Вх=0.0, Исх=0.0
+2025-07-30 18:15:41 - DEBUG - __main__ - update_protocol_distribution_graph - Line:531 - График соотношения TCP/UDP обновлен: TCP=0.00%, UDP=0.00%
+2025-07-30 18:15:41 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Интервал агрегирования завершен
+2025-07-30 18:15:41 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Сниффер завершил свою работу.
+2025-07-30 18:15:41 - INFO - __main__ - on_finished - Line:719 - Рабочий поток Worker завершил работу (сигнал finished).
+2025-07-30 18:15:42 - DEBUG - __main__ - update_status_text_zone - Line:421 - Сообщение отправлено в UI: Сниффинг остановлен пользователем.
+2025-07-30 18:15:42 - INFO - __main__ - stop_sniffing - Line:703 - Сниффинг успешно остановлен.

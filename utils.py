@@ -2,6 +2,7 @@
 import socket
 import struct
 import ipaddress # <--- НОВОЕ: Импортируем модуль ipaddress
+from scapy.all import get_if_list # Импортируем get_if_list из Scapy
 
 def address_in_network(ip_address_str, network_cidr_str):
     """
@@ -27,6 +28,15 @@ def address_in_network(ip_address_str, network_cidr_str):
         # Если формат IP-адреса или сети некорректен, возвращаем False
         return False
 
+def get_working_ifaces():
+    """
+    Возвращает список доступных сетевых интерфейсов с использованием Scapy.
+    Это список объектов Scapy NetIFF.
+    """
+    return get_if_list()
+
+
 __all__ = [
-    'address_in_network'
+    'address_in_network',
+    'get_working_ifaces' # Добавляем get_working_ifaces в __all__
 ]
