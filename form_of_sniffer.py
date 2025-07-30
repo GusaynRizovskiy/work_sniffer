@@ -28,7 +28,7 @@ class TextEditLogger(QPlainTextEdit):
         """Сбрасывает буфер и обновляет текстовое поле."""
         if self.buffer:
             # Объединяем все сообщения из буфера в одну строку
-            self.appendPlainText("".join(self.buffer))
+            self.appendPlainText("".join(self.buffer)) # Используем appendPlainText
             self.buffer.clear()  # Очищаем буфер
 
     def flush(self):
@@ -49,10 +49,10 @@ class Form1(object):
         self.Label_Analizator_Packets.setObjectName("Label_Analizator_Packets")
 
         # Изменим отображение в текст эдит таким образом, чтобы перехваченные пакеты отображались там
-        self.text_zone = TextEditLogger(self)
+        self.text_zone = TextEditLogger(self) # Убеждаемся, что это TextEditLogger
         self.text_zone.setGeometry(QtCore.QRect(40, 300, 800, 371))
         self.text_zone.setObjectName("text_zone")
-        sys.stdout = self.text_zone
+        sys.stdout = self.text_zone # Перенаправляем sys.stdout на text_zone
         # Последняя команда как раз перенаправляет отображаемую информацию
 
         self.pushBatton_finish_work = QtWidgets.QPushButton(Dialog)
@@ -166,9 +166,9 @@ class Form1(object):
         Dialog.setWindowTitle(_translate("Dialog", "Диалог"))
         self.Label_Analizator_Packets.setText(_translate("Dialog", "Программа анализа перехваченных пакетов"))
         self.pushBatton_finish_work.setText(_translate("Dialog", "Закрыть программу"))
-        self.lineEdit_network_capture.setText(_translate("Dialog", "192.168.1.0/24")) # <--- ИЗМЕНЕНО ЗНАЧЕНИЕ ПО УМОЛЧАНИЮ
+        self.lineEdit_network_capture.setText(_translate("Dialog", "192.168.1.0/24"))
         self.label_interface_of_capture.setText(_translate("Dialog", "Интерфейс по которому производить захват"))
-        self.label_name_network_capture.setText(_translate("Dialog", "Сеть захвата (CIDR)")) # <--- ИЗМЕНЕНА МЕТКА
+        self.label_name_network_capture.setText(_translate("Dialog", "Сеть захвата (CIDR)"))
         self.label_name_time_of_capture.setText(_translate("Dialog", "Период времени захвата пакетов"))
         self.label_obj_information_about_capture.setText(_translate("Dialog", "Перехваченные пакеты"))
         self.pushButton_save_in_file.setText(_translate("Dialog", " Сохранить в файл"))
