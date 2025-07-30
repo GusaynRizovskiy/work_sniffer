@@ -19,22 +19,22 @@ class Worker(QtCore.QObject):
     def __init__(self):
         super().__init__()
         self.is_running = True  # Флаг для контроля выполнения
-        self.data_all_intervals = []
+        self.data_all_intervals = []  # Здесь хранятся агрегированные данные по всем интервалам
 
     def run(self):
+        # Этот метод вызывается, когда поток стартует (self.thread.start())
         self.is_running = True
 
         while self.is_running:
             self.data_one_interval = []
-            # Инициализация счетчиков пакетов
+            # Инициализация счетчиков пакетов для ТЕКУЩЕГО интервала агрегирования
             self.initialize_packet_counts()
 
-            # Захват пакетов с указанным фильтром и интерфейсом
             self.time_begin = datetime.now().strftime('%H:%M:%S')
             try:
-                # Используем глобальные переменные form.network_of_capture (которая теперь включает маску) и form.time_of_capture
+                # Захват пакетов с указанным фильтром и интерфейсом
                 # Scapy самостоятельно понимает CIDR-нотацию в фильтре
-                sniff(filter=f"net {form.network_of_capture}", iface=form.interface_of_capture,  # <--- ИЗМЕНЕН ФИЛЬТР
+                sniff(filter=f"net {form.network_of_capture}", iface=form.interface_of_capture,
                       prn=self.packet_callback, store=False, timeout=form.time_of_capture)
             except Exception as e:
                 print(f"Ошибка при захвате пакетов: {e}")
@@ -48,15 +48,17 @@ class Worker(QtCore.QObject):
             self.calculate_intensities()
             self.prepare_data_interval()
 
-            # Добавление данных интервала в общий список всех интервалов
+            # Добавление данных текущего интервала в общий список всех интервалов
             self.data_all_intervals.append(self.data_one_interval)
             print(
                 "-----------------------------------Интервал агрегирования завершен--------------------------------------------")
 
+        # Этот сигнал отправляется, когда цикл while self.is_running завершается,
+        # то есть, когда сниффер полностью остановлен (например, по нажатию "Прекратить").
         self.finished.emit()  # Отправка сигнала о завершении
 
     def initialize_packet_counts(self):
-        """Инициализация всех переменных счетчиков пакетов."""
+        """Инициализация всех переменных счетчиков пакетов для нового интервала."""
         self.count_loopback_packets = 0
         self.count_capture_packets = 0
         self.count_multicast_packets = 0
@@ -148,7 +150,8 @@ class Worker(QtCore.QObject):
             print(f"Произошла ошибка при подготовке данных интервала: {e}")
 
     def stop(self):
-        self.is_running = False  # Установка флага для остановки
+        """Устанавливает флаг для остановки выполнения рабочего потока."""
+        self.is_running = False
 
     def packet_callback(self, packet):
         """Обработка захваченного пакета."""
@@ -175,12 +178,12 @@ class Worker(QtCore.QObject):
                 # Проверка на входящие пакеты
                 # Используем network_of_capture, которая теперь является полной CIDR-нотацией
                 elif not address_in_network(src_ip, form.network_of_capture) and address_in_network(dst_ip,
-                                                                                                    form.network_of_capture):  # <--- ИЗМЕНЕННЫЙ ВЫЗОВ
+                                                                                                    form.network_of_capture):
                     self.count_input_packets += 1
                     self.parametrs_input_packets_count(packet)
                 # Проверка на исходящие пакеты
                 elif address_in_network(src_ip, form.network_of_capture) and not address_in_network(dst_ip,
-                                                                                                    form.network_of_capture):  # <--- ИЗМЕНЕННЫЙ ВЫЗОВ
+                                                                                                    form.network_of_capture):
                     self.count_output_packets += 1
                     self.parametrs_output_packets_count(packet)
 
@@ -276,7 +279,7 @@ class Form_main(QtWidgets.QMainWindow, Form1):
         self.thread = QtCore.QThread()
         # Создаем экземляр класса, унаследованный от Qobject
         self.worker = Worker()
-        # Перемащаем объект в поток
+        # Перемещаем объект в поток
         self.worker.moveToThread(self.thread)
 
         self.pushBatton_start_capture.clicked.connect(self.check_input_data)
@@ -284,7 +287,9 @@ class Form_main(QtWidgets.QMainWindow, Form1):
         self.pushBatton_finish_work.clicked.connect(self.close_program)
         self.pushButton_save_in_file.clicked.connect(self.save_file_as_csv)
 
+        # Подключаем сигнал запуска потока к методу worker.run
         self.thread.started.connect(self.worker.run)
+        # Подключаем сигнал завершения работы worker к методу on_finished
         self.worker.finished.connect(self.on_finished)
 
         # Словарь для сопоставления отображаемого имени с внутренним именем Scapy
@@ -292,7 +297,6 @@ class Form_main(QtWidgets.QMainWindow, Form1):
 
         # Блокируем кнопку сохранения данных файл для корректной работы программы
         self.pushButton_save_in_file.setEnabled(False)
-        # Список, в котором будет сохраняться характеристики за каждый интервал агрегирования
 
         # Заполняем QComboBox доступными сетевыми интерфейсами
         self.populate_interfaces_combo_box()
@@ -326,26 +330,24 @@ class Form_main(QtWidgets.QMainWindow, Form1):
         '''
         Метод проверяет, что введены все необходимые для работы данные;
         Если это не так, то программа не заработает.
-        :return:
         '''
         try:
-            # Теперь интерфейс берется из QComboBox
             selected_display_name = self.comboBox_interface.currentText().strip()
-            network_cidr = self.lineEdit_network_capture.text().strip()  # Читаем CIDR-нотацию
+            network_cidr = self.lineEdit_network_capture.text().strip()
 
             time_of_capture = self.spinBox_time_of_capture.value()
 
             # Проверка на пустые поля и минимальное значение времени захвата
-            if not selected_display_name:  # Проверяем, что интерфейс выбран
+            if not selected_display_name:
                 QMessageBox.warning(self, "Предупреждение", "Необходимо выбрать сетевой интерфейс.")
-                return  # Выходим, если интерфейс не выбран
+                return
             elif not network_cidr or time_of_capture == self.spinBox_time_of_capture.minimum():
                 QMessageBox.warning(self, "Предупреждение", "Необходимо ввести все данные для работы.")
-                return  # Выходим, если другие поля не заполнены
+                return
 
             # Дополнительная проверка на валидность CIDR-нотации
             try:
-                ipaddress.ip_network(network_cidr, strict=False)  # <--- НОВАЯ ВАЛИДАЦИЯ
+                ipaddress.ip_network(network_cidr, strict=False)
             except ValueError:
                 QMessageBox.warning(self, "Ошибка ввода",
                                     "Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
@@ -361,14 +363,13 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             QMessageBox.critical(self, "Ошибка", f"Произошла непредвиденная ошибка при проверке данных: {e}")
 
     def start_sniffing(self):
-        self.pushBatton_stop_sniffing.setEnabled(True)
         '''
         Метод считывает данные для работы, такие как:
             -время до которого необходимо перехватывать пакеты
             -интерфейс, по которому необходимо производить перехват
             -сеть, перехват пакетов которой необходимо произвести
-        :return:
         '''
+        self.pushBatton_stop_sniffing.setEnabled(True)
         try:
             self.time_of_capture = self.spinBox_time_of_capture.value()
 
@@ -377,17 +378,16 @@ class Form_main(QtWidgets.QMainWindow, Form1):
                 selected_display_name, selected_display_name
             )
 
-            # Теперь network_of_capture будет хранить полную CIDR-нотацию
             self.network_of_capture = self.lineEdit_network_capture.text().strip()
 
-            # Проверка на корректность введенных данных (повторная, но быстрая)
+            # Проверка на корректность введенных данных
             if not self.time_of_capture > 0:
                 raise ValueError("Время захвата должно быть больше нуля.")
             if not self.interface_of_capture:
                 raise ValueError("Необходимо выбрать интерфейс для захвата.")
             if not self.network_of_capture:
                 raise ValueError("Необходимо указать сеть для захвата.")
-            try:  # Еще раз проверяем CIDR
+            try:
                 ipaddress.ip_network(self.network_of_capture, strict=False)
             except ValueError:
                 raise ValueError("Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
@@ -396,42 +396,54 @@ class Form_main(QtWidgets.QMainWindow, Form1):
             self.pushBatton_start_capture.setEnabled(False)
             self.text_zone.clear()  # Очищаем текстовую область
 
-            # Запускаем фоновый поток, в котором выполняются все операции
+            # --- ИЗМЕНЕНИЕ: Очищаем data_all_intervals перед каждым НОВЫМ запуском сниффинга ---
+            self.worker.data_all_intervals.clear()
+            # -----------------------------------------------------------------------------------
+
             if not self.thread.isRunning():
                 self.thread.start()
             else:
-                print("Сниффер уже запущен.")
-
+                QMessageBox.information(self, "Информация",
+                                        "Сниффер уже запущен. Сначала остановите его, чтобы начать новый захват.")
+                self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку обратно, если уже запущен
+                self.pushBatton_stop_sniffing.setEnabled(True)  # Убеждаемся, что кнопка стоп активна
+                return  # Выходим, если сниффер уже запущен
 
         except ValueError as ve:
             QMessageBox.warning(self, "Ошибка ввода", str(ve))
+            self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку, если была ошибка валидации
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка при запуске сниффера: {e}")
+            self.pushBatton_start_capture.setEnabled(True)  # Включаем кнопку, если была непредвиденная ошибка
 
-    # Останавливаем фоновый поток
     def stop_sniffing(self):
+        """Останавливает фоновый поток сниффинга."""
         try:
             if self.thread.isRunning():
-                self.worker.stop()  # Отправка сигнала для остановки
+                self.worker.stop()  # Отправка сигнала для остановки Worker
                 self.thread.quit()  # Завершение потока
                 self.thread.wait()  # Ожидание завершения потока
                 self.pushBatton_stop_sniffing.setEnabled(False)
                 QMessageBox.information(self, "Сниффер", "Сниффинг остановлен.")
+                # После остановки, включаем кнопку "Начать захват" и "Сохранить в файл"
+                self.pushBatton_start_capture.setEnabled(True)
+                self.pushButton_save_in_file.setEnabled(True)
+                self.pushBatton_finish_work.setEnabled(True)
             else:
                 QMessageBox.information(self, "Сниффер", "Сниффинг не был запущен.")
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка при остановке сниффера: {e}")
 
-    # Функция выполняется при завершении работы сниффера
     def on_finished(self):
+        """Функция выполняется, когда рабочий поток Worker завершает свою работу."""
         print("Снифер завершил свою работу")
         self.pushButton_save_in_file.setEnabled(True)
         self.pushBatton_finish_work.setEnabled(True)
         self.pushBatton_start_capture.setEnabled(True)
-        # Дополнительно, можно сбросить данные в Worker, если нужно начать с чистого листа при следующем запуске
-        self.worker.data_all_intervals.clear()  # Очищаем данные для нового цикла
+        # Эта очистка data_all_intervals здесь больше не является основной,
+        # так как она происходит в start_sniffing, но может быть оставлена как дополнительная мера
+        # self.worker.data_all_intervals.clear()
 
-    # Функция реализующая сохранение данных в формате csv
     def save_file_as_csv(self):
         """Сохранение данных в CSV файл."""
         try:
