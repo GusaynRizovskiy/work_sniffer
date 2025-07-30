@@ -2,12 +2,14 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import QMessageBox
 from scapy.layers.inet import IP, UDP, TCP
-from utils import address_in_network # Предполагается, что utils.py существует
-from form_of_sniffer import Form1 # Ваш сгенерированный файл UI
+from utils import address_in_network  # Предполагается, что utils.py существует
+from form_of_sniffer import Form1  # Ваш сгенерированный файл UI
 from datetime import datetime
-from scapy.all import *
+from scapy.all import *  # Теперь используем get_working_ifaces() из scapy.all
 import sys
 import csv
+import platform  # Импортируем модуль platform для определения ОС
+
 
 # Класс, который будет наследоваться от Qobject и выполнять основную работу программы
 class Worker(QtCore.QObject):
@@ -34,8 +36,8 @@ class Worker(QtCore.QObject):
                       prn=self.packet_callback, store=False, timeout=form.time_of_capture)
             except Exception as e:
                 print(f"Ошибка при захвате пакетов: {e}")
-                self.is_running = False # Останавливаем поток при ошибке захвата
-                self.finished.emit() # Отправляем сигнал о завершении
+                self.is_running = False  # Останавливаем поток при ошибке захвата
+                self.finished.emit()  # Отправляем сигнал о завершении
                 return
 
             self.time_end = datetime.now().strftime('%H:%M:%S')
@@ -100,7 +102,6 @@ class Worker(QtCore.QObject):
             self.count_input_intensivity_packets = 0
             self.count_output_intensivity_packets = 0
 
-
     def prepare_data_interval(self):
         """Подготовка данных для текущего интервала."""
         try:
@@ -156,7 +157,6 @@ class Worker(QtCore.QObject):
             # но если нужно видеть текущую, то можно тут:
             # self.count_intensivity_packets = self.count_capture_packets / form.time_of_capture if form.time_of_capture > 0 else 0
 
-
             if packet.haslayer("IP"):
                 src_ip = packet["IP"].src
                 dst_ip = packet["IP"].dst
@@ -164,7 +164,7 @@ class Worker(QtCore.QObject):
                 # Проверка на принадлежность широковещательному адресу
                 # Также учитываем мультикаст адреса (224.0.0.0/4)
                 if dst_ip == "255.255.255.255" or dst_ip.endswith(".255") or (
-                    dst_ip.startswith("224.") or dst_ip.startswith("23")
+                        dst_ip.startswith("224.") or dst_ip.startswith("23")
                 ):
                     self.count_multicast_packets += 1
                 # Проверка на принадлежность локальной петле
@@ -187,17 +187,17 @@ class Worker(QtCore.QObject):
                     self.count_options_packets += 1
                 # Проверка на фрагментированные пакеты
                 # Если флаг MF (More Fragments) установлен, или смещение фрагмента > 0
-                if (packet[IP].flags & 0x01) or (packet[IP].frag > 0): # 0x01 - флаг MF
+                if (packet[IP].flags & 0x01) or (packet[IP].frag > 0):  # 0x01 - флаг MF
                     self.count_fragment_packets += 1
 
                 # Проверка на наличие TCP сегментов
                 if packet.haslayer('TCP'):
                     self.count_tcp_segments += 1
                     # Проверка на наличие FIN в TCP
-                    if packet[TCP].flags.has('F'): # Используем has() для проверки флагов
+                    if packet[TCP].flags.has('F'):  # Используем has() для проверки флагов
                         self.count_fin_packets += 1
                     # Проверка на наличие SIN в TCP
-                    elif packet[TCP].flags.has('S'): # Используем has() для проверки флагов
+                    elif packet[TCP].flags.has('S'):  # Используем has() для проверки флагов
                         self.count_sin_packets += 1
 
                 # Проверка на наличие UDP сегментов
@@ -263,17 +263,17 @@ class Worker(QtCore.QObject):
             pass
 
 
-#Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя.
-class Form_main(QtWidgets.QMainWindow,Form1):
+# Основной класс, в котором происходит создание экземляра формы и считывание данных пользователя.
+class Form_main(QtWidgets.QMainWindow, Form1):
 
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        #Создаем поток, в котором будет выполняться основная работа в дополнении к основному потоку
+        # Создаем поток, в котором будет выполняться основная работа в дополнении к основному потоку
         self.thread = QtCore.QThread()
-        #Создаем экземляр класса, унаследованный от Qobject
+        # Создаем экземляр класса, унаследованный от Qobject
         self.worker = Worker()
-        #Перемащаем объект в поток
+        # Перемащаем объект в поток
         self.worker.moveToThread(self.thread)
 
         self.pushBatton_start_capture.clicked.connect(self.check_input_data)
@@ -284,6 +284,8 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.on_finished)
 
+        # Словарь для сопоставления отображаемого имени с внутренним именем Scapy
+        self.interface_display_to_internal_map = {}
 
         # Блокируем кнопку сохранения данных файл для корректной работы программы
         self.pushButton_save_in_file.setEnabled(False)
@@ -292,23 +294,32 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         # Заполняем QComboBox доступными сетевыми интерфейсами
         self.populate_interfaces_combo_box()
 
-
     def populate_interfaces_combo_box(self):
-        """Заполняет QComboBox списком доступных сетевых интерфейсов."""
+        """Заполняет QComboBox списком доступных сетевых интерфейсов, используя дружественные имена."""
         try:
-            interfaces = get_if_list()
+            # Очищаем предыдущие данные
+            self.comboBox_interface.clear()
+            self.interface_display_to_internal_map.clear()
+
+            # get_working_ifaces() возвращает объекты NetworkInterface,
+            # которые имеют атрибуты 'name' (техническое имя) и 'description' (дружественное имя)
+            interfaces = get_working_ifaces()
+
             if not interfaces:
                 QMessageBox.warning(self, "Предупреждение", "Не найдено сетевых интерфейсов.")
                 return
 
-            self.comboBox_interface.clear() # Очищаем список перед заполнением
             for iface in interfaces:
-                self.comboBox_interface.addItem(iface)
+                # Используем description как отображаемое имя, если оно есть, иначе name
+                display_name = iface.description if iface.description else iface.name
+                internal_name = iface.name  # Это то имя, которое Scapy ожидает для sniff()
+
+                self.comboBox_interface.addItem(display_name)
+                self.interface_display_to_internal_map[display_name] = internal_name
 
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Не удалось получить список интерфейсов: {e}\n"
                                                  "Убедитесь, что Scapy установлен корректно и у вас есть необходимые права.")
-
 
     def check_input_data(self):
         '''
@@ -318,12 +329,12 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         '''
         try:
             # Теперь интерфейс берется из QComboBox
-            interface = self.comboBox_interface.currentText().strip()
+            selected_display_name = self.comboBox_interface.currentText().strip()
             network = self.lineEdit_network_capture.text().strip()
             time_of_capture = self.spinBox_time_of_capture.value()
 
             # Проверка на пустые поля и минимальное значение времени захвата
-            if not interface: # Проверяем, что интерфейс выбран
+            if not selected_display_name:  # Проверяем, что интерфейс выбран
                 mess_box = QMessageBox()
                 mess_box.setWindowTitle("Предупреждение")
                 mess_box.setText("Необходимо выбрать сетевой интерфейс.")
@@ -331,7 +342,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
                 mess_box.setIcon(QMessageBox.Warning)
                 mess_box.setStandardButtons(QMessageBox.Ok)
                 mess_box.exec_()
-                return # Выходим, если интерфейс не выбран
+                return  # Выходим, если интерфейс не выбран
             elif not network or time_of_capture == self.spinBox_time_of_capture.minimum():
                 mess_box = QMessageBox()
                 mess_box.setWindowTitle("Предупреждение")
@@ -340,7 +351,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
                 mess_box.setIcon(QMessageBox.Warning)
                 mess_box.setStandardButtons(QMessageBox.Ok)
                 mess_box.exec_()
-                return # Выходим, если другие поля не заполнены
+                return  # Выходим, если другие поля не заполнены
             # Если все проверки пройдены, запускаем сниффер
             self.start_sniffing()
 
@@ -371,14 +382,21 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         '''
         try:
             self.time_of_capture = self.spinBox_time_of_capture.value()
-            self.interface_of_capture = self.comboBox_interface.currentText().strip() # Берем из ComboBox
+
+            # Получаем отображаемое имя из ComboBox
+            selected_display_name = self.comboBox_interface.currentText().strip()
+            # Находим соответствующее внутреннее имя Scapy
+            self.interface_of_capture = self.interface_display_to_internal_map.get(
+                selected_display_name, selected_display_name
+            )  # Fallback to display name if somehow not in map (shouldn't happen)
+
             self.network_of_capture = self.lineEdit_network_capture.text().strip()
 
             # Проверка на корректность введенных данных
             if not self.time_of_capture > 0:
                 raise ValueError("Время захвата должно быть больше нуля.")
 
-            if not self.interface_of_capture: # Дополнительная проверка на пустой интерфейс, хотя check_input_data уже проверяет
+            if not self.interface_of_capture:  # Дополнительная проверка на пустой интерфейс
                 raise ValueError("Необходимо выбрать интерфейс для захвата.")
 
             if not self.network_of_capture:
@@ -386,7 +404,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
 
             self.pushBatton_finish_work.setEnabled(False)
             self.pushBatton_start_capture.setEnabled(False)
-            self.text_zone.clear() # Очищаем текстовую область
+            self.text_zone.clear()  # Очищаем текстовую область
 
             # Запускаем фоновый поток, в котором выполняются все операции
             if not self.thread.isRunning():
@@ -423,9 +441,9 @@ class Form_main(QtWidgets.QMainWindow,Form1):
         self.pushBatton_finish_work.setEnabled(True)
         self.pushBatton_start_capture.setEnabled(True)
         # Дополнительно, можно сбросить данные в Worker, если нужно начать с чистого листа при следующем запуске
-        self.worker.data_all_intervals.clear() # Очищаем данные для нового цикла
+        self.worker.data_all_intervals.clear()  # Очищаем данные для нового цикла
 
-    #Функция реализующая сохранение данных в формате csv
+    # Функция реализующая сохранение данных в формате csv
     def save_file_as_csv(self):
         """Сохранение данных в CSV файл."""
         try:
@@ -442,26 +460,25 @@ class Form_main(QtWidgets.QMainWindow,Form1):
                     'Общее число захваченных пакетов', 'Число пакетов localhost', 'Число пакетов broadcast/multicast',
                     'Число UDP сегментов', 'Число TCP сегментов', 'Число пакетов с опциями',
                     'Число фрагментированных пакетов', 'Общая интенсивность пакетов',
-                    "Количество пакетов типа FIN", 'Количество пакетов типа SYN', # Исправлено SIN на SYN
+                    "Количество пакетов типа FIN", 'Количество пакетов типа SYN',
                     'Число пакетов, входящих в сеть', "Число UDP сегментов входящих в сеть",
                     "Число TCP сегментов, входящих в сеть", "Число пакетов с опциями, входящих в сеть",
                     "Число фрагментированных пакетов, входящих в сеть", "Интенсивность пакетов, входящих в сеть",
-                    "Количество пакетов типа FIN, входящих в сеть", "Количество пакетов типа SYN, входящих в сеть", # Исправлено SIN на SYN
+                    "Количество пакетов типа FIN, входящих в сеть", "Количество пакетов типа SYN, входящих в сеть",
                     'Число пакетов, исходящих из сети', "Число UDP сегментов, исходящих из сети",
                     "Число TCP сегментов, исходящих из сети", "Число пакетов с опциями, исходящих из сети",
                     "Число фрагментированных пакетов, исходящих из сети", "Интенсивность пакетов, исходящих из сети",
-                    "Количество пакетов типа FIN, исходящих из сети", "Количество пакетов типа SYN, исходящих из сети", # Исправлено SIN на SYN
+                    "Количество пакетов типа FIN, исходящих из сети", "Количество пакетов типа SYN, исходящих из сети",
                 ])
                 # Записываем данные из списков
                 for i in range(len(self.worker.data_all_intervals)):
                     writer.writerow(self.worker.data_all_intervals[i])
 
             msg_box = QMessageBox()
-            msg_box.setIcon(QMessageBox.Information)  # Устанавливаем иконку
-            msg_box.setText("Данные успешно сохранены в файл data.csv в директории проекта!")  # Основной текст
-            msg_box.setWindowTitle("Успех")  # Заголовок окна
-            msg_box.setStandardButtons(QMessageBox.Ok)  # Кнопка "ОК"
-            # Отображаем сообщение
+            msg_box.setIcon(QMessageBox.Information)
+            msg_box.setText("Данные успешно сохранены в файл data.csv в директории проекта!")
+            msg_box.setWindowTitle("Успех")
+            msg_box.setStandardButtons(QMessageBox.Ok)
             msg_box.exec_()
 
         except ValueError as ve:
@@ -488,7 +505,7 @@ class Form_main(QtWidgets.QMainWindow,Form1):
                 self.thread.quit()
                 self.thread.wait()
 
-            self.close()  # Закрытие окна приложения
+            self.close()
 
         except Exception as e:
             print(f"Произошла ошибка при закрытии программы: {e}")
