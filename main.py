@@ -397,7 +397,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
 
         # --- НАЧАЛО ИЗМЕНЕНИЙ ДЛЯ COMBOBOX ---
         # Создаем новый QComboBox, указывая родительским виджетом central_widget
-        self.comboBox_interface_of_capture = QtWidgets.QComboBox(self.widget)
+        self.comboBox_interface_of_capture = QtWidgets.QComboBox(self.central_widget)
         self.comboBox_interface_of_capture.setObjectName("comboBox_interface_of_capture")
 
         # Вставляем QComboBox в макет verticalLayout_2, где уже находятся другие виджеты ввода.
@@ -833,6 +833,7 @@ if __name__ == '__main__':
         logging.error(f"Ошибка при загрузке фонового изображения '{background_image_path}': {e}", exc_info=True)
         QMessageBox.critical(form, "Ошибка загрузки фона", f"Не удалось загрузить фоновое изображение: {e}")
 
-    # Устанавливаем окно на весь экран
+    # Запускаем окно в полноэкранном режиме
     form.showMaximized()
+
     sys.exit(app.exec_())

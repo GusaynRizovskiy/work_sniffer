@@ -16,23 +16,23 @@ from PyQt5.QtWidgets import QPlainTextEdit, QVBoxLayout, QHBoxLayout, QGridLayou
 class Ui_tableWidget_metrics(object):
     def setupUi(self, tableWidget_metrics):
         tableWidget_metrics.setObjectName("tableWidget_metrics")
-        tableWidget_metrics.resize(1821, 1075)
-        self.widget = QtWidgets.QWidget(tableWidget_metrics)
-        self.widget.setGeometry(QtCore.QRect(0, 10, 1811, 1051))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.widget.sizePolicy().hasHeightForWidth())
-        self.widget.setSizePolicy(sizePolicy)
-        self.widget.setObjectName("widget")
-        self.gridLayout_3 = QtWidgets.QGridLayout(self.widget)
-        self.gridLayout_3.setContentsMargins(0, 0, 0, 0)
+        # Удаляем жестко заданный размер окна. Вместо этого будем использовать showMaximized()
+        # tableWidget_metrics.resize(1821, 1075)
+
+        # Вместо самодельного QWidget, созданного вручную,
+        # используем центральный виджет QMainWindow
+        self.central_widget = QtWidgets.QWidget(tableWidget_metrics)
+        self.central_widget.setObjectName("central_widget")
+
+        # Создаем главный QGridLayout для всей формы
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.central_widget)
         self.gridLayout_3.setObjectName("gridLayout_3")
-        self.label_name_of_work = QtWidgets.QLabel(self.widget)
+
+        # Заголовок программы
+        self.label_name_of_work = QtWidgets.QLabel(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_name_of_work.sizePolicy().hasHeightForWidth())
         self.label_name_of_work.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(22)
@@ -40,32 +40,43 @@ class Ui_tableWidget_metrics(object):
         self.label_name_of_work.setAlignment(QtCore.Qt.AlignCenter)
         self.label_name_of_work.setObjectName("label_name_of_work")
         self.gridLayout_3.addWidget(self.label_name_of_work, 0, 0, 1, 2)
+
+        # Левая часть формы
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
+
         self.gridLayout_2 = QtWidgets.QGridLayout()
         self.gridLayout_2.setObjectName("gridLayout_2")
-        self.label_input_data = QtWidgets.QLabel(self.widget)
+
+        self.label_input_data = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(18)
         self.label_input_data.setFont(font)
         self.label_input_data.setObjectName("label_input_data")
         self.gridLayout_2.addWidget(self.label_input_data, 0, 0, 1, 1)
-        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.widget)
+
+        self.plainTextEdit = QtWidgets.QPlainTextEdit(self.central_widget)
         self.plainTextEdit.setObjectName("plainTextEdit")
         self.gridLayout_2.addWidget(self.plainTextEdit, 3, 0, 1, 2)
+
         self.verticalLayout_2 = QtWidgets.QVBoxLayout()
         self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.spinBox_time_of_capture = QtWidgets.QSpinBox(self.widget)
+
+        self.spinBox_time_of_capture = QtWidgets.QSpinBox(self.central_widget)
         self.spinBox_time_of_capture.setMaximum(10000)
         self.spinBox_time_of_capture.setObjectName("spinBox_time_of_capture")
         self.verticalLayout_2.addWidget(self.spinBox_time_of_capture)
-        self.lineEdit_network_capture = QtWidgets.QLineEdit(self.widget)
+
+        self.lineEdit_network_capture = QtWidgets.QLineEdit(self.central_widget)
         self.lineEdit_network_capture.setObjectName("lineEdit_network_capture")
         self.verticalLayout_2.addWidget(self.lineEdit_network_capture)
+
         self.gridLayout_2.addLayout(self.verticalLayout_2, 1, 1, 1, 1)
+
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.pushBatton_start_capture = QtWidgets.QPushButton(self.widget)
+
+        self.pushBatton_start_capture = QtWidgets.QPushButton(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -73,7 +84,8 @@ class Ui_tableWidget_metrics(object):
         self.pushBatton_start_capture.setFont(font)
         self.pushBatton_start_capture.setObjectName("pushBatton_start_capture")
         self.horizontalLayout.addWidget(self.pushBatton_start_capture)
-        self.label_name_capture_display = QtWidgets.QLabel(self.widget)
+
+        self.label_name_capture_display = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -82,7 +94,8 @@ class Ui_tableWidget_metrics(object):
         self.label_name_capture_display.setAlignment(QtCore.Qt.AlignCenter)
         self.label_name_capture_display.setObjectName("label_name_capture_display")
         self.horizontalLayout.addWidget(self.label_name_capture_display)
-        self.pushButton_stop_capture = QtWidgets.QPushButton(self.widget)
+
+        self.pushButton_stop_capture = QtWidgets.QPushButton(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -90,10 +103,13 @@ class Ui_tableWidget_metrics(object):
         self.pushButton_stop_capture.setFont(font)
         self.pushButton_stop_capture.setObjectName("pushButton_stop_capture")
         self.horizontalLayout.addWidget(self.pushButton_stop_capture)
+
         self.gridLayout_2.addLayout(self.horizontalLayout, 2, 0, 1, 2)
+
         self.verticalLayout = QtWidgets.QVBoxLayout()
         self.verticalLayout.setObjectName("verticalLayout")
-        self.label_name_time_of_capture = QtWidgets.QLabel(self.widget)
+
+        self.label_name_time_of_capture = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -101,7 +117,8 @@ class Ui_tableWidget_metrics(object):
         self.label_name_time_of_capture.setFont(font)
         self.label_name_time_of_capture.setObjectName("label_name_time_of_capture")
         self.verticalLayout.addWidget(self.label_name_time_of_capture)
-        self.label_interface_of_capture = QtWidgets.QLabel(self.widget)
+
+        self.label_interface_of_capture = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -109,7 +126,8 @@ class Ui_tableWidget_metrics(object):
         self.label_interface_of_capture.setFont(font)
         self.label_interface_of_capture.setObjectName("label_interface_of_capture")
         self.verticalLayout.addWidget(self.label_interface_of_capture)
-        self.label_name_network_capture = QtWidgets.QLabel(self.widget)
+
+        self.label_name_network_capture = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -117,11 +135,14 @@ class Ui_tableWidget_metrics(object):
         self.label_name_network_capture.setFont(font)
         self.label_name_network_capture.setObjectName("label_name_network_capture")
         self.verticalLayout.addWidget(self.label_name_network_capture)
+
         self.gridLayout_2.addLayout(self.verticalLayout, 1, 0, 1, 1)
         self.verticalLayout_4.addLayout(self.gridLayout_2)
+
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setObjectName("gridLayout")
-        self.label_data_statistics_of_capture_traffic = QtWidgets.QLabel(self.widget)
+
+        self.label_data_statistics_of_capture_traffic = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -130,7 +151,12 @@ class Ui_tableWidget_metrics(object):
         self.label_data_statistics_of_capture_traffic.setAlignment(QtCore.Qt.AlignCenter)
         self.label_data_statistics_of_capture_traffic.setObjectName("label_data_statistics_of_capture_traffic")
         self.gridLayout.addWidget(self.label_data_statistics_of_capture_traffic, 0, 0, 1, 1)
-        self.tableWidget_metric = QtWidgets.QTableWidget(self.widget)
+
+        self.tableWidget_metric = QtWidgets.QTableWidget(self.central_widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(2)  # Увеличиваем stretch для таблицы, чтобы она занимала больше места
+        self.tableWidget_metric.setSizePolicy(sizePolicy)
         self.tableWidget_metric.setObjectName("tableWidget_metric")
         self.tableWidget_metric.setColumnCount(9)
         self.tableWidget_metric.setRowCount(0)
@@ -153,9 +179,11 @@ class Ui_tableWidget_metrics(object):
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget_metric.setHorizontalHeaderItem(8, item)
         self.gridLayout.addWidget(self.tableWidget_metric, 1, 0, 1, 1)
+
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
-        self.pushButton_save_in_file = QtWidgets.QPushButton(self.widget)
+
+        self.pushButton_save_in_file = QtWidgets.QPushButton(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -163,7 +191,8 @@ class Ui_tableWidget_metrics(object):
         self.pushButton_save_in_file.setFont(font)
         self.pushButton_save_in_file.setObjectName("pushButton_save_in_file")
         self.horizontalLayout_2.addWidget(self.pushButton_save_in_file)
-        self.pushBatton_finish_work = QtWidgets.QPushButton(self.widget)
+
+        self.pushBatton_finish_work = QtWidgets.QPushButton(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
         font.setBold(False)
@@ -171,24 +200,19 @@ class Ui_tableWidget_metrics(object):
         self.pushBatton_finish_work.setFont(font)
         self.pushBatton_finish_work.setObjectName("pushBatton_finish_work")
         self.horizontalLayout_2.addWidget(self.pushBatton_finish_work)
+
         self.gridLayout.addLayout(self.horizontalLayout_2, 2, 0, 1, 1)
         self.verticalLayout_4.addLayout(self.gridLayout)
         self.gridLayout_3.addLayout(self.verticalLayout_4, 1, 0, 1, 1)
+
+        # Правая часть формы
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.splitter = QtWidgets.QSplitter(self.widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.splitter.sizePolicy().hasHeightForWidth())
-        self.splitter.setSizePolicy(sizePolicy)
-        self.splitter.setOrientation(QtCore.Qt.Vertical)
-        self.splitter.setObjectName("splitter")
-        self.label_name_graph_of_intensivity = QtWidgets.QLabel(self.splitter)
+
+        self.label_name_graph_of_intensivity = QtWidgets.QLabel(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_name_graph_of_intensivity.sizePolicy().hasHeightForWidth())
         self.label_name_graph_of_intensivity.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -196,27 +220,20 @@ class Ui_tableWidget_metrics(object):
         font.setWeight(50)
         self.label_name_graph_of_intensivity.setFont(font)
         self.label_name_graph_of_intensivity.setObjectName("label_name_graph_of_intensivity")
-        self.graphWidget_intensity = QtWidgets.QWidget(self.splitter)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.graphWidget_intensity.sizePolicy().hasHeightForWidth())
-        self.graphWidget_intensity.setSizePolicy(sizePolicy)
-        self.graphWidget_intensity.setObjectName("graphWidget_intensity")
-        self.verticalLayout_3.addWidget(self.splitter)
-        self.splitter_2 = QtWidgets.QSplitter(self.widget)
+        self.verticalLayout_3.addWidget(self.label_name_graph_of_intensivity)
+
+        self.graphWidget_intensity = QtWidgets.QWidget(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.splitter_2.sizePolicy().hasHeightForWidth())
-        self.splitter_2.setSizePolicy(sizePolicy)
-        self.splitter_2.setOrientation(QtCore.Qt.Vertical)
-        self.splitter_2.setObjectName("splitter_2")
-        self.label_name_graph_of_input_output_traffic = QtWidgets.QLabel(self.splitter_2)
+        sizePolicy.setVerticalStretch(1)  # Делаем графики растягиваемыми
+        self.graphWidget_intensity.setSizePolicy(sizePolicy)
+        self.graphWidget_intensity.setObjectName("graphWidget_intensity")
+        self.verticalLayout_3.addWidget(self.graphWidget_intensity)
+
+        self.label_name_graph_of_input_output_traffic = QtWidgets.QLabel(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_name_graph_of_input_output_traffic.sizePolicy().hasHeightForWidth())
         self.label_name_graph_of_input_output_traffic.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -224,27 +241,20 @@ class Ui_tableWidget_metrics(object):
         font.setWeight(50)
         self.label_name_graph_of_input_output_traffic.setFont(font)
         self.label_name_graph_of_input_output_traffic.setObjectName("label_name_graph_of_input_output_traffic")
-        self.graphWidget_traffic_direction = QtWidgets.QWidget(self.splitter_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.graphWidget_traffic_direction.sizePolicy().hasHeightForWidth())
-        self.graphWidget_traffic_direction.setSizePolicy(sizePolicy)
-        self.graphWidget_traffic_direction.setObjectName("graphWidget_traffic_direction")
-        self.verticalLayout_3.addWidget(self.splitter_2)
-        self.splitter_3 = QtWidgets.QSplitter(self.widget)
+        self.verticalLayout_3.addWidget(self.label_name_graph_of_input_output_traffic)
+
+        self.graphWidget_traffic_direction = QtWidgets.QWidget(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.splitter_3.sizePolicy().hasHeightForWidth())
-        self.splitter_3.setSizePolicy(sizePolicy)
-        self.splitter_3.setOrientation(QtCore.Qt.Vertical)
-        self.splitter_3.setObjectName("splitter_3")
-        self.label_name_tcp_udp_segments_sootcnocheniy = QtWidgets.QLabel(self.splitter_3)
+        sizePolicy.setVerticalStretch(1)  # Делаем графики растягиваемыми
+        self.graphWidget_traffic_direction.setSizePolicy(sizePolicy)
+        self.graphWidget_traffic_direction.setObjectName("graphWidget_traffic_direction")
+        self.verticalLayout_3.addWidget(self.graphWidget_traffic_direction)
+
+        self.label_name_tcp_udp_segments_sootcnocheniy = QtWidgets.QLabel(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label_name_tcp_udp_segments_sootcnocheniy.sizePolicy().hasHeightForWidth())
         self.label_name_tcp_udp_segments_sootcnocheniy.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -252,22 +262,26 @@ class Ui_tableWidget_metrics(object):
         font.setWeight(50)
         self.label_name_tcp_udp_segments_sootcnocheniy.setFont(font)
         self.label_name_tcp_udp_segments_sootcnocheniy.setObjectName("label_name_tcp_udp_segments_sootcnocheniy")
-        self.graphWidget_protocol_distribution = QtWidgets.QWidget(self.splitter_3)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
+        self.verticalLayout_3.addWidget(self.label_name_tcp_udp_segments_sootcnocheniy)
+
+        self.graphWidget_protocol_distribution = QtWidgets.QWidget(self.central_widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.graphWidget_protocol_distribution.sizePolicy().hasHeightForWidth())
+        sizePolicy.setVerticalStretch(1)  # Делаем графики растягиваемыми
         self.graphWidget_protocol_distribution.setSizePolicy(sizePolicy)
         self.graphWidget_protocol_distribution.setObjectName("graphWidget_protocol_distribution")
-        self.verticalLayout_3.addWidget(self.splitter_3)
+        self.verticalLayout_3.addWidget(self.graphWidget_protocol_distribution)
+
         self.gridLayout_3.addLayout(self.verticalLayout_3, 1, 1, 1, 1)
+
+        tableWidget_metrics.setCentralWidget(self.central_widget)
 
         self.retranslateUi(tableWidget_metrics)
         QtCore.QMetaObject.connectSlotsByName(tableWidget_metrics)
 
     def retranslateUi(self, tableWidget_metrics):
         _translate = QtCore.QCoreApplication.translate
-        tableWidget_metrics.setWindowTitle(_translate("tableWidget_metrics", "Dialog"))
+        tableWidget_metrics.setWindowTitle(_translate("tableWidget_metrics", "Диалог"))
         self.label_name_of_work.setText(_translate("tableWidget_metrics", "Программа анализа перхваченных пакетов"))
         self.label_input_data.setText(_translate("tableWidget_metrics", "Входные данные"))
         self.pushBatton_start_capture.setText(_translate("tableWidget_metrics", "Начать"))
@@ -276,7 +290,8 @@ class Ui_tableWidget_metrics(object):
         self.label_name_time_of_capture.setText(_translate("tableWidget_metrics", "Период времени захвата пакетов"))
         self.label_interface_of_capture.setText(_translate("tableWidget_metrics", "Интерфейс захвата:"))
         self.label_name_network_capture.setText(_translate("tableWidget_metrics", "Сеть захвата:"))
-        self.label_data_statistics_of_capture_traffic.setText(_translate("tableWidget_metrics", "Данные статистики, собранные с перехваченного трафика"))
+        self.label_data_statistics_of_capture_traffic.setText(
+            _translate("tableWidget_metrics", "Данные статистики, собранные с перехваченного трафика"))
         item = self.tableWidget_metric.horizontalHeaderItem(0)
         item.setText(_translate("tableWidget_metrics", "Время"))
         item = self.tableWidget_metric.horizontalHeaderItem(1)
@@ -286,7 +301,7 @@ class Ui_tableWidget_metrics(object):
         item = self.tableWidget_metric.horizontalHeaderItem(3)
         item.setText(_translate("tableWidget_metrics", "Исходящие(пак)"))
         item = self.tableWidget_metric.horizontalHeaderItem(4)
-        item.setText(_translate("tableWidget_metrics", "New Column"))
+        item.setText(_translate("tableWidget_metrics", "TCP(сегм)"))
         item = self.tableWidget_metric.horizontalHeaderItem(5)
         item.setText(_translate("tableWidget_metrics", "UDP(сегм)"))
         item = self.tableWidget_metric.horizontalHeaderItem(6)
@@ -298,8 +313,11 @@ class Ui_tableWidget_metrics(object):
         self.pushButton_save_in_file.setText(_translate("tableWidget_metrics", "Сохранить данные"))
         self.pushBatton_finish_work.setText(_translate("tableWidget_metrics", "Закрыть программу"))
         self.label_name_graph_of_intensivity.setText(_translate("tableWidget_metrics", "График интенсивности пакетов"))
-        self.label_name_graph_of_input_output_traffic.setText(_translate("tableWidget_metrics", "График исходящего/входящего трафика"))
-        self.label_name_tcp_udp_segments_sootcnocheniy.setText(_translate("tableWidget_metrics", "Соотношение UDP/TCP сегментов"))
+        self.label_name_graph_of_input_output_traffic.setText(
+            _translate("tableWidget_metrics", "График исходящего/входящего трафика"))
+        self.label_name_tcp_udp_segments_sootcnocheniy.setText(
+            _translate("tableWidget_metrics", "Соотношение UDP/TCP сегментов"))
+
 
 class TextEditLogger(logging.Handler):
     def __init__(self, widget):
@@ -312,4 +330,4 @@ class TextEditLogger(logging.Handler):
     def emit(self, record):
         msg = self.format(record)
         self.widget.appendPlainText(msg)
-        self.widget.verticalScrollBar().setValue(self)
+        self.widget.verticalScrollBar().setValue(self.widget.verticalScrollBar().maximum())
