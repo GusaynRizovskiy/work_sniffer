@@ -584,6 +584,17 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
                 self.logger.warning("Попытка начать сниффинг без полных входных данных.")
                 return
 
+            # --- ИСПРАВЛЕНИЯ НАЧИНАЮТСЯ ЗДЕСЬ ---
+            # Проверяем, что в адресе сети присутствует маска (символ '/')
+            if '/' not in self.network_cidr:
+                error_message = (
+                    "Некорректный формат адреса сети.\n"
+                    "Пожалуйста, введите адрес сети вместе с маской (например, 192.168.1.0/24)."
+                )
+                QMessageBox.warning(self, "Ошибка ввода", error_message)
+                self.logger.error(f"Некорректный формат сети введен: {self.network_cidr}. Отсутствует маска.")
+                return
+
             try:
                 ipaddress.ip_network(self.network_cidr, strict=False)
                 self.logger.info(
@@ -593,6 +604,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
                                     "Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
                 self.logger.error(f"Некорректный формат сети введен: {self.network_cidr}", exc_info=True)
                 return
+            # --- ИСПРАВЛЕНИЯ ЗАВЕРШАЮТСЯ ЗДЕСЬ ---
 
             self.start_sniffing()
 
@@ -601,7 +613,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
             self.logger.error(f"Ошибка ввода данных: {ve}", exc_info=True)
         except Exception as e:
             QMessageBox.critical(self, "Ошибка", f"Произошла непредвиденная ошибка при проверке данных: {e}")
-            self.logger.critical(f"Непредвиденная ошибка при проверке входных данных: {e}", exc_info=True)
+            self.logger.critical(f"Непредвиденная ошибка при проверке входных данных:{e}", exc_info=True)
 
     def start_sniffing(self):
         self.pushButton_stop_capture.setEnabled(True)
