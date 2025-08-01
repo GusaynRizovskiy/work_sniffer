@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout, QHBoxLayout
 # Изменено на form_for_sniffer_version5
-from form_for_sniffer import Ui_tableWidget_metrics, TextEditLogger
+from form_for_sniffer_version7 import Ui_tableWidget_metrics, TextEditLogger
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network, get_working_ifaces
 from datetime import datetime
@@ -396,15 +396,13 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         self.pushButton_save_in_file.setEnabled(False)
 
         # --- НАЧАЛО ИЗМЕНЕНИЙ ДЛЯ COMBOBOX ---
-        # 1. comboBox_interface_of_capture больше не существует в UI файле
-        # 2. Создаем новый QComboBox программно
-        self.comboBox_interface_of_capture = QtWidgets.QComboBox(self.layoutWidget1)  # Привязываем к self.layoutWidget1
-        self.comboBox_interface_of_capture.setObjectName("comboBox_interface_of_capture")  # Даем ему имя
+        # Создаем новый QComboBox, указывая родительским виджетом central_widget
+        self.comboBox_interface_of_capture = QtWidgets.QComboBox(self.widget)
+        self.comboBox_interface_of_capture.setObjectName("comboBox_interface_of_capture")
 
-        # Вставляем QComboBox в verticalLayout_2 (который находится внутри layoutWidget1)
-        # перед spinBox_time_of_capture. Индекс 0 означает вставить в самое начало.
-        self.verticalLayout_2.insertWidget(1,
-                                           self.comboBox_interface_of_capture)  # Индекс 1, чтобы он был между SpinBox и LineEdit
+        # Вставляем QComboBox в макет verticalLayout_2, где уже находятся другие виджеты ввода.
+        # Индекс 1 разместит его между spinBox_time_of_capture (индекс 0) и lineEdit_network_capture (индекс 2).
+        self.verticalLayout_2.insertWidget(1, self.comboBox_interface_of_capture)
 
         # Теперь вызываем функцию для заполнения нового combobox
         self.populate_interfaces_combo_box(self.comboBox_interface_of_capture)
