@@ -831,7 +831,7 @@ if __name__ == '__main__':
     form = Form_main()
 
     # Загрузка фонового изображения с обработкой ошибок
-    background_image_path = "fon/picture_fon.jpg"
+    background_image_path = "fon/picture_fon2.jpg"
     try:
         if os.path.exists(background_image_path):
             palette = QPalette()
