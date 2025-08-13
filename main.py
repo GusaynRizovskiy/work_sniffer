@@ -4,7 +4,6 @@ import os
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout, QHBoxLayout
-# Изменено на form_for_sniffer_version8
 from form_for_sniffer import Ui_tableWidget_metrics, TextEditLogger
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network, get_working_ifaces
@@ -15,7 +14,9 @@ import csv
 import platform
 import ipaddress
 import pyqtgraph as pg
-
+import socket
+import json
+from PyQt5 import QtGui
 
 # Класс, который будет наследоваться от QObject и выполнять основную работу программы
 class Worker(QtCore.QObject):
@@ -23,17 +24,29 @@ class Worker(QtCore.QObject):
     status_update = QtCore.pyqtSignal(str)
     packet_info_update = QtCore.pyqtSignal(str)
     all_metrics_update = QtCore.pyqtSignal(list)
+    connection_status_update = QtCore.pyqtSignal(str)
 
-    def __init__(self):
+    def __init__(self, mode, server_address=None, server_port=None):
         super().__init__()
         self.is_running = True
         self.data_all_intervals = []
         self.logger = logging.getLogger(__name__)
+        self.mode = mode
+        self.server_address = server_address
+        self.server_port = server_port
+        self.client_socket = None
 
     def run(self):
         self.is_running = True
         self.status_update.emit("Сниффинг запущен...")
         self.logger.info("Рабочий поток Worker запущен.")
+
+        if self.mode == "online":
+            self.connect_to_server()
+            if not self.client_socket:
+                self.is_running = False
+                self.finished.emit()
+                return
 
         while self.is_running:
             self.data_one_interval = []
@@ -47,7 +60,6 @@ class Worker(QtCore.QObject):
                 f"Начало интервала агрегирования: {self.time_begin} (длительность {form.time_of_capture} с.)")
 
             try:
-                # Проверяем, что iface не пустой
                 if not form.interface_of_capture:
                     self.status_update.emit("ОШИБКА: Интерфейс захвата не выбран. Сниффинг остановлен.")
                     self.logger.error("Интерфейс захвата не выбран. Завершение работы Worker.")
@@ -57,7 +69,6 @@ class Worker(QtCore.QObject):
 
                 self.logger.debug(
                     f"Начало захвата пакетов: iface={form.interface_of_capture}, filter={form.network_cidr}, timeout={form.time_of_capture}")
-                # Использование form.network_cidr вместо form.network_of_capture
                 sniff(filter=f"net {form.network_cidr}", iface=form.interface_of_capture,
                       prn=self.packet_callback, store=False, timeout=form.time_of_capture)
                 self.logger.debug("Захват пакетов завершен для текущего интервала.")
@@ -72,36 +83,94 @@ class Worker(QtCore.QObject):
             self.time_end = datetime.now().strftime('%H:%M:%S')
 
             self.calculate_intensities()
-            self.prepare_data_interval()  # Этот метод уже заполняет data_one_interval
+            self.prepare_data_interval()
 
-            # ОТПРАВКА ВСЕХ МЕТРИК В UI через один сигнал
-            self.all_metrics_update.emit([
-                f"{self.time_begin}-{self.time_end}",  # 0
-                self.count_capture_packets,  # 1
-                self.count_input_packets,  # 2
-                self.count_output_packets,  # 3
-                self.count_tcp_segments,  # 4
-                self.count_udp_segments,  # 5
-                self.count_fragment_packets,  # 6
-                self.count_loopback_packets,  # 7
-                self.count_multicast_packets,  # 8
-                self.count_intensivity_packets,  # 9 (Общая интенсивность)
-                self.count_input_intensivity_packets,  # 10
-                self.count_output_intensivity_packets,  # 11
-                self.count_fin_packets,  # 12
-                self.count_sin_packets,  # 13
-                self.count_input_fin_packets,  # 14
-                self.count_input_sin_packets,  # 15
-                self.count_output_fin_packets,  # 16
-                self.count_output_sin_packets  # 17
-            ])
+            all_metrics_data = [
+                f"{self.time_begin}-{self.time_end}",
+                self.count_capture_packets,
+                self.count_input_packets,
+                self.count_output_packets,
+                self.count_tcp_segments,
+                self.count_udp_segments,
+                self.count_fragment_packets,
+                self.count_loopback_packets,
+                self.count_multicast_packets,
+                self.count_intensivity_packets,
+                self.count_input_intensivity_packets,
+                self.count_output_intensivity_packets,
+                self.count_fin_packets,
+                self.count_sin_packets,
+                self.count_input_fin_packets,
+                self.count_input_sin_packets,
+                self.count_output_fin_packets,
+                self.count_output_sin_packets
+            ]
+
+            self.all_metrics_update.emit(all_metrics_data)
+
+            if self.mode == "online":
+                self.send_data_to_server(all_metrics_data)
 
             self.data_all_intervals.append(self.data_one_interval)
             self.status_update.emit("Интервал агрегирования завершен")
             self.logger.info("Интервал агрегирования завершен.")
 
+        self.disconnect_from_server()
         self.finished.emit()
         self.logger.info("Рабочий поток Worker завершил работу.")
+
+    def connect_to_server(self):
+        """Устанавливает соединение с сервером."""
+        self.connection_status_update.emit(f"Попытка подключения к серверу {self.server_address}:{self.server_port}...")
+        self.logger.info(f"Попытка подключения к серверу: {self.server_address}:{self.server_port}")
+        try:
+            self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.client_socket.settimeout(5)
+            self.client_socket.connect((self.server_address, self.server_port))
+            self.connection_status_update.emit(f"Успешное подключение к серверу.")
+            self.logger.info("Успешное подключение к серверу.")
+        except socket.timeout:
+            self.connection_status_update.emit(f"ОШИБКА: Не удалось подключиться к серверу: превышен тайм-аут.")
+            self.logger.error("Ошибка подключения к серверу: превышен тайм-аут.")
+            self.client_socket = None
+        except socket.error as e:
+            self.connection_status_update.emit(f"ОШИБКА: Ошибка сокета при подключении: {e}")
+            self.logger.error(f"Ошибка сокета при подключении: {e}")
+            self.client_socket = None
+        except Exception as e:
+            self.connection_status_update.emit(f"КРИТИЧЕСКАЯ ОШИБКА: Непредвиденная ошибка при подключении: {e}")
+            self.logger.critical(f"Непредвиденная ошибка при подключении: {e}", exc_info=True)
+            self.client_socket = None
+
+    def disconnect_from_server(self):
+        """Закрывает сокет-соединение."""
+        if self.client_socket:
+            self.client_socket.close()
+            self.connection_status_update.emit("Соединение с сервером закрыто.")
+            self.logger.info("Соединение с сервером закрыто.")
+
+    def send_data_to_server(self, data):
+        """Сериализует и отправляет данные на сервер."""
+        if not self.client_socket:
+            self.connection_status_update.emit("ОШИБКА: Соединение с сервером потеряно. Сниффинг остановлен.")
+            self.is_running = False
+            return
+
+        try:
+            json_data = json.dumps(data).encode('utf-8')
+            self.client_socket.sendall(json_data)
+            self.connection_status_update.emit(f"Данные для интервала {data[0]} успешно отправлены на сервер.")
+            self.logger.info(f"Данные для интервала {data[0]} успешно отправлены.")
+        except socket.error as e:
+            self.connection_status_update.emit(
+                f"ОШИБКА: Ошибка при отправке данных на сервер: {e}. Сниффинг остановлен.")
+            self.logger.error(f"Ошибка при отправке данных на сервер: {e}", exc_info=True)
+            self.is_running = False
+        except Exception as e:
+            self.connection_status_update.emit(
+                f"КРИТИЧЕСКАЯ ОШИБКА: Непредвиденная ошибка при отправке: {e}. Сниффинг остановлен.")
+            self.logger.critical(f"Непредвиденная ошибка при отправке данных: {e}", exc_info=True)
+            self.is_running = False
 
     def initialize_packet_counts(self):
         """Инициализация всех переменных счетчиков пакетов для нового интервала."""
@@ -206,8 +275,6 @@ class Worker(QtCore.QObject):
         """Обработка захваченного пакета."""
         try:
             self.count_capture_packets += 1
-            # self.logger.debug(f"Обработка пакета: {packet.summary()}") # Отключено, может быть слишком много логов
-
             src_ip = "N/A"
             dst_ip = "N/A"
 
@@ -222,14 +289,12 @@ class Worker(QtCore.QObject):
                     self.count_multicast_packets += 1
                 elif dst_ip == '127.0.0.1':
                     self.count_loopback_packets += 1
-                # Проверяем, что form.network_cidr не пустой перед использованием
                 elif form.network_cidr and not address_in_network(src_ip,
                                                                   form.network_cidr) and address_in_network(
                     dst_ip,
                     form.network_cidr):
                     self.count_input_packets += 1
                     self.parametrs_input_packets_count(packet)
-                # Проверяем, что form.network_cidr не пустой перед использованием
                 elif form.network_cidr and address_in_network(src_ip,
                                                               form.network_cidr) and not address_in_network(
                     dst_ip,
@@ -255,7 +320,6 @@ class Worker(QtCore.QObject):
                 self.packet_info_update.emit(f"Перехвачен не-IP пакет: {packet.summary()}")
 
         except Exception as e:
-            # self.status_update.emit(f"ПРЕДУПРЕЖДЕНИЕ: Ошибка при обработке пакета: {e}. Пакет пропущен.") # Слишком много всплывающих сообщений
             self.logger.warning(f"Ошибка при обработке пакета: {e}. Пакет пропущен.", exc_info=True)
             pass
 
@@ -305,30 +369,25 @@ class Worker(QtCore.QObject):
 
 
 # Основной класс, в котором происходит создание экземпляра формы и считывание данных пользователя.
-class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наследуемся от новой формы
-
+class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
     def __init__(self):
         super().__init__()
         self.logger = logging.getLogger(__name__)
-        self.setupUi(self)  # Вызов setupUi из Ui_tableWidget_metrics
+        self.setupUi(self)
 
-        # Добавляем layout для graphWidget_intensity
         self.graphWidget_intensity_layout = QVBoxLayout(self.graphWidget_intensity)
         self.plot_intensity = pg.PlotWidget()
         self.graphWidget_intensity_layout.addWidget(self.plot_intensity)
 
-        # Добавляем layout для graphWidget_traffic_direction
         self.graphWidget_traffic_direction_layout = QVBoxLayout(self.graphWidget_traffic_direction)
         self.plot_traffic_direction = pg.PlotWidget()
         self.graphWidget_traffic_direction_layout.addWidget(self.plot_traffic_direction)
 
-        # Добавляем layout для graphWidget_protocol_distribution
         self.graphWidget_protocol_distribution_layout = QVBoxLayout(self.graphWidget_protocol_distribution)
         self.plot_protocol_distribution = pg.PlotWidget()
         self.graphWidget_protocol_distribution_layout.addWidget(self.plot_protocol_distribution)
 
-        # Инициализация QTableWidget и его заголовков
-        self.tableWidget_metric.setColumnCount(9)  # Соответствует UI файлу
+        self.tableWidget_metric.setColumnCount(9)
         self.tableWidget_metric.setHorizontalHeaderLabels([
             'Время', 'Всего пакетов', 'Входящие (пак)', 'Исходящие (пак)',
             'TCP (сегм)', 'UDP (сегм)', 'Фрагменты (пак)', 'Multicast (пак)',
@@ -337,8 +396,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         self.tableWidget_metric.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.tableWidget_metric.horizontalHeader().setStretchLastSection(True)
 
-        # --- Инициализация графиков PyQtGraph ---
-        # График интенсивности
         self.plot_intensity.setTitle("Интенсивность пакетов")
         self.plot_intensity.setLabel('left', 'Пакетов/с', units='пак/с')
         self.plot_intensity.setLabel('bottom', 'Интервал')
@@ -347,7 +404,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         self.intensity_data = []
         self.interval_indices_intensity = []
 
-        # График входящего/исходящего трафика
         self.plot_traffic_direction.setTitle("Входящий/Исходящий трафик")
         self.plot_traffic_direction.setLabel('left', 'Кол-во пакетов', units='пак')
         self.plot_traffic_direction.setLabel('bottom', 'Интервал')
@@ -359,220 +415,92 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         self.output_packets_data = []
         self.interval_indices_traffic = []
 
-        # График соотношения TCP/UDP (гистограмма)
         self.plot_protocol_distribution.setTitle("Соотношение TCP/UDP")
-        self.plot_protocol_distribution.setLabel('left', 'Доля (%)')  # Изменено на долю
+        self.plot_protocol_distribution.setLabel('left', 'Доля (%)')
         self.plot_protocol_distribution.setLabel('bottom', 'Протокол')
         self.plot_protocol_distribution.setBackground('w')
         self.bar_graph_item = pg.BarGraphItem(x=[1, 2], height=[0, 0], width=0.5, brushes=['blue', 'orange'])
         self.plot_protocol_distribution.addItem(self.bar_graph_item)
         self.plot_protocol_distribution.getAxis('bottom').setTicks([[(1, 'TCP'), (2, 'UDP')]])
         self.plot_protocol_distribution.setXRange(0.5, 2.5)
-        self.plot_protocol_distribution.setYRange(0, 100)  # Проценты от 0 до 100
-        # self.plot_protocol_distribution.hideAxis('bottom') # Оставим метки
+        self.plot_protocol_distribution.setYRange(0, 100)
 
-        # --- Конец инициализации графиков PyQtGraph ---
+        self.label_server_address = QtWidgets.QLabel(self.central_widget)
+        self.label_server_address.setText("IP сервера:")
+        self.label_server_address.setFont(QtGui.QFont("MS Shell Dlg 2", 14))
+        self.lineEdit_server_address = QtWidgets.QLineEdit(self.central_widget)
+        self.lineEdit_server_address.setPlaceholderText("127.0.0.1")
+        self.lineEdit_server_address.setText("127.0.0.1")
+
+        self.label_server_port = QtWidgets.QLabel(self.central_widget)
+        self.label_server_port.setText("Порт:")
+        self.label_server_port.setFont(QtGui.QFont("MS Shell Dlg 2", 14))
+        self.spinBox_server_port = QtWidgets.QSpinBox(self.central_widget)
+        self.spinBox_server_port.setRange(1024, 65535)
+        self.spinBox_server_port.setValue(12345)
+
+        self.verticalLayout.addWidget(self.label_server_address)
+        self.verticalLayout_2.addWidget(self.lineEdit_server_address)
+        self.verticalLayout.addWidget(self.label_server_port)
+        self.verticalLayout_2.addWidget(self.spinBox_server_port)
+
+        self.label_server_address.hide()
+        self.lineEdit_server_address.hide()
+        self.label_server_port.hide()
+        self.spinBox_server_port.hide()
 
         self.thread = QtCore.QThread()
-        self.worker = Worker()
-        self.worker.moveToThread(self.thread)
+        self.worker = None
 
-        # Подключение сигналов к слотам
-        self.pushBatton_start_capture.clicked.connect(self.check_input_data)
+        self.pushBatton_start_capture.clicked.connect(self.show_mode_warning)
+        self.pushBatton_start_online.clicked.connect(self.start_online_mode)
+        self.pushBatton_start_offline.clicked.connect(self.start_offline_mode)
         self.pushButton_stop_capture.clicked.connect(self.stop_sniffing)
         self.pushBatton_finish_work.clicked.connect(self.close_program)
         self.pushButton_save_in_file.clicked.connect(self.save_file_as_csv)
 
-        self.thread.started.connect(self.worker.run)
-        self.worker.finished.connect(self.on_finished)
-        self.worker.status_update.connect(self.update_status_text_zone)
-        self.worker.packet_info_update.connect(self.update_status_text_zone)
-        self.worker.all_metrics_update.connect(self.update_metrics_table)
-        self.worker.all_metrics_update.connect(self.update_intensity_graph)
-        self.worker.all_metrics_update.connect(self.update_traffic_direction_graph)
-        self.worker.all_metrics_update.connect(self.update_protocol_distribution_graph)
-
         self.interface_display_to_internal_map = {}
         self.pushButton_save_in_file.setEnabled(False)
 
-        # --- НАЧАЛО ИЗМЕНЕНИЙ ДЛЯ COMBOBOX ---
-        # Создаем новый QComboBox, указывая родительским виджетом central_widget
         self.comboBox_interface_of_capture = QtWidgets.QComboBox(self.central_widget)
         self.comboBox_interface_of_capture.setObjectName("comboBox_interface_of_capture")
-
-        # Вставляем QComboBox в макет verticalLayout_2, где уже находятся другие виджеты ввода.
-        # Индекс 1 разместит его между spinBox_time_of_capture (индекс 0) и lineEdit_network_capture (индекс 2).
         self.verticalLayout_2.insertWidget(1, self.comboBox_interface_of_capture)
-
-        # Теперь вызываем функцию для заполнения нового combobox
         self.populate_interfaces_combo_box(self.comboBox_interface_of_capture)
-        # --- КОНЕЦ ИЗМЕНЕНИЙ ДЛЯ COMBOBOX ---
 
         self.logger.info("Приложение Form_main инициализировано.")
 
-    def update_status_text_zone(self, message):
-        """Добавляет сообщение в текстовую область с временной меткой и прокручивает его."""
-        timestamp = datetime.now().strftime('%H:%M:%S')
-        formatted_message = f"[{timestamp}] {message}"
-        self.plainTextEdit.appendPlainText(formatted_message)
-        self.plainTextEdit.verticalScrollBar().setValue(self.plainTextEdit.verticalScrollBar().maximum())
-        self.logger.debug(f"Сообщение отправлено в UI: {message}")
+    def show_mode_warning(self):
+        """Отображает предупреждение о необходимости выбора режима."""
+        QMessageBox.information(self, "Выбор режима",
+                                "Пожалуйста, выберите режим работы: 'Online' для отправки данных на сервер или 'Offline' для локального анализа.")
+        self.logger.info("Пользователю показано предупреждение о необходимости выбора режима.")
 
-    def update_metrics_table(self, all_metrics_data):
-        """
-        Обновляет таблицу агрегированных метрик.
-        :param all_metrics_data: Полный список метрик от Worker.
-        """
-        try:
-            metrics_for_table = [
-                all_metrics_data[0],  # Время
-                str(all_metrics_data[1]),  # Всего пакетов
-                str(all_metrics_data[2]),  # Входящие (пак)
-                str(all_metrics_data[3]),  # Исходящие (пак)
-                str(all_metrics_data[4]),  # TCP (сегм)
-                str(all_metrics_data[5]),  # UDP (сегм)
-                str(all_metrics_data[6]),  # Фрагменты (пак)
-                str(all_metrics_data[8]),  # Multicast (пак)
-                f"{all_metrics_data[9]:.2f}"  # Интенсивность (пак/с)
-            ]
+    def start_offline_mode(self):
+        """Запускает сниффинг в локальном режиме."""
+        self.logger.info("Пользователь выбрал Offline-режим.")
+        self.label_name_capture_display.setText("Оффлайн-режим")
+        self.label_server_address.hide()
+        self.lineEdit_server_address.hide()
+        self.label_server_port.hide()
+        self.spinBox_server_port.hide()
+        self.check_input_data(mode="offline")
 
-            row_position = self.tableWidget_metric.rowCount()
-            self.tableWidget_metric.insertRow(row_position)
+    def start_online_mode(self):
+        """Запускает сниффинг в режиме отправки данных на сервер."""
+        self.logger.info("Пользователь выбрал Online-режим.")
+        self.label_name_capture_display.setText("Онлайн-режим")
+        self.label_server_address.show()
+        self.lineEdit_server_address.show()
+        self.label_server_port.show()
+        self.spinBox_server_port.show()
+        self.check_input_data(mode="online")
 
-            for col, data in enumerate(metrics_for_table):
-                item = QTableWidgetItem(str(data))
-                self.tableWidget_metric.setItem(row_position, col, item)
-
-            self.tableWidget_metric.scrollToBottom()
-            self.logger.debug(f"Метрики добавлены в таблицу: {metrics_for_table}")
-        except Exception as e:
-            self.logger.error(f"Ошибка при обновлении таблицы метрик: {e}", exc_info=True)
-            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить таблицу метрик: {e}")
-
-    def update_intensity_graph(self, all_metrics_data):
-        """
-        Обновляет график интенсивности.
-        :param all_metrics_data: Полный список метрик от Worker.
-        """
-        try:
-            intensity_value = float(all_metrics_data[9])  # Общая интенсивность
-            self.intensity_data.append(intensity_value)
-            self.interval_indices_intensity.append(len(self.interval_indices_intensity))
-
-            max_points = 50
-            if len(self.intensity_data) > max_points:
-                self.intensity_data = self.intensity_data[-max_points:]
-                self.interval_indices_intensity = self.interval_indices_intensity[-max_points:]
-                # Корректируем индексы, чтобы они начинались с 0
-                self.interval_indices_intensity = list(range(len(self.intensity_data)))
-
-            self.curve_intensity.setData(self.interval_indices_intensity, self.intensity_data)
-            self.logger.debug(f"График интенсивности обновлен: {intensity_value} пак/с")
-
-        except Exception as e:
-            self.logger.error(f"Ошибка при обновлении графика интенсивности: {e}", exc_info=True)
-            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график интенсивности: {e}")
-
-    def update_traffic_direction_graph(self, all_metrics_data):
-        """
-        Обновляет график входящего/исходящего трафика.
-        :param all_metrics_data: Полный список метрик от Worker.
-        """
-        try:
-            input_packets = float(all_metrics_data[2])
-            output_packets = float(all_metrics_data[3])
-
-            self.input_packets_data.append(input_packets)
-            self.output_packets_data.append(output_packets)
-            self.interval_indices_traffic.append(len(self.interval_indices_traffic))
-
-            max_points = 50
-            if len(self.input_packets_data) > max_points:
-                self.input_packets_data = self.input_packets_data[-max_points:]
-                self.output_packets_data = self.output_packets_data[-max_points:]
-                self.interval_indices_traffic = self.interval_indices_traffic[-max_points:]
-                # Корректируем индексы, чтобы они начинались с 0
-                self.interval_indices_traffic = list(range(len(self.input_packets_data)))
-
-            self.curve_input.setData(self.interval_indices_traffic, self.input_packets_data)
-            self.curve_output.setData(self.interval_indices_traffic, self.output_packets_data)
-            self.logger.debug(f"График входящего/исходящего трафика обновлен: Вх={input_packets}, Исх={output_packets}")
-
-        except Exception as e:
-            self.logger.error(f"Ошибка при обновлении графика входящего/исходящего трафика: {e}", exc_info=True)
-            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график входящего/исходящего трафика: {e}")
-
-    def update_protocol_distribution_graph(self, all_metrics_data):
-        """
-        Обновляет гистограмму соотношения TCP/UDP.
-        :param all_metrics_data: Полный список метрик от Worker.
-        """
-        try:
-            tcp_segments = float(all_metrics_data[4])
-            udp_segments = float(all_metrics_data[5])
-
-            total_segments = tcp_segments + udp_segments
-            if total_segments > 0:
-                tcp_percent = (tcp_segments / total_segments) * 100
-                udp_percent = (udp_segments / total_segments) * 100
-            else:
-                tcp_percent = 0
-                udp_percent = 0
-
-            self.bar_graph_item.setOpts(height=[tcp_percent, udp_percent])
-
-            current_y_range = self.plot_protocol_distribution.getViewBox().viewRange()[1][1]
-            max_val = max(tcp_percent, udp_percent, 10)  # Минимум 10 для начального вида
-            if max_val * 1.1 > current_y_range:
-                self.plot_protocol_distribution.setYRange(0, max_val * 1.1)
-
-            self.logger.debug(f"График соотношения TCP/UDP обновлен: TCP={tcp_percent:.2f}%, UDP={udp_percent:.2f}%")
-
-        except Exception as e:
-            self.logger.error(f"Ошибка при обновлении графика соотношения TCP/UDP: {e}", exc_info=True)
-            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график соотношения TCP/UDP: {e}")
-
-    def populate_interfaces_combo_box(self, combo_box_widget):
-        self.logger.info("Попытка заполнить список сетевых интерфейсов.")
-        try:
-            combo_box_widget.clear()
-            self.interface_display_to_internal_map.clear()
-
-            interfaces = get_working_ifaces()  # Вызов функции из utils.py
-
-            if not interfaces:
-                QMessageBox.warning(self, "Предупреждение", "Не найдено сетевых интерфейсов. "
-                                                            "Убедитесь, что WinPcap/Npcap установлен(а) (для Windows) "
-                                                            "и программа запущена с правами администратора/root.")
-                self.logger.warning(
-                    "Не найдено сетевых интерфейсов. Возможно, нет прав или не установлен Npcap/WinPcap.")
-                return
-
-            for iface in interfaces:
-                display_name = iface.description if iface.description else iface.name
-                internal_name = iface.name
-
-                self.logger.debug(
-                    f"Добавляем интерфейс в ComboBox: '{display_name}' (Внутреннее: '{internal_name}')")
-                combo_box_widget.addItem(display_name)
-                self.interface_display_to_internal_map[display_name] = internal_name
-                self.logger.info(f"Найден интерфейс: {display_name} (Внутреннее имя: {internal_name})")
-
-            self.logger.info(
-                f"ComboBox содержит {combo_box_widget.count()} элементов после заполнения.")
-
-        except Exception as e:
-            self.logger.critical(f"Не удалось получить список сетевых интерфейсов: {e}", exc_info=True)
-            QMessageBox.critical(self, "Ошибка загрузки интерфейсов",
-                                 f"Не удалось получить список сетевых интерфейсов: {e}\n"
-                                 "Пожалуйста, убедитесь, что WinPcap/Npcap установлен(а) (для Windows) и у программы есть необходимые права (например, запуск от имени администратора/root).")
-
-    def check_input_data(self):
+    def check_input_data(self, mode):
         self.logger.info("Начата проверка входных данных.")
         try:
             selected_display_name = self.comboBox_interface_of_capture.currentText().strip()
-            self.network_cidr = self.lineEdit_network_capture.text().strip()  # Сохраняем в self
-            self.time_of_capture = self.spinBox_time_of_capture.value()  # Сохраняем в self
+            self.network_cidr = self.lineEdit_network_capture.text().strip()
+            self.time_of_capture = self.spinBox_time_of_capture.value()
 
             if not selected_display_name:
                 QMessageBox.warning(self, "Предупреждение", "Необходимо выбрать сетевой интерфейс.")
@@ -584,13 +512,9 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
                 self.logger.warning("Попытка начать сниффинг без полных входных данных.")
                 return
 
-            # --- ИСПРАВЛЕНИЯ НАЧИНАЮТСЯ ЗДЕСЬ ---
-            # Проверяем, что в адресе сети присутствует маска (символ '/')
             if '/' not in self.network_cidr:
-                error_message = (
-                    "Некорректный формат адреса сети.\n"
-                    "Пожалуйста, введите адрес сети вместе с маской (например, 192.168.1.0/24)."
-                )
+                error_message = ("Некорректный формат адреса сети.\n"
+                                 "Пожалуйста, введите адрес сети вместе с маской (например, 192.168.1.0/24).")
                 QMessageBox.warning(self, "Ошибка ввода", error_message)
                 self.logger.error(f"Некорректный формат сети введен: {self.network_cidr}. Отсутствует маска.")
                 return
@@ -604,9 +528,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
                                     "Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
                 self.logger.error(f"Некорректный формат сети введен: {self.network_cidr}", exc_info=True)
                 return
-            # --- ИСПРАВЛЕНИЯ ЗАВЕРШАЮТСЯ ЗДЕСЬ ---
 
-            self.start_sniffing()
+            self.start_sniffing(mode)
 
         except ValueError as ve:
             QMessageBox.warning(self, "Ошибка ввода", str(ve))
@@ -615,7 +538,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
             QMessageBox.critical(self, "Ошибка", f"Произошла непредвиденная ошибка при проверке данных: {e}")
             self.logger.critical(f"Непредвиденная ошибка при проверке входных данных:{e}", exc_info=True)
 
-    def start_sniffing(self):
+    def start_sniffing(self, mode):
         self.pushButton_stop_capture.setEnabled(True)
         self.logger.info("Попытка начать сниффинг.")
         try:
@@ -628,7 +551,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
                 raise ValueError("Время захвата должно быть больше нуля.")
             if not self.interface_of_capture:
                 raise ValueError("Необходимо выбрать интерфейс для захвата.")
-            # Используем self.network_cidr, как и в других местах
             if not self.network_cidr:
                 raise ValueError("Необходимо указать сеть для захвата.")
             try:
@@ -644,7 +566,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
             self.plainTextEdit.clear()
             self.tableWidget_metric.setRowCount(0)
 
-            # Очищаем данные графиков при новом запуске
             self.intensity_data.clear()
             self.interval_indices_intensity.clear()
             self.curve_intensity.setData([], [])
@@ -655,18 +576,10 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
             self.curve_input.setData([], [])
             self.curve_output.setData([], [])
 
-            self.bar_graph_item.setOpts(height=[0, 0])  # Очищаем гистограмму
-            self.plot_protocol_distribution.setYRange(0, 100)  # Сброс Y-диапазона для процентов
+            self.bar_graph_item.setOpts(height=[0, 0])
+            self.plot_protocol_distribution.setYRange(0, 100)
 
-            self.logger.info("UI очищен, кнопки заблокированы.")
-
-            self.worker.data_all_intervals.clear()
-            self.logger.debug("Данные для записи сброшены.")
-
-            if not self.thread.isRunning():
-                self.thread.start()
-                self.logger.info("Рабочий поток запущен.")
-            else:
+            if self.thread.isRunning():
                 QMessageBox.information(self, "Информация",
                                         "Сниффер уже запущен. Сначала остановите его, чтобы начать новый захват.")
                 self.update_status_text_zone("ПРЕДУПРЕЖДЕНИЕ: Сниффер уже запущен.")
@@ -674,6 +587,34 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
                 self.pushBatton_start_capture.setEnabled(True)
                 self.pushButton_stop_capture.setEnabled(True)
                 return
+
+            if self.worker:
+                self.worker.deleteLater()
+
+            if mode == "online":
+                server_address = self.lineEdit_server_address.text().strip()
+                server_port = self.spinBox_server_port.value()
+                self.worker = Worker(mode="online", server_address=server_address, server_port=server_port)
+            else:
+                self.worker = Worker(mode="offline")
+
+            self.worker.moveToThread(self.thread)
+            self.thread.started.connect(self.worker.run)
+            self.worker.finished.connect(self.on_finished)
+            self.worker.status_update.connect(self.update_status_text_zone)
+            self.worker.packet_info_update.connect(self.update_status_text_zone)
+            self.worker.all_metrics_update.connect(self.update_metrics_table)
+            self.worker.all_metrics_update.connect(self.update_intensity_graph)
+            self.worker.all_metrics_update.connect(self.update_traffic_direction_graph)
+            self.worker.all_metrics_update.connect(self.update_protocol_distribution_graph)
+            self.worker.connection_status_update.connect(self.update_status_text_zone)
+
+            self.logger.info("UI очищен, кнопки заблокированы.")
+            self.worker.data_all_intervals.clear()
+            self.logger.debug("Данные для записи сброшены.")
+
+            self.thread.start()
+            self.logger.info("Рабочий поток запущен.")
 
         except Exception as e:
             error_message = f"Не удалось начать сниффинг: {e}"
@@ -704,7 +645,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         self.logger.info("Пользователь запросил остановку сниффинга.")
         try:
             if self.thread.isRunning():
-                self.worker.stop()
+                if self.worker:
+                    self.worker.stop()
                 self.thread.quit()
                 self.thread.wait()
                 self.pushButton_stop_capture.setEnabled(False)
@@ -735,7 +677,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         """Сохранение данных в CSV файл."""
         self.logger.info("Пользователь запросил сохранение данных в CSV.")
         try:
-            if not self.worker.data_all_intervals:
+            if not self.worker or not self.worker.data_all_intervals:
                 raise ValueError("Нет данных для сохранения.")
 
             options = QFileDialog.Options()
@@ -796,7 +738,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
         self.logger.info("Запрошено закрытие программы.")
         try:
             if self.thread.isRunning():
-                self.worker.stop()
+                if self.worker:
+                    self.worker.stop()
                 self.thread.quit()
                 self.thread.wait()
                 self.logger.info("Рабочий поток успешно завершен перед закрытием.")
@@ -808,14 +751,144 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):  # Наслед�
             self.logger.error(f"Ошибка при закрытии программы: {e}", exc_info=True)
             pass
 
+    def update_status_text_zone(self, message):
+        """Добавляет сообщение в текстовую область с временной меткой и прокручивает его."""
+        timestamp = datetime.now().strftime('%H:%M:%S')
+        formatted_message = f"[{timestamp}] {message}"
+        self.plainTextEdit.appendPlainText(formatted_message)
+        self.plainTextEdit.verticalScrollBar().setValue(self.plainTextEdit.verticalScrollBar().maximum())
+        self.logger.debug(f"Сообщение отправлено в UI: {message}")
+
+    def update_metrics_table(self, all_metrics_data):
+        """
+        Обновляет таблицу агрегированных метрик.
+        :param all_metrics_data: Полный список метрик от Worker.
+        """
+        try:
+            metrics_for_table = [
+                all_metrics_data[0],
+                str(all_metrics_data[1]),
+                str(all_metrics_data[2]),
+                str(all_metrics_data[3]),
+                str(all_metrics_data[4]),
+                str(all_metrics_data[5]),
+                str(all_metrics_data[6]),
+                str(all_metrics_data[8]),
+                f"{all_metrics_data[9]:.2f}"
+            ]
+            row_position = self.tableWidget_metric.rowCount()
+            self.tableWidget_metric.insertRow(row_position)
+            for col, data in enumerate(metrics_for_table):
+                item = QTableWidgetItem(str(data))
+                self.tableWidget_metric.setItem(row_position, col, item)
+            self.tableWidget_metric.scrollToBottom()
+            self.logger.debug(f"Метрики добавлены в таблицу: {metrics_for_table}")
+        except Exception as e:
+            self.logger.error(f"Ошибка при обновлении таблицы метрик: {e}", exc_info=True)
+            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить таблицу метрик: {e}")
+
+    def update_intensity_graph(self, all_metrics_data):
+        """
+        Обновляет график интенсивности.
+        :param all_metrics_data: Полный список метрик от Worker.
+        """
+        try:
+            intensity_value = float(all_metrics_data[9])
+            self.intensity_data.append(intensity_value)
+            self.interval_indices_intensity.append(len(self.interval_indices_intensity))
+            max_points = 50
+            if len(self.intensity_data) > max_points:
+                self.intensity_data = self.intensity_data[-max_points:]
+                self.interval_indices_intensity = self.interval_indices_intensity[-max_points:]
+                self.interval_indices_intensity = list(range(len(self.intensity_data)))
+            self.curve_intensity.setData(self.interval_indices_intensity, self.intensity_data)
+            self.logger.debug(f"График интенсивности обновлен: {intensity_value} пак/с")
+        except Exception as e:
+            self.logger.error(f"Ошибка при обновлении графика интенсивности: {e}", exc_info=True)
+            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график интенсивности: {e}")
+
+    def update_traffic_direction_graph(self, all_metrics_data):
+        """
+        Обновляет график входящего/исходящего трафика.
+        :param all_metrics_data: Полный список метрик от Worker.
+        """
+        try:
+            input_packets = float(all_metrics_data[2])
+            output_packets = float(all_metrics_data[3])
+            self.input_packets_data.append(input_packets)
+            self.output_packets_data.append(output_packets)
+            self.interval_indices_traffic.append(len(self.interval_indices_traffic))
+            max_points = 50
+            if len(self.input_packets_data) > max_points:
+                self.input_packets_data = self.input_packets_data[-max_points:]
+                self.output_packets_data = self.output_packets_data[-max_points:]
+                self.interval_indices_traffic = self.interval_indices_traffic[-max_points:]
+                self.interval_indices_traffic = list(range(len(self.input_packets_data)))
+            self.curve_input.setData(self.interval_indices_traffic, self.input_packets_data)
+            self.curve_output.setData(self.interval_indices_traffic, self.output_packets_data)
+            self.logger.debug(f"График входящего/исходящего трафика обновлен: Вх={input_packets}, Исх={output_packets}")
+        except Exception as e:
+            self.logger.error(f"Ошибка при обновлении графика входящего/исходящего трафика: {e}", exc_info=True)
+            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график входящего/исходящего трафика: {e}")
+
+    def update_protocol_distribution_graph(self, all_metrics_data):
+        """
+        Обновляет гистограмму соотношения TCP/UDP.
+        :param all_metrics_data: Полный список метрик от Worker.
+        """
+        try:
+            tcp_segments = float(all_metrics_data[4])
+            udp_segments = float(all_metrics_data[5])
+            total_segments = tcp_segments + udp_segments
+            if total_segments > 0:
+                tcp_percent = (tcp_segments / total_segments) * 100
+                udp_percent = (udp_segments / total_segments) * 100
+            else:
+                tcp_percent = 0
+                udp_percent = 0
+            self.bar_graph_item.setOpts(height=[tcp_percent, udp_percent])
+            current_y_range = self.plot_protocol_distribution.getViewBox().viewRange()[1][1]
+            max_val = max(tcp_percent, udp_percent, 10)
+            if max_val * 1.1 > current_y_range:
+                self.plot_protocol_distribution.setYRange(0, max_val * 1.1)
+            self.logger.debug(f"График соотношения TCP/UDP обновлен: TCP={tcp_percent:.2f}%, UDP={udp_percent:.2f}%")
+        except Exception as e:
+            self.logger.error(f"Ошибка при обновлении графика соотношения TCP/UDP: {e}", exc_info=True)
+            self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график соотношения TCP/UDP: {e}")
+
+    def populate_interfaces_combo_box(self, combo_box_widget):
+        self.logger.info("Попытка заполнить список сетевых интерфейсов.")
+        try:
+            combo_box_widget.clear()
+            self.interface_display_to_internal_map.clear()
+            interfaces = get_working_ifaces()
+            if not interfaces:
+                QMessageBox.warning(self, "Предупреждение", "Не найдено сетевых интерфейсов. "
+                                                            "Убедитесь, что WinPcap/Npcap установлен(а) (для Windows) "
+                                                            "и программа запущена с правами администратора/root.")
+                self.logger.warning(
+                    "Не найдено сетевых интерфейсов. Возможно, нет прав или не установлен Npcap/WinPcap.")
+                return
+            for iface in interfaces:
+                display_name = iface.description if iface.description else iface.name
+                internal_name = iface.name
+                self.logger.debug(f"Добавляем интерфейс в ComboBox: '{display_name}' (Внутреннее: '{internal_name}')")
+                combo_box_widget.addItem(display_name)
+                self.interface_display_to_internal_map[display_name] = internal_name
+                self.logger.info(f"Найден интерфейс: {display_name} (Внутреннее имя: {internal_name})")
+            self.logger.info(f"ComboBox содержит {combo_box_widget.count()} элементов после заполнения.")
+        except Exception as e:
+            self.logger.critical(f"Не удалось получить список сетевых интерфейсов: {e}", exc_info=True)
+            QMessageBox.critical(self, "Ошибка загрузки интерфейсов",
+                                 f"Не удалось получить список сетевых интерфейсов: {e}\n"
+                                 "Пожалуйста, убедитесь, что WinPcap/Npcap установлен(а) (для Windows) и у программы есть необходимые права (например, запуск от имени администратора/root).")
+
 
 if __name__ == '__main__':
-    # Настройка системы логирования
     log_directory = "logs"
     if not os.path.exists(log_directory):
         os.makedirs(log_directory)
     log_file_path = os.path.join(log_directory, "app.log")
-
     logging.basicConfig(
         level=logging.DEBUG,
         format='%(asctime)s - %(levelname)s - %(name)s - %(funcName)s - Line:%(lineno)d - %(message)s',
@@ -825,12 +898,8 @@ if __name__ == '__main__':
             logging.StreamHandler(sys.stdout)
         ]
     )
-
     app = QtWidgets.QApplication(sys.argv)
-
     form = Form_main()
-
-    # Загрузка фонового изображения с обработкой ошибок
     background_image_path = "fon/picture_fon2.jpg"
     try:
         if os.path.exists(background_image_path):
@@ -844,8 +913,5 @@ if __name__ == '__main__':
     except Exception as e:
         logging.error(f"Ошибка при загрузке фонового изображения '{background_image_path}': {e}", exc_info=True)
         QMessageBox.critical(form, "Ошибка загрузки фона", f"Не удалось загрузить фоновое изображение: {e}")
-
-    # Запускаем окно в полноэкранном режиме
     form.showMaximized()
-
     sys.exit(app.exec_())
