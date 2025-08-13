@@ -4,7 +4,7 @@ import os
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout, QHBoxLayout
-# Изменено на form_for_sniffer_version5
+# Изменено на form_for_sniffer_version8
 from form_for_sniffer import Ui_tableWidget_metrics, TextEditLogger
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network, get_working_ifaces

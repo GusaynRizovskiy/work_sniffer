@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'form_for_sniffer_version7.ui'
+# Form implementation generated from reading ui file 'form_for_sniffer_version8.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
@@ -16,19 +16,14 @@ from PyQt5.QtWidgets import QPlainTextEdit, QVBoxLayout, QHBoxLayout, QGridLayou
 class Ui_tableWidget_metrics(object):
     def setupUi(self, tableWidget_metrics):
         tableWidget_metrics.setObjectName("tableWidget_metrics")
-        # Удаляем жестко заданный размер окна. Вместо этого будем использовать showMaximized()
-        # tableWidget_metrics.resize(1821, 1075)
+        tableWidget_metrics.resize(1821, 1075)
 
-        # Вместо самодельного QWidget, созданного вручную,
-        # используем центральный виджет QMainWindow
         self.central_widget = QtWidgets.QWidget(tableWidget_metrics)
         self.central_widget.setObjectName("central_widget")
 
-        # Создаем главный QGridLayout для всей формы
         self.gridLayout_3 = QtWidgets.QGridLayout(self.central_widget)
         self.gridLayout_3.setObjectName("gridLayout_3")
 
-        # Заголовок программы
         self.label_name_of_work = QtWidgets.QLabel(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -41,7 +36,6 @@ class Ui_tableWidget_metrics(object):
         self.label_name_of_work.setObjectName("label_name_of_work")
         self.gridLayout_3.addWidget(self.label_name_of_work, 0, 0, 1, 2)
 
-        # Левая часть формы
         self.verticalLayout_4 = QtWidgets.QVBoxLayout()
         self.verticalLayout_4.setObjectName("verticalLayout_4")
 
@@ -73,9 +67,15 @@ class Ui_tableWidget_metrics(object):
 
         self.gridLayout_2.addLayout(self.verticalLayout_2, 1, 1, 1, 1)
 
+        # Главный Horizontal Layout для управления кнопками
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
 
+        # Вложенный Horizontal Layout для кнопок запуска
+        self.horizontalLayout_start_buttons = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_start_buttons.setObjectName("horizontalLayout_start_buttons")
+
+        # Кнопка "Начать"
         self.pushBatton_start_capture = QtWidgets.QPushButton(self.central_widget)
         font = QtGui.QFont()
         font.setPointSize(14)
@@ -83,7 +83,34 @@ class Ui_tableWidget_metrics(object):
         font.setWeight(50)
         self.pushBatton_start_capture.setFont(font)
         self.pushBatton_start_capture.setObjectName("pushBatton_start_capture")
-        self.horizontalLayout.addWidget(self.pushBatton_start_capture)
+        self.horizontalLayout_start_buttons.addWidget(self.pushBatton_start_capture)
+
+        # Кнопка "Online-режим"
+        self.pushBatton_start_online = QtWidgets.QPushButton(self.central_widget)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushBatton_start_online.setFont(font)
+        self.pushBatton_start_online.setObjectName("pushBatton_start_online")
+        self.horizontalLayout_start_buttons.addWidget(self.pushBatton_start_online)
+
+        # Кнопка "Offline-режим"
+        self.pushBatton_start_offline = QtWidgets.QPushButton(self.central_widget)
+        font = QtGui.QFont()
+        font.setPointSize(14)
+        font.setBold(False)
+        font.setWeight(50)
+        self.pushBatton_start_offline.setFont(font)
+        self.pushBatton_start_offline.setObjectName("pushBatton_start_offline")
+        self.horizontalLayout_start_buttons.addWidget(self.pushBatton_start_offline)
+
+        # Добавляем вложенный layout в основной layout
+        self.horizontalLayout.addLayout(self.horizontalLayout_start_buttons)
+
+        # Пробел между группой кнопок "старт" и "стоп"
+        spacer_item = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacer_item)
 
         self.label_name_capture_display = QtWidgets.QLabel(self.central_widget)
         font = QtGui.QFont()
@@ -94,6 +121,10 @@ class Ui_tableWidget_metrics(object):
         self.label_name_capture_display.setAlignment(QtCore.Qt.AlignCenter)
         self.label_name_capture_display.setObjectName("label_name_capture_display")
         self.horizontalLayout.addWidget(self.label_name_capture_display)
+
+        # Пробел между лейблом и кнопкой "стоп"
+        spacer_item_2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(spacer_item_2)
 
         self.pushButton_stop_capture = QtWidgets.QPushButton(self.central_widget)
         font = QtGui.QFont()
@@ -153,13 +184,10 @@ class Ui_tableWidget_metrics(object):
         self.gridLayout.addWidget(self.label_data_statistics_of_capture_traffic, 0, 0, 1, 1)
 
         self.tableWidget_metric = QtWidgets.QTableWidget(self.central_widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(2)  # Увеличиваем stretch для таблицы, чтобы она занимала больше места
-        self.tableWidget_metric.setSizePolicy(sizePolicy)
         self.tableWidget_metric.setObjectName("tableWidget_metric")
         self.tableWidget_metric.setColumnCount(9)
         self.tableWidget_metric.setRowCount(0)
+
         item = QtWidgets.QTableWidgetItem()
         self.tableWidget_metric.setHorizontalHeaderItem(0, item)
         item = QtWidgets.QTableWidgetItem()
@@ -205,7 +233,6 @@ class Ui_tableWidget_metrics(object):
         self.verticalLayout_4.addLayout(self.gridLayout)
         self.gridLayout_3.addLayout(self.verticalLayout_4, 1, 0, 1, 1)
 
-        # Правая часть формы
         self.verticalLayout_3 = QtWidgets.QVBoxLayout()
         self.verticalLayout_3.setObjectName("verticalLayout_3")
 
@@ -225,7 +252,7 @@ class Ui_tableWidget_metrics(object):
         self.graphWidget_intensity = QtWidgets.QWidget(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)  # Делаем графики растягиваемыми
+        sizePolicy.setVerticalStretch(1)
         self.graphWidget_intensity.setSizePolicy(sizePolicy)
         self.graphWidget_intensity.setObjectName("graphWidget_intensity")
         self.verticalLayout_3.addWidget(self.graphWidget_intensity)
@@ -246,7 +273,7 @@ class Ui_tableWidget_metrics(object):
         self.graphWidget_traffic_direction = QtWidgets.QWidget(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)  # Делаем графики растягиваемыми
+        sizePolicy.setVerticalStretch(1)
         self.graphWidget_traffic_direction.setSizePolicy(sizePolicy)
         self.graphWidget_traffic_direction.setObjectName("graphWidget_traffic_direction")
         self.verticalLayout_3.addWidget(self.graphWidget_traffic_direction)
@@ -267,7 +294,7 @@ class Ui_tableWidget_metrics(object):
         self.graphWidget_protocol_distribution = QtWidgets.QWidget(self.central_widget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(1)  # Делаем графики растягиваемыми
+        sizePolicy.setVerticalStretch(1)
         self.graphWidget_protocol_distribution.setSizePolicy(sizePolicy)
         self.graphWidget_protocol_distribution.setObjectName("graphWidget_protocol_distribution")
         self.verticalLayout_3.addWidget(self.graphWidget_protocol_distribution)
@@ -281,17 +308,19 @@ class Ui_tableWidget_metrics(object):
 
     def retranslateUi(self, tableWidget_metrics):
         _translate = QtCore.QCoreApplication.translate
-        tableWidget_metrics.setWindowTitle(_translate("tableWidget_metrics", "Диалог"))
+        tableWidget_metrics.setWindowTitle(_translate("tableWidget_metrics", "Программа анализа трафика"))
         self.label_name_of_work.setText(_translate("tableWidget_metrics", "Программа анализа перхваченных пакетов"))
         self.label_input_data.setText(_translate("tableWidget_metrics", "Входные данные"))
         self.pushBatton_start_capture.setText(_translate("tableWidget_metrics", "Начать"))
-        self.label_name_capture_display.setText(_translate("tableWidget_metrics", "Перехваченные пакеты"))
+        self.pushBatton_start_online.setText(_translate("tableWidget_metrics", "Online-режим"))
+        self.pushBatton_start_offline.setText(_translate("tableWidget_metrics", "Offline-режим"))
         self.pushButton_stop_capture.setText(_translate("tableWidget_metrics", "Прекратить"))
         self.label_name_time_of_capture.setText(_translate("tableWidget_metrics", "Период времени захвата пакетов"))
         self.label_interface_of_capture.setText(_translate("tableWidget_metrics", "Интерфейс захвата:"))
         self.label_name_network_capture.setText(_translate("tableWidget_metrics", "Сеть захвата:"))
         self.label_data_statistics_of_capture_traffic.setText(
             _translate("tableWidget_metrics", "Данные статистики, собранные с перехваченного трафика"))
+
         item = self.tableWidget_metric.horizontalHeaderItem(0)
         item.setText(_translate("tableWidget_metrics", "Время"))
         item = self.tableWidget_metric.horizontalHeaderItem(1)
@@ -309,7 +338,8 @@ class Ui_tableWidget_metrics(object):
         item = self.tableWidget_metric.horizontalHeaderItem(7)
         item.setText(_translate("tableWidget_metrics", "Multicast(пак)"))
         item = self.tableWidget_metric.horizontalHeaderItem(8)
-        item.setText(_translate("tableWidget_metrics", "Интенсивность(пак)"))
+        item.setText(_translate("tableWidget_metrics", "Интенсивность(пак/с)"))
+
         self.pushButton_save_in_file.setText(_translate("tableWidget_metrics", "Сохранить данные"))
         self.pushBatton_finish_work.setText(_translate("tableWidget_metrics", "Закрыть программу"))
         self.label_name_graph_of_intensivity.setText(_translate("tableWidget_metrics", "График интенсивности пакетов"))
