@@ -20,19 +20,6 @@ from PyQt5 import QtGui
 
 # Класс, который будет наследоваться от QObject и выполнять основную работу программы
 class Worker(QtCore.QObject):
-    """
-    Класс для выполнения захвата пакетов в отдельном потоке.
-
-    Отвечает за сбор данных, их агрегацию, расчет метрик и отправку на сервер
-    в онлайн-режиме, не блокируя основной поток GUI.
-
-    Сигналы:
-        finished (pyqtSignal): Сигнал, испускаемый после завершения работы.
-        status_update (pyqtSignal): Сигнал для отправки статуса в текстовую область UI.
-        packet_info_update (pyqtSignal): Сигнал для отправки информации о перехваченных пакетах.
-        all_metrics_update (pyqtSignal): Сигнал для отправки всех агрегированных метрик.
-        connection_status_update (pyqtSignal): Сигнал для обновления статуса подключения к серверу.
-    """
     finished = QtCore.pyqtSignal()
     status_update = QtCore.pyqtSignal(str)
     packet_info_update = QtCore.pyqtSignal(str)
@@ -40,14 +27,6 @@ class Worker(QtCore.QObject):
     connection_status_update = QtCore.pyqtSignal(str)
 
     def __init__(self, mode, server_address=None, server_port=None):
-        """
-        Инициализирует рабочий поток.
-
-        Args:
-            mode (str): Режим работы ('online' или 'offline').
-            server_address (str, optional): IP-адрес сервера для онлайн-режима.
-            server_port (int, optional): Порт сервера для онлайн-режима.
-        """
         super().__init__()
         self.is_running = True
         self.data_all_intervals = []
@@ -56,15 +35,8 @@ class Worker(QtCore.QObject):
         self.server_address = server_address
         self.server_port = server_port
         self.client_socket = None
-        self.initialize_packet_counts()
 
     def run(self):
-        """
-        Основной цикл выполнения захвата пакетов.
-
-        Бесконечный цикл, который прерывается флагом self.is_running.
-        В каждом цикле захватывает пакеты, агрегирует данные и отправляет метрики.
-        """
         self.is_running = True
         self.status_update.emit("Сниффинг запущен...")
         self.logger.info("Рабочий поток Worker запущен.")
@@ -148,9 +120,7 @@ class Worker(QtCore.QObject):
         self.logger.info("Рабочий поток Worker завершил работу.")
 
     def connect_to_server(self):
-        """
-        Устанавливает соединение с сервером для онлайн-режима.
-        """
+        """Устанавливает соединение с сервером."""
         self.connection_status_update.emit(f"Попытка подключения к серверу {self.server_address}:{self.server_port}...")
         self.logger.info(f"Попытка подключения к серверу: {self.server_address}:{self.server_port}")
         try:
@@ -173,21 +143,14 @@ class Worker(QtCore.QObject):
             self.client_socket = None
 
     def disconnect_from_server(self):
-        """
-        Закрывает сокет-соединение с сервером.
-        """
+        """Закрывает сокет-соединение."""
         if self.client_socket:
             self.client_socket.close()
             self.connection_status_update.emit("Соединение с сервером закрыто.")
             self.logger.info("Соединение с сервером закрыто.")
 
     def send_data_to_server(self, data):
-        """
-        Сериализует и отправляет данные метрик на сервер.
-
-        Args:
-            data (list): Список агрегированных метрик для текущего интервала.
-        """
+        """Сериализует и отправляет данные на сервер."""
         if not self.client_socket:
             self.connection_status_update.emit("ОШИБКА: Соединение с сервером потеряно. Сниффинг остановлен.")
             self.is_running = False
@@ -210,9 +173,7 @@ class Worker(QtCore.QObject):
             self.is_running = False
 
     def initialize_packet_counts(self):
-        """
-        Инициализация всех переменных счетчиков пакетов для нового интервала.
-        """
+        """Инициализация всех переменных счетчиков пакетов для нового интервала."""
         self.count_loopback_packets = 0
         self.count_capture_packets = 0
         self.count_multicast_packets = 0
@@ -223,6 +184,7 @@ class Worker(QtCore.QObject):
         self.count_intensivity_packets = 0
         self.count_fin_packets = 0
         self.count_sin_packets = 0
+
         self.count_input_packets = 0
         self.count_input_udp_packets = 0
         self.count_input_tcp_packets = 0
@@ -231,6 +193,7 @@ class Worker(QtCore.QObject):
         self.count_input_intensivity_packets = 0
         self.count_input_options_packets = 0
         self.count_input_fragment_packets = 0
+
         self.count_output_packets = 0
         self.count_output_udp_packets = 0
         self.count_output_tcp_packets = 0
@@ -242,9 +205,7 @@ class Worker(QtCore.QObject):
         self.logger.debug("Счетчики пакетов сброшены.")
 
     def calculate_intensities(self):
-        """
-        Расчет интенсивности входящих и исходящих пакетов.
-        """
+        """Расчет интенсивности входящих и исходящих пакетов."""
         try:
             if form.time_of_capture > 0:
                 self.count_input_intensivity_packets = (self.count_input_packets / form.time_of_capture)
@@ -255,6 +216,7 @@ class Worker(QtCore.QObject):
                 self.count_output_intensivity_packets = 0
                 self.count_intensivity_packets = 0
             self.logger.debug("Интенсивность пакетов рассчитана.")
+
         except Exception as e:
             self.status_update.emit(f"ОШИБКА: Произошла ошибка при расчете интенсивности пакетов: {e}")
             self.logger.error(f"Ошибка при расчете интенсивности пакетов: {e}", exc_info=True)
@@ -263,9 +225,7 @@ class Worker(QtCore.QObject):
             self.count_intensivity_packets = 0
 
     def prepare_data_interval(self):
-        """
-        Подготовка данных для текущего интервала (для CSV).
-        """
+        """Подготовка данных для текущего интервала (для CSV)."""
         try:
             interval_data_formatting = [
                 f"{self.time_begin}-{self.time_end}",
@@ -296,31 +256,23 @@ class Worker(QtCore.QObject):
                 self.count_output_fin_packets,
                 self.count_output_sin_packets,
             ]
+
             self.data_one_interval.clear()
             for data in interval_data_formatting:
                 self.data_one_interval.append(data)
             self.logger.debug("Данные интервала подготовлены для CSV.")
+
         except Exception as e:
             self.status_update.emit(f"ОШИБКА: Произошла ошибка при подготовке данных интервала для CSV: {e}")
             self.logger.error(f"Ошибка при подготовке данных интервала для CSV: {e}", exc_info=True)
 
     def stop(self):
-        """
-        Устанавливает флаг для остановки выполнения рабочего потока.
-        """
+        """Устанавливает флаг для остановки выполнения рабочего потока."""
         self.is_running = False
         self.logger.info("Получен запрос на остановку рабочего потока Worker.")
 
     def packet_callback(self, packet):
-        """
-        Обработка захваченного пакета.
-
-        Эта функция вызывается для каждого перехваченного пакета.
-        Она подсчитывает различные метрики и отправляет информацию в UI.
-
-        Args:
-            packet (scapy.packet.Packet): Перехваченный пакет.
-        """
+        """Обработка захваченного пакета."""
         try:
             self.count_capture_packets += 1
             src_ip = "N/A"
@@ -366,17 +318,13 @@ class Worker(QtCore.QObject):
                     self.count_udp_segments += 1
             else:
                 self.packet_info_update.emit(f"Перехвачен не-IP пакет: {packet.summary()}")
+
         except Exception as e:
             self.logger.warning(f"Ошибка при обработке пакета: {e}. Пакет пропущен.", exc_info=True)
             pass
 
     def parametrs_input_packets_count(self, packet):
-        """
-        Рассчет параметров для входящих пакетов.
-
-        Args:
-            packet (scapy.packet.Packet): Перехваченный пакет.
-        """
+        """Рассчет параметров для входящих пакетов."""
         try:
             if packet.haslayer('TCP'):
                 self.count_input_tcp_packets += 1
@@ -392,17 +340,13 @@ class Worker(QtCore.QObject):
 
             if packet.haslayer("IP") and packet[IP].options:
                 self.count_input_options_packets += 1
+
         except Exception as e:
             self.logger.warning(f"Ошибка при расчете параметров входящих пакетов: {e}", exc_info=True)
             pass
 
     def parametrs_output_packets_count(self, packet):
-        """
-        Рассчет параметров для исходящих пакетов.
-
-        Args:
-            packet (scapy.packet.Packet): Перехваченный пакет.
-        """
+        """Рассчет параметров для исходящих пакетов."""
         try:
             if packet.haslayer('TCP'):
                 self.count_output_tcp_packets += 1
@@ -418,6 +362,7 @@ class Worker(QtCore.QObject):
 
             if packet.haslayer("IP") and packet[IP].options:
                 self.count_output_options_packets += 1
+
         except Exception as e:
             self.logger.warning(f"Ошибка при расчете параметров исходящих пакетов: {e}", exc_info=True)
             pass
@@ -425,16 +370,7 @@ class Worker(QtCore.QObject):
 
 # Основной класс, в котором происходит создание экземпляра формы и считывание данных пользователя.
 class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
-    """
-    Основной класс GUI приложения.
-
-    Отвечает за инициализацию пользовательского интерфейса, обработку событий
-    от пользователя, управление рабочим потоком и обновление UI.
-    """
     def __init__(self):
-        """
-        Инициализирует главное окно приложения.
-        """
         super().__init__()
         self.logger = logging.getLogger(__name__)
         self.setupUi(self)
@@ -534,17 +470,13 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.logger.info("Приложение Form_main инициализировано.")
 
     def show_mode_warning(self):
-        """
-        Отображает предупреждение о необходимости выбора режима.
-        """
+        """Отображает предупреждение о необходимости выбора режима."""
         QMessageBox.information(self, "Выбор режима",
                                 "Пожалуйста, выберите режим работы: 'Online' для отправки данных на сервер или 'Offline' для локального анализа.")
         self.logger.info("Пользователю показано предупреждение о необходимости выбора режима.")
 
     def start_offline_mode(self):
-        """
-        Запускает сниффинг в локальном режиме.
-        """
+        """Запускает сниффинг в локальном режиме."""
         self.logger.info("Пользователь выбрал Offline-режим.")
         self.label_name_capture_display.setText("Оффлайн-режим")
         self.label_server_address.hide()
@@ -554,9 +486,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.check_input_data(mode="offline")
 
     def start_online_mode(self):
-        """
-        Запускает сниффинг в режиме отправки данных на сервер.
-        """
+        """Запускает сниффинг в режиме отправки данных на сервер."""
         self.logger.info("Пользователь выбрал Online-режим.")
         self.label_name_capture_display.setText("Онлайн-режим")
         self.label_server_address.show()
@@ -566,12 +496,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.check_input_data(mode="online")
 
     def check_input_data(self, mode):
-        """
-        Проверяет введенные пользователем данные перед запуском сниффера.
-
-        Args:
-            mode (str): Режим работы ('online' или 'offline').
-        """
         self.logger.info("Начата проверка входных данных.")
         try:
             selected_display_name = self.comboBox_interface_of_capture.currentText().strip()
@@ -606,6 +530,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
                 return
 
             self.start_sniffing(mode)
+
         except ValueError as ve:
             QMessageBox.warning(self, "Ошибка ввода", str(ve))
             self.logger.error(f"Ошибка ввода данных: {ve}", exc_info=True)
@@ -614,12 +539,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.logger.critical(f"Непредвиденная ошибка при проверке входных данных:{e}", exc_info=True)
 
     def start_sniffing(self, mode):
-        """
-        Запускает фоновый поток для сниффинга.
-
-        Args:
-            mode (str): Режим работы ('online' или 'offline').
-        """
         self.pushButton_stop_capture.setEnabled(True)
         self.logger.info("Попытка начать сниффинг.")
         try:
@@ -646,14 +565,17 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.pushBatton_start_capture.setEnabled(False)
             self.plainTextEdit.clear()
             self.tableWidget_metric.setRowCount(0)
+
             self.intensity_data.clear()
             self.interval_indices_intensity.clear()
             self.curve_intensity.setData([], [])
+
             self.input_packets_data.clear()
             self.output_packets_data.clear()
             self.interval_indices_traffic.clear()
             self.curve_input.setData([], [])
             self.curve_output.setData([], [])
+
             self.bar_graph_item.setOpts(height=[0, 0])
             self.plot_protocol_distribution.setYRange(0, 100)
 
@@ -686,6 +608,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.worker.all_metrics_update.connect(self.update_traffic_direction_graph)
             self.worker.all_metrics_update.connect(self.update_protocol_distribution_graph)
             self.worker.connection_status_update.connect(self.update_status_text_zone)
+
             self.logger.info("UI очищен, кнопки заблокированы.")
             self.worker.data_all_intervals.clear()
             self.logger.debug("Данные для записи сброшены.")
@@ -718,9 +641,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.pushBatton_finish_work.setEnabled(True)
 
     def stop_sniffing(self):
-        """
-        Останавливает фоновый поток сниффинга.
-        """
+        """Останавливает фоновый поток сниффинга."""
         self.logger.info("Пользователь запросил остановку сниффинга.")
         try:
             if self.thread.isRunning():
@@ -728,6 +649,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
                     self.worker.stop()
                 self.thread.quit()
                 self.thread.wait()
+                self.pushButton_stop_capture.setEnabled(False)
+                QMessageBox.information(self, "Сниффер", "Сниффинг остановлен.")
                 self.update_status_text_zone("Сниффинг остановлен пользователем.")
                 self.logger.info("Сниффинг успешно остановлен.")
                 self.pushBatton_start_capture.setEnabled(True)
@@ -743,9 +666,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка при остановке сниффера: {e}")
 
     def on_finished(self):
-        """
-        Слот, выполняющийся, когда рабочий поток Worker завершает свою работу.
-        """
+        """Функция выполняется, когда рабочий поток Worker завершает свою работу."""
         self.update_status_text_zone("Сниффер завершил свою работу.")
         self.logger.info("Рабочий поток Worker завершил работу (сигнал finished).")
         self.pushButton_save_in_file.setEnabled(True)
@@ -753,9 +674,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.pushBatton_start_capture.setEnabled(True)
 
     def save_file_as_csv(self):
-        """
-        Сохранение собранных данных в CSV-файл.
-        """
+        """Сохранение данных в CSV файл."""
         self.logger.info("Пользователь запросил сохранение данных в CSV.")
         try:
             if not self.worker or not self.worker.data_all_intervals:
@@ -763,11 +682,13 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
             options = QFileDialog.Options()
             options |= QFileDialog.DontUseNativeDialog
+
             file_name, _ = QFileDialog.getSaveFileName(self,
                                                        "Сохранить данные сниффинга",
                                                        "sniffing_data.csv",
                                                        "CSV Files (*.csv);;All Files (*)",
                                                        options=options)
+
             if not file_name:
                 QMessageBox.information(self, "Отмена", "Сохранение файла отменено.")
                 self.update_status_text_zone("Сохранение файла отменено.")
@@ -813,9 +734,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             QMessageBox.critical(self, "Ошибка", f"Произошла ошибка при сохранении данных: {e}")
 
     def close_program(self):
-        """
-        Функция, отвечающая за закрытие программы.
-        """
+        """Функция отвечающая за закрытие программы."""
         self.logger.info("Запрошено закрытие программы.")
         try:
             if self.thread.isRunning():
@@ -824,19 +743,16 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
                 self.thread.quit()
                 self.thread.wait()
                 self.logger.info("Рабочий поток успешно завершен перед закрытием.")
+
             self.close()
             self.logger.info("Приложение закрыто.")
+
         except Exception as e:
             self.logger.error(f"Ошибка при закрытии программы: {e}", exc_info=True)
             pass
 
     def update_status_text_zone(self, message):
-        """
-        Добавляет сообщение в текстовую область.
-
-        Args:
-            message (str): Текст сообщения.
-        """
+        """Добавляет сообщение в текстовую область с временной меткой и прокручивает его."""
         timestamp = datetime.now().strftime('%H:%M:%S')
         formatted_message = f"[{timestamp}] {message}"
         self.plainTextEdit.appendPlainText(formatted_message)
@@ -846,9 +762,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
     def update_metrics_table(self, all_metrics_data):
         """
         Обновляет таблицу агрегированных метрик.
-
-        Args:
-            all_metrics_data (list): Полный список метрик от Worker.
+        :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
             metrics_for_table = [
@@ -875,10 +789,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
     def update_intensity_graph(self, all_metrics_data):
         """
-        Обновляет график интенсивности пакетов.
-
-        Args:
-            all_metrics_data (list): Полный список метрик от Worker.
+        Обновляет график интенсивности.
+        :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
             intensity_value = float(all_metrics_data[9])
@@ -898,9 +810,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
     def update_traffic_direction_graph(self, all_metrics_data):
         """
         Обновляет график входящего/исходящего трафика.
-
-        Args:
-            all_metrics_data (list): Полный список метрик от Worker.
+        :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
             input_packets = float(all_metrics_data[2])
@@ -924,9 +834,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
     def update_protocol_distribution_graph(self, all_metrics_data):
         """
         Обновляет гистограмму соотношения TCP/UDP.
-
-        Args:
-            all_metrics_data (list): Полный список метрик от Worker.
+        :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
             tcp_segments = float(all_metrics_data[4])
@@ -949,12 +857,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.update_status_text_zone(f"ОШИБКА: Не удалось обновить график соотношения TCP/UDP: {e}")
 
     def populate_interfaces_combo_box(self, combo_box_widget):
-        """
-        Заполняет QComboBox списком доступных сетевых интерфейсов.
-
-        Args:
-            combo_box_widget (QComboBox): Виджет QComboBox для заполнения.
-        """
         self.logger.info("Попытка заполнить список сетевых интерфейсов.")
         try:
             combo_box_widget.clear()
@@ -998,7 +900,7 @@ if __name__ == '__main__':
     )
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
-    background_image_path = "fon/picture_fon2.jpg"
+    background_image_path = "fon/pucture_fon2.jpg"
     try:
         if os.path.exists(background_image_path):
             palette = QPalette()
