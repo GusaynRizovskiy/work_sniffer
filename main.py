@@ -309,6 +309,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.logger = logging.getLogger(__name__)
         self.setupUi(self)
 
+        self.load_qss_file("style.qss")
+
         self.selected_mode = None
 
         self.graphWidget_intensity_layout = QVBoxLayout(self.graphWidget_intensity)
@@ -404,6 +406,31 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.populate_interfaces_combo_box(self.comboBox_interface_of_capture)
 
         self.logger.info("Приложение Form_main инициализировано.")
+
+    def load_qss_file(self, file_path):
+        """Загружает и применяет QSS-стили из файла с обработкой ошибок кодировки."""
+        try:
+            # Сначала пытаемся прочитать файл в UTF-8
+            with open(file_path, "r", encoding="utf-8") as file:
+                stylesheet = file.read()
+            self.setStyleSheet(stylesheet)
+            self.logger.info(f"QSS-файл '{file_path}' успешно загружен.")
+        except UnicodeDecodeError:
+            # Если UTF-8 не сработало, пытаемся прочитать в cp1251
+            self.logger.warning(
+                f"Ошибка кодировки в файле '{file_path}', попытка прочитать с кодировкой 'cp1251'.")
+            try:
+                with open(file_path, "r", encoding="cp1251") as file:
+                    stylesheet = file.read()
+                self.setStyleSheet(stylesheet)
+                self.logger.info(f"QSS-файл '{file_path}' успешно загружен с кодировкой 'cp1251'.")
+            except Exception as e:
+                self.logger.error(
+                    f"Произошла ошибка при загрузке QSS-файла с кодировкой 'cp1251': {e}", exc_info=True)
+        except FileNotFoundError:
+            self.logger.warning(f"Файл QSS не найден: '{file_path}'. Использование стандартного стиля.")
+        except Exception as e:
+            self.logger.error(f"Произошла непредвиденная ошибка при загрузке QSS-файла: {e}", exc_info=True)
 
     def attempt_start_sniffing(self):
         """Проверяет, выбран ли режим, и запускает проверку данных."""
