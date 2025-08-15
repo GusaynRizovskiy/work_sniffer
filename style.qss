@@ -71,3 +71,26 @@ PlotWidget {
 QLabel {
     color: #f0f0f0;
 }
+/* Стили для QMessageBox */
+QMessageBox {
+    background-color: #2b2b2b;
+    color: #f0f0f0;
+    border: 1px solid #555555;
+}
+
+QMessageBox QLabel {
+    color: #f0f0f0; /* Цвет текста сообщения */
+}
+
+QMessageBox QPushButton {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 3px;
+    min-width: 70px; /* Чтобы кнопки не были слишком маленькими */
+}
+
+QMessageBox QPushButton:hover {
+    background-color: #45a049;
+}
