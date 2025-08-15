@@ -309,7 +309,7 @@ class Ui_tableWidget_metrics(object):
     def retranslateUi(self, tableWidget_metrics):
         _translate = QtCore.QCoreApplication.translate
         tableWidget_metrics.setWindowTitle(_translate("tableWidget_metrics", "Программа анализа трафика"))
-        self.label_name_of_work.setText(_translate("tableWidget_metrics", "Программа анализа перхваченных пакетов"))
+        self.label_name_of_work.setText(_translate("tableWidget_metrics", "NetworkFlow Analyzer"))
         self.label_input_data.setText(_translate("tableWidget_metrics", "Входные данные"))
         self.pushBatton_start_capture.setText(_translate("tableWidget_metrics", "Начать"))
         self.pushBatton_start_online.setText(_translate("tableWidget_metrics", "Online-режим"))
