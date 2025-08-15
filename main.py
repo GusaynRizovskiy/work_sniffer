@@ -18,6 +18,7 @@ import socket
 import json
 from PyQt5 import QtGui
 
+
 # Класс, который будет наследоваться от QObject и выполнять основную работу программы
 class Worker(QtCore.QObject):
     finished = QtCore.pyqtSignal()
@@ -375,6 +376,9 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.logger = logging.getLogger(__name__)
         self.setupUi(self)
 
+        # --- ИЗМЕНЕНИЕ: Добавляем атрибут для хранения выбранного режима ---
+        self.selected_mode = None
+
         self.graphWidget_intensity_layout = QVBoxLayout(self.graphWidget_intensity)
         self.plot_intensity = pg.PlotWidget()
         self.graphWidget_intensity_layout.addWidget(self.plot_intensity)
@@ -452,9 +456,10 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.thread = QtCore.QThread()
         self.worker = None
 
-        self.pushBatton_start_capture.clicked.connect(self.show_mode_warning)
-        self.pushBatton_start_online.clicked.connect(self.start_online_mode)
-        self.pushBatton_start_offline.clicked.connect(self.start_offline_mode)
+        # --- ИЗМЕНЕНИЕ: Кнопка "Начать захват" теперь запускает процесс ---
+        self.pushBatton_start_capture.clicked.connect(self.attempt_start_sniffing)
+        self.pushBatton_start_online.clicked.connect(self.select_online_mode)
+        self.pushBatton_start_offline.clicked.connect(self.select_offline_mode)
         self.pushButton_stop_capture.clicked.connect(self.stop_sniffing)
         self.pushBatton_finish_work.clicked.connect(self.close_program)
         self.pushButton_save_in_file.clicked.connect(self.save_file_as_csv)
@@ -469,34 +474,45 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
         self.logger.info("Приложение Form_main инициализировано.")
 
-    def show_mode_warning(self):
-        """Отображает предупреждение о необходимости выбора режима."""
-        QMessageBox.information(self, "Выбор режима",
-                                "Пожалуйста, выберите режим работы: 'Online' для отправки данных на сервер или 'Offline' для локального анализа.")
-        self.logger.info("Пользователю показано предупреждение о необходимости выбора режима.")
+    # --- НОВЫЙ МЕТОД: Запускает сниффинг после выбора режима ---
+    def attempt_start_sniffing(self):
+        """Проверяет, выбран ли режим, и запускает проверку данных."""
+        if self.selected_mode is None:
+            QMessageBox.information(self, "Выбор режима",
+                                    "Пожалуйста, выберите режим работы: 'Online' или 'Offline', прежде чем нажимать 'Начать захват'.")
+            self.logger.warning("Попытка начать захват без выбора режима.")
+            return
 
-    def start_offline_mode(self):
-        """Запускает сниффинг в локальном режиме."""
+        self.check_input_data(mode=self.selected_mode)
+
+    # --- ИЗМЕНЕНИЕ: Метод переименован и теперь только выбирает режим ---
+    def select_offline_mode(self):
+        """Выбирает локальный режим работы."""
         self.logger.info("Пользователь выбрал Offline-режим.")
-        self.label_name_capture_display.setText("Оффлайн-режим")
+        self.label_name_capture_display.setText("Оффлайн-режим (выбран)")
         self.label_server_address.hide()
         self.lineEdit_server_address.hide()
         self.label_server_port.hide()
         self.spinBox_server_port.hide()
-        self.check_input_data(mode="offline")
+        self.selected_mode = "offline"
+        QMessageBox.information(self, "Режим выбран",
+                                "Выбран 'Offline' режим. Введите данные и нажмите 'Начать захват'.")
 
-    def start_online_mode(self):
-        """Запускает сниффинг в режиме отправки данных на сервер."""
+    # --- ИЗМЕНЕНИЕ: Метод переименован и теперь только выбирает режим ---
+    def select_online_mode(self):
+        """Выбирает режим отправки данных на сервер."""
         self.logger.info("Пользователь выбрал Online-режим.")
-        self.label_name_capture_display.setText("Онлайн-режим")
+        self.label_name_capture_display.setText("Онлайн-режим (выбран)")
         self.label_server_address.show()
         self.lineEdit_server_address.show()
         self.label_server_port.show()
         self.spinBox_server_port.show()
-        self.check_input_data(mode="online")
+        self.selected_mode = "online"
+        QMessageBox.information(self, "Режим выбран",
+                                "Выбран 'Online' режим. Введите данные и нажмите 'Начать захват'.")
 
     def check_input_data(self, mode):
-        self.logger.info("Начата проверка входных данных.")
+        self.logger.info(f"Начата проверка входных данных для режима: {mode}.")
         try:
             selected_display_name = self.comboBox_interface_of_capture.currentText().strip()
             self.network_cidr = self.lineEdit_network_capture.text().strip()
@@ -540,7 +556,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
     def start_sniffing(self, mode):
         self.pushButton_stop_capture.setEnabled(True)
-        self.logger.info("Попытка начать сниффинг.")
+        self.logger.info(f"Попытка начать сниффинг в режиме: {mode}.")
         try:
             selected_display_name = self.comboBox_interface_of_capture.currentText().strip()
             self.interface_of_capture = self.interface_display_to_internal_map.get(
@@ -563,6 +579,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
             self.pushBatton_finish_work.setEnabled(False)
             self.pushBatton_start_capture.setEnabled(False)
+            self.pushBatton_start_online.setEnabled(False)  # Блокируем кнопки выбора режима
+            self.pushBatton_start_offline.setEnabled(False)  # Блокируем кнопки выбора режима
             self.plainTextEdit.clear()
             self.tableWidget_metric.setRowCount(0)
 
@@ -595,7 +613,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
                 server_address = self.lineEdit_server_address.text().strip()
                 server_port = self.spinBox_server_port.value()
                 self.worker = Worker(mode="online", server_address=server_address, server_port=server_port)
-            else:
+            else:  # mode == "offline"
                 self.worker = Worker(mode="offline")
 
             self.worker.moveToThread(self.thread)
@@ -637,6 +655,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.update_status_text_zone(f"ОШИБКА ЗАПУСКА: {error_message}")
             self.logger.critical(f"Ошибка запуска сниффера: {error_message}", exc_info=True)
             self.pushBatton_start_capture.setEnabled(True)
+            self.pushBatton_start_online.setEnabled(True)
+            self.pushBatton_start_offline.setEnabled(True)
             self.pushButton_stop_capture.setEnabled(False)
             self.pushBatton_finish_work.setEnabled(True)
 
@@ -654,6 +674,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
                 self.update_status_text_zone("Сниффинг остановлен пользователем.")
                 self.logger.info("Сниффинг успешно остановлен.")
                 self.pushBatton_start_capture.setEnabled(True)
+                self.pushBatton_start_online.setEnabled(True)
+                self.pushBatton_start_offline.setEnabled(True)
                 self.pushButton_save_in_file.setEnabled(True)
                 self.pushBatton_finish_work.setEnabled(True)
             else:
@@ -672,6 +694,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.pushButton_save_in_file.setEnabled(True)
         self.pushBatton_finish_work.setEnabled(True)
         self.pushBatton_start_capture.setEnabled(True)
+        self.pushBatton_start_online.setEnabled(True)
+        self.pushBatton_start_offline.setEnabled(True)
 
     def save_file_as_csv(self):
         """Сохранение данных в CSV файл."""
