@@ -36,6 +36,7 @@ class Worker(QtCore.QObject):
         self.server_address = server_address
         self.server_port = server_port
         self.client_socket = None
+        self.packet_counts = {}
 
     def run(self):
         self.is_running = True
@@ -88,23 +89,14 @@ class Worker(QtCore.QObject):
 
             all_metrics_data = [
                 f"{self.time_begin}-{self.time_end}",
-                self.count_capture_packets,
-                self.count_input_packets,
-                self.count_output_packets,
-                self.count_tcp_segments,
-                self.count_udp_segments,
-                self.count_fragment_packets,
-                self.count_loopback_packets,
-                self.count_multicast_packets,
-                self.count_intensivity_packets,
-                self.count_input_intensivity_packets,
-                self.count_output_intensivity_packets,
-                self.count_fin_packets,
-                self.count_sin_packets,
-                self.count_input_fin_packets,
-                self.count_input_sin_packets,
-                self.count_output_fin_packets,
-                self.count_output_sin_packets
+                self.packet_counts['total']['packets'],
+                self.packet_counts['input']['packets'],
+                self.packet_counts['output']['packets'],
+                self.packet_counts['total']['tcp'],
+                self.packet_counts['total']['udp'],
+                self.packet_counts['total']['fragment'],
+                self.packet_counts['total']['multicast'],
+                self.count_intensivity_packets
             ]
 
             self.all_metrics_update.emit(all_metrics_data)
@@ -175,49 +167,26 @@ class Worker(QtCore.QObject):
 
     def initialize_packet_counts(self):
         """Инициализация всех переменных счетчиков пакетов для нового интервала."""
-        self.count_loopback_packets = 0
-        self.count_capture_packets = 0
-        self.count_multicast_packets = 0
-        self.count_udp_segments = 0
-        self.count_tcp_segments = 0
-        self.count_options_packets = 0
-        self.count_fragment_packets = 0
-        self.count_intensivity_packets = 0
-        self.count_fin_packets = 0
-        self.count_sin_packets = 0
-
-        self.count_input_packets = 0
-        self.count_input_udp_packets = 0
-        self.count_input_tcp_packets = 0
-        self.count_input_fin_packets = 0
-        self.count_input_sin_packets = 0
-        self.count_input_intensivity_packets = 0
-        self.count_input_options_packets = 0
-        self.count_input_fragment_packets = 0
-
-        self.count_output_packets = 0
-        self.count_output_udp_packets = 0
-        self.count_output_tcp_packets = 0
-        self.count_output_fin_packets = 0
-        self.count_output_sin_packets = 0
-        self.count_output_intensivity_packets = 0
-        self.count_output_options_packets = 0
-        self.count_output_fragment_packets = 0
+        self.packet_counts = {
+            'total': {'packets': 0, 'loopback': 0, 'multicast': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0,
+                      'fin': 0, 'sin': 0},
+            'input': {'packets': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0, 'fin': 0, 'sin': 0},
+            'output': {'packets': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0, 'fin': 0, 'sin': 0}
+        }
         self.logger.debug("Счетчики пакетов сброшены.")
 
     def calculate_intensities(self):
         """Расчет интенсивности входящих и исходящих пакетов."""
         try:
             if form.time_of_capture > 0:
-                self.count_input_intensivity_packets = (self.count_input_packets / form.time_of_capture)
-                self.count_output_intensivity_packets = (self.count_output_packets / form.time_of_capture)
-                self.count_intensivity_packets = (self.count_capture_packets / form.time_of_capture)
+                self.count_input_intensivity_packets = (self.packet_counts['input']['packets'] / form.time_of_capture)
+                self.count_output_intensivity_packets = (self.packet_counts['output']['packets'] / form.time_of_capture)
+                self.count_intensivity_packets = (self.packet_counts['total']['packets'] / form.time_of_capture)
             else:
                 self.count_input_intensivity_packets = 0
                 self.count_output_intensivity_packets = 0
                 self.count_intensivity_packets = 0
             self.logger.debug("Интенсивность пакетов рассчитана.")
-
         except Exception as e:
             self.status_update.emit(f"ОШИБКА: Произошла ошибка при расчете интенсивности пакетов: {e}")
             self.logger.error(f"Ошибка при расчете интенсивности пакетов: {e}", exc_info=True)
@@ -230,39 +199,37 @@ class Worker(QtCore.QObject):
         try:
             interval_data_formatting = [
                 f"{self.time_begin}-{self.time_end}",
-                self.count_capture_packets,
-                self.count_loopback_packets,
-                self.count_multicast_packets,
-                self.count_udp_segments,
-                self.count_tcp_segments,
-                self.count_options_packets,
-                self.count_fragment_packets,
+                self.packet_counts['total']['packets'],
+                self.packet_counts['total']['loopback'],
+                self.packet_counts['total']['multicast'],
+                self.packet_counts['total']['udp'],
+                self.packet_counts['total']['tcp'],
+                self.packet_counts['total']['options'],
+                self.packet_counts['total']['fragment'],
                 self.count_intensivity_packets,
-                self.count_fin_packets,
-                self.count_sin_packets,
-                self.count_input_packets,
-                self.count_input_udp_packets,
-                self.count_input_tcp_packets,
-                self.count_input_options_packets,
-                self.count_input_fragment_packets,
+                self.packet_counts['total']['fin'],
+                self.packet_counts['total']['sin'],
+                self.packet_counts['input']['packets'],
+                self.packet_counts['input']['udp'],
+                self.packet_counts['input']['tcp'],
+                self.packet_counts['input']['options'],
+                self.packet_counts['input']['fragment'],
                 self.count_input_intensivity_packets,
-                self.count_input_fin_packets,
-                self.count_input_sin_packets,
-                self.count_output_packets,
-                self.count_output_udp_packets,
-                self.count_output_tcp_packets,
-                self.count_output_options_packets,
-                self.count_output_fragment_packets,
+                self.packet_counts['input']['fin'],
+                self.packet_counts['input']['sin'],
+                self.packet_counts['output']['packets'],
+                self.packet_counts['output']['udp'],
+                self.packet_counts['output']['tcp'],
+                self.packet_counts['output']['options'],
+                self.packet_counts['output']['fragment'],
                 self.count_output_intensivity_packets,
-                self.count_output_fin_packets,
-                self.count_output_sin_packets,
+                self.packet_counts['output']['fin'],
+                self.packet_counts['output']['sin'],
             ]
-
             self.data_one_interval.clear()
             for data in interval_data_formatting:
                 self.data_one_interval.append(data)
             self.logger.debug("Данные интервала подготовлены для CSV.")
-
         except Exception as e:
             self.status_update.emit(f"ОШИБКА: Произошла ошибка при подготовке данных интервала для CSV: {e}")
             self.logger.error(f"Ошибка при подготовке данных интервала для CSV: {e}", exc_info=True)
@@ -275,7 +242,8 @@ class Worker(QtCore.QObject):
     def packet_callback(self, packet):
         """Обработка захваченного пакета."""
         try:
-            self.count_capture_packets += 1
+            self.update_packet_counts(packet, 'total')
+
             src_ip = "N/A"
             dst_ip = "N/A"
 
@@ -287,36 +255,15 @@ class Worker(QtCore.QObject):
                 if dst_ip == "255.255.255.255" or dst_ip.endswith(".255") or (
                         dst_ip.startswith("224.") or dst_ip.startswith("23")
                 ):
-                    self.count_multicast_packets += 1
+                    self.packet_counts['total']['multicast'] += 1
                 elif dst_ip == '127.0.0.1':
-                    self.count_loopback_packets += 1
-                elif form.network_cidr and not address_in_network(src_ip,
-                                                                  form.network_cidr) and address_in_network(
-                    dst_ip,
-                    form.network_cidr):
-                    self.count_input_packets += 1
-                    self.parametrs_input_packets_count(packet)
-                elif form.network_cidr and address_in_network(src_ip,
-                                                              form.network_cidr) and not address_in_network(
-                    dst_ip,
-                    form.network_cidr):
-                    self.count_output_packets += 1
-                    self.parametrs_output_packets_count(packet)
-
-                if packet.haslayer(IP) and packet[IP].options:
-                    self.count_options_packets += 1
-                if packet.haslayer(IP) and ((packet[IP].flags & 0x01) or (packet[IP].frag > 0)):
-                    self.count_fragment_packets += 1
-
-                if packet.haslayer('TCP'):
-                    self.count_tcp_segments += 1
-                    if packet[TCP].flags.has('F'):
-                        self.count_fin_packets += 1
-                    elif packet[TCP].flags.has('S'):
-                        self.count_sin_packets += 1
-
-                elif packet.haslayer('UDP'):
-                    self.count_udp_segments += 1
+                    self.packet_counts['total']['loopback'] += 1
+                elif form.network_cidr and not address_in_network(src_ip, form.network_cidr) and address_in_network(
+                        dst_ip, form.network_cidr):
+                    self.update_packet_counts(packet, 'input')
+                elif form.network_cidr and address_in_network(src_ip, form.network_cidr) and not address_in_network(
+                        dst_ip, form.network_cidr):
+                    self.update_packet_counts(packet, 'output')
             else:
                 self.packet_info_update.emit(f"Перехвачен не-IP пакет: {packet.summary()}")
 
@@ -324,49 +271,35 @@ class Worker(QtCore.QObject):
             self.logger.warning(f"Ошибка при обработке пакета: {e}. Пакет пропущен.", exc_info=True)
             pass
 
-    def parametrs_input_packets_count(self, packet):
-        """Рассчет параметров для входящих пакетов."""
-        try:
+    def update_packet_counts(self, packet, direction):
+        """
+        Обновляет счетчики пакетов для заданного направления.
+        :param packet: Перехваченный пакет.
+        :param direction: 'total', 'input' или 'output'.
+        """
+        if direction not in self.packet_counts:
+            self.logger.warning(f"Неизвестное направление для подсчета: {direction}")
+            return
+
+        counts = self.packet_counts[direction]
+        counts['packets'] += 1
+
+        if packet.haslayer('IP'):
+            if packet[IP].options:
+                counts['options'] += 1
+            if (packet[IP].flags & 0x01) or (packet[IP].frag > 0):
+                counts['fragment'] += 1
+
             if packet.haslayer('TCP'):
-                self.count_input_tcp_packets += 1
-                if packet[TCP].flags.has('F'):
-                    self.count_input_fin_packets += 1
-                elif packet[TCP].flags.has('S'):
-                    self.count_input_sin_packets += 1
+                counts['tcp'] += 1
+                if 'F' in packet[TCP].flags:
+                    counts['fin'] += 1
+                elif 'S' in packet[TCP].flags:
+                    counts['sin'] += 1
             elif packet.haslayer('UDP'):
-                self.count_input_udp_packets += 1
+                counts['udp'] += 1
 
-            if packet.haslayer("IP") and ((packet[IP].flags & 0x01) or (packet[IP].frag > 0)):
-                self.count_input_fragment_packets += 1
-
-            if packet.haslayer("IP") and packet[IP].options:
-                self.count_input_options_packets += 1
-
-        except Exception as e:
-            self.logger.warning(f"Ошибка при расчете параметров входящих пакетов: {e}", exc_info=True)
-            pass
-
-    def parametrs_output_packets_count(self, packet):
-        """Рассчет параметров для исходящих пакетов."""
-        try:
-            if packet.haslayer('TCP'):
-                self.count_output_tcp_packets += 1
-                if packet[TCP].flags.has('F'):
-                    self.count_output_fin_packets += 1
-                elif packet[TCP].flags.has('S'):
-                    self.count_output_sin_packets += 1
-            elif packet.haslayer('UDP'):
-                self.count_output_udp_packets += 1
-
-            if packet.haslayer("IP") and ((packet[IP].flags & 0x01) or (packet[IP].frag > 0)):
-                self.count_output_fragment_packets += 1
-
-            if packet.haslayer("IP") and packet[IP].options:
-                self.count_output_options_packets += 1
-
-        except Exception as e:
-            self.logger.warning(f"Ошибка при расчете параметров исходящих пакетов: {e}", exc_info=True)
-            pass
+        self.logger.debug(f"Счетчики для направления '{direction}' обновлены.")
 
 
 # Основной класс, в котором происходит создание экземпляра формы и считывание данных пользователя.
@@ -376,7 +309,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.logger = logging.getLogger(__name__)
         self.setupUi(self)
 
-        # --- ИЗМЕНЕНИЕ: Добавляем атрибут для хранения выбранного режима ---
         self.selected_mode = None
 
         self.graphWidget_intensity_layout = QVBoxLayout(self.graphWidget_intensity)
@@ -456,7 +388,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.thread = QtCore.QThread()
         self.worker = None
 
-        # --- ИЗМЕНЕНИЕ: Кнопка "Начать захват" теперь запускает процесс ---
         self.pushBatton_start_capture.clicked.connect(self.attempt_start_sniffing)
         self.pushBatton_start_online.clicked.connect(self.select_online_mode)
         self.pushBatton_start_offline.clicked.connect(self.select_offline_mode)
@@ -474,7 +405,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
         self.logger.info("Приложение Form_main инициализировано.")
 
-    # --- НОВЫЙ МЕТОД: Запускает сниффинг после выбора режима ---
     def attempt_start_sniffing(self):
         """Проверяет, выбран ли режим, и запускает проверку данных."""
         if self.selected_mode is None:
@@ -485,7 +415,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
         self.check_input_data(mode=self.selected_mode)
 
-    # --- ИЗМЕНЕНИЕ: Метод переименован и теперь только выбирает режим ---
     def select_offline_mode(self):
         """Выбирает локальный режим работы."""
         self.logger.info("Пользователь выбрал Offline-режим.")
@@ -498,7 +427,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         QMessageBox.information(self, "Режим выбран",
                                 "Выбран 'Offline' режим. Введите данные и нажмите 'Начать захват'.")
 
-    # --- ИЗМЕНЕНИЕ: Метод переименован и теперь только выбирает режим ---
     def select_online_mode(self):
         """Выбирает режим отправки данных на сервер."""
         self.logger.info("Пользователь выбрал Online-режим.")
@@ -562,17 +490,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.interface_of_capture = self.interface_display_to_internal_map.get(
                 selected_display_name, selected_display_name
             )
-
-            if not self.time_of_capture > 0:
-                raise ValueError("Время захвата должно быть больше нуля.")
-            if not self.interface_of_capture:
-                raise ValueError("Необходимо выбрать интерфейс для захвата.")
-            if not self.network_cidr:
-                raise ValueError("Необходимо указать сеть для захвата.")
-            try:
-                ipaddress.ip_network(self.network_cidr, strict=False)
-            except ValueError:
-                raise ValueError("Некорректный формат сети. Используйте CIDR-нотацию (например, 192.168.1.0/24).")
 
             self.update_status_text_zone("Начало инициализации сниффера...")
             self.logger.info("Инициализация сниффера...")
@@ -797,8 +714,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
                 str(all_metrics_data[4]),
                 str(all_metrics_data[5]),
                 str(all_metrics_data[6]),
-                str(all_metrics_data[8]),
-                f"{all_metrics_data[9]:.2f}"
+                str(all_metrics_data[7]),
+                f"{all_metrics_data[8]:.2f}"
             ]
             row_position = self.tableWidget_metric.rowCount()
             self.tableWidget_metric.insertRow(row_position)
@@ -817,7 +734,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
-            intensity_value = float(all_metrics_data[9])
+            intensity_value = float(all_metrics_data[8])
             self.intensity_data.append(intensity_value)
             self.interval_indices_intensity.append(len(self.interval_indices_intensity))
             max_points = 50
