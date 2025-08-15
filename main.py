@@ -334,30 +334,33 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.tableWidget_metric.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.tableWidget_metric.horizontalHeader().setStretchLastSection(True)
 
-        self.plot_intensity.setTitle("Интенсивность пакетов")
-        self.plot_intensity.setLabel('left', 'Пакетов/с', units='пак/с')
-        self.plot_intensity.setLabel('bottom', 'Интервал')
-        self.plot_intensity.setBackground('w')
-        self.curve_intensity = self.plot_intensity.plot(pen='b')
+        # Настройки графика интенсивности
+        self.plot_intensity.setTitle("Интенсивность пакетов", color='#E0E0E0')
+        self.plot_intensity.setLabel('left', 'Пакетов/с', units='пак/с', color='#E0E0E0')
+        self.plot_intensity.setLabel('bottom', 'Интервал', color='#E0E0E0')
+        self.plot_intensity.setBackground('#1A3B2B')
+        self.curve_intensity = self.plot_intensity.plot(pen=pg.mkPen(color='#8BC34A', width=2))
         self.intensity_data = []
         self.interval_indices_intensity = []
 
-        self.plot_traffic_direction.setTitle("Входящий/Исходящий трафик")
-        self.plot_traffic_direction.setLabel('left', 'Кол-во пакетов', units='пак')
-        self.plot_traffic_direction.setLabel('bottom', 'Интервал')
-        self.plot_traffic_direction.setBackground('w')
-        self.curve_input = self.plot_traffic_direction.plot(pen='g', name='Входящие')
-        self.curve_output = self.plot_traffic_direction.plot(pen='r', name='Исходящие')
+        # Настройки графика входящего/исходящего трафика
+        self.plot_traffic_direction.setTitle("Входящий/Исходящий трафик", color='#E0E0E0')
+        self.plot_traffic_direction.setLabel('left', 'Кол-во пакетов', units='пак', color='#E0E0E0')
+        self.plot_traffic_direction.setLabel('bottom', 'Интервал', color='#E0E0E0')
+        self.plot_traffic_direction.setBackground('#1A3B2B')
+        self.curve_input = self.plot_traffic_direction.plot(pen=pg.mkPen(color='#4CAF50', width=2), name='Входящие')
+        self.curve_output = self.plot_traffic_direction.plot(pen=pg.mkPen(color='#FF5722', width=2), name='Исходящие')
         self.plot_traffic_direction.addLegend()
         self.input_packets_data = []
         self.output_packets_data = []
         self.interval_indices_traffic = []
 
-        self.plot_protocol_distribution.setTitle("Соотношение TCP/UDP")
-        self.plot_protocol_distribution.setLabel('left', 'Доля (%)')
-        self.plot_protocol_distribution.setLabel('bottom', 'Протокол')
-        self.plot_protocol_distribution.setBackground('w')
-        self.bar_graph_item = pg.BarGraphItem(x=[1, 2], height=[0, 0], width=0.5, brushes=['blue', 'orange'])
+        # Настройки графика соотношения протоколов
+        self.plot_protocol_distribution.setTitle("Соотношение TCP/UDP", color='#E0E0E0')
+        self.plot_protocol_distribution.setLabel('left', 'Доля (%)', color='#E0E0E0')
+        self.plot_protocol_distribution.setLabel('bottom', 'Протокол', color='#E0E0E0')
+        self.plot_protocol_distribution.setBackground('#1A3B2B')
+        self.bar_graph_item = pg.BarGraphItem(x=[1, 2], height=[0, 0], width=0.5, brushes=['#4CAF50', '#FFC107'])
         self.plot_protocol_distribution.addItem(self.bar_graph_item)
         self.plot_protocol_distribution.getAxis('bottom').setTicks([[(1, 'TCP'), (2, 'UDP')]])
         self.plot_protocol_distribution.setXRange(0.5, 2.5)
