@@ -37,6 +37,7 @@ import pyqtgraph as pg
 import socket
 import json
 
+
 # Класс, который будет наследоваться от QObject и выполнять основную работу программы
 class Worker(QtCore.QObject):
     """
@@ -356,6 +357,7 @@ class Worker(QtCore.QObject):
 
         self.logger.debug(f"Счетчики для направления '{direction}' обновлены.")
 
+
 # Основной класс, в котором происходит создание экземпляра формы и считывание данных пользователя.
 class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
     """
@@ -397,6 +399,13 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         ])
         self.tableWidget_metric.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.tableWidget_metric.horizontalHeader().setStretchLastSection(True)
+
+        # FIX: Устанавливаем стиль для горизонтального, вертикального и углового заголовков
+        table_header_style = "QHeaderView::section { background-color: #2b2b2b; color: #E0E0E0; }"
+        self.tableWidget_metric.horizontalHeader().setStyleSheet(table_header_style)
+        self.tableWidget_metric.verticalHeader().setStyleSheet(table_header_style)
+        self.tableWidget_metric.setStyleSheet("QTableCornerButton::section { background-color: #2b2b2b; }")
+
 
         # Настройки графика интенсивности
         self.plot_intensity.setTitle("Интенсивность пакетов", color='#E0E0E0')
