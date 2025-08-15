@@ -3,12 +3,12 @@ import logging
 import os
 from PyQt5 import QtWidgets, QtCore
 from PyQt5.QtGui import QPalette, QBrush, QPixmap
-from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout, QHBoxLayout
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidgetItem, QVBoxLayout
 from form_for_sniffer import Ui_tableWidget_metrics, TextEditLogger
 from scapy.layers.inet import IP, UDP, TCP
 from utils import address_in_network, get_working_ifaces
 from datetime import datetime
-from scapy.all import *
+from scapy.all import sniff
 import sys
 import csv
 import platform
@@ -27,8 +27,8 @@ class Worker(QtCore.QObject):
     all_metrics_update = QtCore.pyqtSignal(list)
     connection_status_update = QtCore.pyqtSignal(str)
 
-    def __init__(self, mode, server_address=None, server_port=None):
-        super().__init__()
+    def __init__(self, mode, server_address=None, server_port=None, parent=None):
+        super().__init__(parent)
         self.is_running = True
         self.data_all_intervals = []
         self.logger = logging.getLogger(__name__)
@@ -36,6 +36,7 @@ class Worker(QtCore.QObject):
         self.server_address = server_address
         self.server_port = server_port
         self.client_socket = None
+        self.detailed_packets = []
 
     def run(self):
         self.is_running = True
@@ -53,6 +54,7 @@ class Worker(QtCore.QObject):
             self.data_one_interval = []
             self.initialize_packet_counts()
             self.logger.debug("Счетчики пакетов инициализированы для нового интервала.")
+            self.detailed_packets = []
 
             self.time_begin = datetime.now().strftime('%H:%M:%S')
             self.status_update.emit(
@@ -85,14 +87,16 @@ class Worker(QtCore.QObject):
 
             self.calculate_intensities()
 
-            # Подготовка данных для таблицы и графиков
             all_metrics_data_for_display = self.get_display_metrics()
             self.all_metrics_update.emit(all_metrics_data_for_display)
 
-            # Отправка данных на сервер (только числовых)
             if self.mode == "online":
                 online_metrics = self.get_online_metrics()
-                self.send_data_to_server(online_metrics)
+                online_data_payload = {
+                    "metrics": online_metrics,
+                    "flows": self.detailed_packets
+                }
+                self.send_data_to_server(online_data_payload)
 
             self.data_all_intervals.append(self.prepare_data_for_csv())
             self.status_update.emit("Интервал агрегирования завершен")
@@ -306,16 +310,55 @@ class Worker(QtCore.QObject):
         self.logger.info("Получен запрос на остановку рабочего потока Worker.")
 
     def packet_callback(self, packet):
-        """Обработка захваченного пакета."""
+        """
+        Обработка захваченного пакета.
+        ОБНОВЛЕНИЕ: Теперь собирает и сохраняет детали пакета.
+        """
         try:
             self.count_capture_packets += 1
             src_ip = "N/A"
             dst_ip = "N/A"
+            src_port = "N/A"
+            dst_port = "N/A"
+            protocol = "N/A"
+
+            packet_details = {
+                "source_ip": "N/A",
+                "destination_ip": "N/A",
+                "source_port": "N/A",
+                "destination_port": "N/A",
+                "packet_dump": packet.build().hex(),
+                "protocol": "N/A",
+                "summary": packet.summary()
+            }
 
             if packet.haslayer("IP"):
                 src_ip = packet["IP"].src
                 dst_ip = packet["IP"].dst
                 self.packet_info_update.emit(f"Перехвачен пакет: {src_ip} -> {dst_ip}")
+
+                packet_details["source_ip"] = src_ip
+                packet_details["destination_ip"] = dst_ip
+
+                if packet.haslayer('TCP'):
+                    protocol = "TCP"
+                    self.count_tcp_segments += 1
+                    src_port = packet["TCP"].sport
+                    dst_port = packet["TCP"].dport
+                    if packet[TCP].flags.has('F'):
+                        self.count_fin_packets += 1
+                    elif packet[TCP].flags.has('S'):
+                        self.count_sin_packets += 1
+
+                elif packet.haslayer('UDP'):
+                    protocol = "UDP"
+                    self.count_udp_segments += 1
+                    src_port = packet["UDP"].sport
+                    dst_port = packet["UDP"].dport
+
+                packet_details["source_port"] = src_port
+                packet_details["destination_port"] = dst_port
+                packet_details["protocol"] = protocol
 
                 if dst_ip == "255.255.255.255" or dst_ip.endswith(".255") or (
                         dst_ip.startswith("224.") or dst_ip.startswith("23")
@@ -340,18 +383,10 @@ class Worker(QtCore.QObject):
                     self.count_options_packets += 1
                 if packet.haslayer(IP) and ((packet[IP].flags & 0x01) or (packet[IP].frag > 0)):
                     self.count_fragment_packets += 1
-
-                if packet.haslayer('TCP'):
-                    self.count_tcp_segments += 1
-                    if packet[TCP].flags.has('F'):
-                        self.count_fin_packets += 1
-                    elif packet[TCP].flags.has('S'):
-                        self.count_sin_packets += 1
-
-                elif packet.haslayer('UDP'):
-                    self.count_udp_segments += 1
             else:
                 self.packet_info_update.emit(f"Перехвачен не-IP пакет: {packet.summary()}")
+
+            self.detailed_packets.append(packet_details)
 
         except Exception as e:
             self.logger.warning(f"Ошибка при обработке пакета: {e}. Пакет пропущен.", exc_info=True)
