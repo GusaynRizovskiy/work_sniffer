@@ -131,13 +131,31 @@ class Worker(QtCore.QObject):
             all_metrics_data = [
                 f"{self.time_begin}-{self.time_end}",
                 self.packet_counts['total']['packets'],
-                self.packet_counts['input']['packets'],
-                self.packet_counts['output']['packets'],
-                self.packet_counts['total']['tcp'],
-                self.packet_counts['total']['udp'],
-                self.packet_counts['total']['fragment'],
+                self.packet_counts['total']['loopback'],
                 self.packet_counts['total']['multicast'],
-                self.count_intensivity_packets
+                self.packet_counts['total']['udp'],
+                self.packet_counts['total']['tcp'],
+                self.packet_counts['total']['options'],
+                self.packet_counts['total']['fragment'],
+                self.count_intensivity_packets,
+                self.packet_counts['total']['fin'],
+                self.packet_counts['total']['sin'],
+                self.packet_counts['input']['packets'],
+                self.packet_counts['input']['udp'],
+                self.packet_counts['input']['tcp'],
+                self.packet_counts['input']['options'],
+                self.packet_counts['input']['fragment'],
+                self.count_input_intensivity_packets,
+                self.packet_counts['input']['fin'],
+                self.packet_counts['input']['sin'],
+                self.packet_counts['output']['packets'],
+                self.packet_counts['output']['udp'],
+                self.packet_counts['output']['tcp'],
+                self.packet_counts['output']['options'],
+                self.packet_counts['output']['fragment'],
+                self.count_output_intensivity_packets,
+                self.packet_counts['output']['fin'],
+                self.packet_counts['output']['sin']
             ]
 
             # Отправляем сигнал с обновленными метриками
@@ -217,9 +235,9 @@ class Worker(QtCore.QObject):
         """Инициализация всех переменных счетчиков пакетов для нового интервала."""
         self.packet_counts = {
             'total': {'packets': 0, 'loopback': 0, 'multicast': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0,
-                      'fin': 0, 'sin': 0},
-            'input': {'packets': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0, 'fin': 0, 'sin': 0},
-            'output': {'packets': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0, 'fin': 0, 'sin': 0}
+                      'fin': 0, 'sin': 0, 'intensivity': 0},
+            'input': {'packets': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0, 'fin': 0, 'sin': 0, 'intensivity': 0},
+            'output': {'packets': 0, 'udp': 0, 'tcp': 0, 'options': 0, 'fragment': 0, 'fin': 0, 'sin': 0, 'intensivity': 0}
         }
         self.logger.debug("Счетчики пакетов сброшены.")
 
@@ -391,11 +409,35 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.graphWidget_protocol_distribution_layout.addWidget(self.plot_protocol_distribution)
 
         # Настройка заголовков и размера таблицы
-        self.tableWidget_metric.setColumnCount(9)
+        self.tableWidget_metric.setColumnCount(27)
         self.tableWidget_metric.setHorizontalHeaderLabels([
-            'Время', 'Всего пакетов', 'Входящие (пак)', 'Исходящие (пак)',
-            'TCP (сегм)', 'UDP (сегм)', 'Фрагменты (пак)', 'Multicast (пак)',
-            'Интенсивность (пак/с)'
+            'Время',
+            'Общее число захваченных пакетов',
+            'Число пакетов localhost',
+            'Число пакетов broadcast/multicast',
+            'Число UDP сегментов',
+            'Число TCP сегментов',
+            'Число пакетов с опциями',
+            'Число фрагментированных пакетов',
+            'Общая интенсивность пакетов',
+            "Количество пакетов типа FIN",
+            'Количество пакетов типа SYN',
+            'Число пакетов, входящих в сеть',
+            "Число UDP сегментов входящих в сеть",
+            "Число TCP сегментов, входящих в сеть",
+            "Число пакетов с опциями, входящих в сеть",
+            "Число фрагментированных пакетов, входящих в сеть",
+            "Интенсивность пакетов, входящих в сеть",
+            "Количество пакетов типа FIN, входящих в сеть",
+            "Количество пакетов типа SYN, входящих в сеть",
+            'Число пакетов, исходящих из сети',
+            "Число UDP сегментов, исходящих из сети",
+            "Число TCP сегментов, исходящих из сети",
+            "Число пакетов с опциями, исходящих из сети",
+            "Число фрагментированных пакетов, исходящих из сети",
+            "Интенсивность пакетов, исходящих из сети",
+            "Количество пакетов типа FIN, исходящих из сети",
+            "Количество пакетов типа SYN, исходящих из сети"
         ])
         self.tableWidget_metric.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.ResizeToContents)
         self.tableWidget_metric.horizontalHeader().setStretchLastSection(True)
@@ -631,7 +673,6 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
             self.interval_indices_traffic.clear()
             self.curve_input.setData([], [])
             self.curve_output.setData([], [])
-
             self.bar_graph_item.setOpts(height=[0, 0])
             self.plot_protocol_distribution.setYRange(0, 100)
 
@@ -837,24 +878,13 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
-            metrics_for_table = [
-                all_metrics_data[0],
-                str(all_metrics_data[1]),
-                str(all_metrics_data[2]),
-                str(all_metrics_data[3]),
-                str(all_metrics_data[4]),
-                str(all_metrics_data[5]),
-                str(all_metrics_data[6]),
-                str(all_metrics_data[7]),
-                f"{all_metrics_data[8]:.2f}"
-            ]
             row_position = self.tableWidget_metric.rowCount()
             self.tableWidget_metric.insertRow(row_position)
-            for col, data in enumerate(metrics_for_table):
+            for col, data in enumerate(all_metrics_data):
                 item = QTableWidgetItem(str(data))
                 self.tableWidget_metric.setItem(row_position, col, item)
             self.tableWidget_metric.scrollToBottom()
-            self.logger.debug(f"Метрики добавлены в таблицу: {metrics_for_table}")
+            self.logger.debug(f"Метрики добавлены в таблицу: {all_metrics_data}")
         except Exception as e:
             self.logger.error(f"Ошибка при обновлении таблицы метрик: {e}", exc_info=True)
             self.update_status_text_zone(f"ОШИБКА: Не удалось обновить таблицу метрик: {e}")
@@ -885,8 +915,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
-            input_packets = float(all_metrics_data[2])
-            output_packets = float(all_metrics_data[3])
+            input_packets = float(all_metrics_data[11])
+            output_packets = float(all_metrics_data[19])
             self.input_packets_data.append(input_packets)
             self.output_packets_data.append(output_packets)
             self.interval_indices_traffic.append(len(self.interval_indices_traffic))
@@ -909,8 +939,8 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         :param all_metrics_data: Полный список метрик от Worker.
         """
         try:
-            tcp_segments = float(all_metrics_data[4])
-            udp_segments = float(all_metrics_data[5])
+            tcp_segments = float(all_metrics_data[5])
+            udp_segments = float(all_metrics_data[4])
             total_segments = tcp_segments + udp_segments
             if total_segments > 0:
                 tcp_percent = (tcp_segments / total_segments) * 100
