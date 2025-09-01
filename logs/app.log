@@ -2687,3 +2687,68 @@ Traceback (most recent call last):
 AttributeError: 'str' object has no attribute 'description'
 2025-08-15 16:52:26 - INFO - __main__ - __init__ - Line:541 - Приложение Form_main инициализировано.
 2025-08-15 16:52:26 - INFO - root - <module> - Line:1012 - Фоновое изображение успешно загружено: fon/pucture_fon2.jpg
+2025-09-01 17:49:28 - WARNING - __main__ - load_qss_file - Line:544 - Ошибка кодировки в файле 'style.qss', попытка прочитать с кодировкой 'cp1251'.
+2025-09-01 17:49:28 - INFO - __main__ - load_qss_file - Line:550 - QSS-файл 'style.qss' успешно загружен с кодировкой 'cp1251'.
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:966 - Попытка заполнить список сетевых интерфейсов.
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 7')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 7)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 6')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 6)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'Realtek PCIe GbE Family Controller #2' (Внутреннее: 'Ethernet 3')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: Realtek PCIe GbE Family Controller #2 (Внутреннее имя: Ethernet 3)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet)
+2025-09-01 17:49:28 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-09-01 17:49:28 - INFO - __main__ - populate_interfaces_combo_box - Line:985 - ComboBox содержит 8 элементов после заполнения.
+2025-09-01 17:49:28 - INFO - __main__ - __init__ - Line:534 - Приложение Form_main инициализировано.
+2025-09-01 17:49:28 - INFO - root - <module> - Line:1017 - Фоновое изображение успешно загружено: fon/pucture_fon2.jpg
+2025-09-01 17:49:46 - WARNING - __main__ - load_qss_file - Line:544 - Ошибка кодировки в файле 'style.qss', попытка прочитать с кодировкой 'cp1251'.
+2025-09-01 17:49:46 - INFO - __main__ - load_qss_file - Line:550 - QSS-файл 'style.qss' успешно загружен с кодировкой 'cp1251'.
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:966 - Попытка заполнить список сетевых интерфейсов.
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 7')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 7)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 6')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 6)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'Realtek PCIe GbE Family Controller #2' (Внутреннее: 'Ethernet 3')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: Realtek PCIe GbE Family Controller #2 (Внутреннее имя: Ethernet 3)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet)
+2025-09-01 17:49:46 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-09-01 17:49:46 - INFO - __main__ - populate_interfaces_combo_box - Line:985 - ComboBox содержит 8 элементов после заполнения.
+2025-09-01 17:49:46 - INFO - __main__ - __init__ - Line:534 - Приложение Form_main инициализировано.
+2025-09-01 17:49:46 - WARNING - root - <module> - Line:1019 - Фоновое изображение не найдено по пути: fon/pucture_fon2.jpg. Фон не будет установлен.
+2025-09-01 17:50:34 - WARNING - __main__ - load_qss_file - Line:544 - Ошибка кодировки в файле 'style.qss', попытка прочитать с кодировкой 'cp1251'.
+2025-09-01 17:50:34 - INFO - __main__ - load_qss_file - Line:550 - QSS-файл 'style.qss' успешно загружен с кодировкой 'cp1251'.
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:966 - Попытка заполнить список сетевых интерфейсов.
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (Network Monitor)' (Внутреннее: 'Подключение по локальной сети* 8')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (Network Monitor) (Внутреннее имя: Подключение по локальной сети* 8)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IPv6)' (Внутреннее: 'Подключение по локальной сети* 7')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (IPv6) (Внутреннее имя: Подключение по локальной сети* 7)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'WAN Miniport (IP)' (Внутреннее: 'Подключение по локальной сети* 6')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: WAN Miniport (IP) (Внутреннее имя: Подключение по локальной сети* 6)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet8' (Внутреннее: 'VMware Network Adapter VMnet8')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet8 (Внутреннее имя: VMware Network Adapter VMnet8)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VMware Virtual Ethernet Adapter for VMnet1' (Внутреннее: 'VMware Network Adapter VMnet1')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VMware Virtual Ethernet Adapter for VMnet1 (Внутреннее имя: VMware Network Adapter VMnet1)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'Realtek PCIe GbE Family Controller #2' (Внутреннее: 'Ethernet 3')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: Realtek PCIe GbE Family Controller #2 (Внутреннее имя: Ethernet 3)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'VirtualBox Host-Only Ethernet Adapter' (Внутреннее: 'Ethernet')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: VirtualBox Host-Only Ethernet Adapter (Внутреннее имя: Ethernet)
+2025-09-01 17:50:34 - DEBUG - __main__ - populate_interfaces_combo_box - Line:981 - Добавляем интерфейс в ComboBox: 'Software Loopback Interface 1' (Внутреннее: 'Loopback Pseudo-Interface 1')
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:984 - Найден интерфейс: Software Loopback Interface 1 (Внутреннее имя: Loopback Pseudo-Interface 1)
+2025-09-01 17:50:34 - INFO - __main__ - populate_interfaces_combo_box - Line:985 - ComboBox содержит 8 элементов после заполнения.
+2025-09-01 17:50:34 - INFO - __main__ - __init__ - Line:534 - Приложение Form_main инициализировано.

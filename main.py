@@ -1007,19 +1007,5 @@ if __name__ == '__main__':
     )
     app = QtWidgets.QApplication(sys.argv)
     form = Form_main()
-    background_image_path = "fon/pucture_fon2.jpg"
-    try:
-        # Установка фонового изображения
-        if os.path.exists(background_image_path):
-            palette = QPalette()
-            palette.setBrush(QPalette.Window, QBrush(QPixmap(background_image_path)))
-            form.setPalette(palette)
-            logging.info(f"Фоновое изображение успешно загружено: {background_image_path}")
-        else:
-            logging.warning(
-                f"Фоновое изображение не найдено по пути: {background_image_path}. Фон не будет установлен.")
-    except Exception as e:
-        logging.error(f"Ошибка при загрузке фонового изображения '{background_image_path}': {e}", exc_info=True)
-        QMessageBox.critical(form, "Ошибка загрузки фона", f"Не удалось загрузить фоновое изображение: {e}")
     form.showMaximized()
     sys.exit(app.exec_())
