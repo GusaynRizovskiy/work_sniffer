@@ -391,7 +391,7 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
         self.setupUi(self)
 
         # Загружаем и применяем файл стилей
-        self.load_qss_file("style.qss")
+        self.load_styles()
 
         self.selected_mode = None  # Переменная для хранения выбранного режима
 
@@ -533,28 +533,112 @@ class Form_main(QtWidgets.QMainWindow, Ui_tableWidget_metrics):
 
         self.logger.info("Приложение Form_main инициализировано.")
 
-    def load_qss_file(self, file_path):
-        """Загружает и применяет QSS-стили из файла с обработкой ошибок кодировки."""
-        try:
-            with open(file_path, "r", encoding="utf-8") as file:
-                stylesheet = file.read()
-            self.setStyleSheet(stylesheet)
-            self.logger.info(f"QSS-файл '{file_path}' успешно загружен.")
-        except UnicodeDecodeError:
-            self.logger.warning(
-                f"Ошибка кодировки в файле '{file_path}', попытка прочитать с кодировкой 'cp1251'.")
-            try:
-                with open(file_path, "r", encoding="cp1251") as file:
-                    stylesheet = file.read()
-                self.setStyleSheet(stylesheet)
-                self.logger.info(f"QSS-файл '{file_path}' успешно загружен с кодировкой 'cp1251'.")
-            except Exception as e:
-                self.logger.error(
-                    f"Произошла ошибка при загрузке QSS-файла с кодировкой 'cp1251': {e}", exc_info=True)
-        except FileNotFoundError:
-            self.logger.warning(f"Файл QSS не найден: '{file_path}'. Использование стандартного стиля.")
-        except Exception as e:
-            self.logger.error(f"Произошла непредвиденная ошибка при загрузке QSS-файла: {e}", exc_info=True)
+
+
+    def load_styles(self):
+        """Загружает QSS-стили из строки (встроенная тема)."""
+        style_sheet = """
+        /* Основные стили для всего приложения */
+        QMainWindow {
+            background-color: #2b2b2b;
+            color: #f0f0f0;
+        }
+
+        /* Стили для кнопок */
+        QPushButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+
+        QPushButton:hover {
+            background-color: #45a049;
+        }
+
+        QPushButton:pressed {
+            background-color: #3e8e41;
+        }
+
+        QPushButton:disabled {
+            background-color: #616161;
+        }
+
+        /* Стили для текстовых полей и PlainTextEdit */
+        QLineEdit, QPlainTextEdit {
+            background-color: #3c3c3c;
+            border: 1px solid #555555;
+            color: #f0f0f0;
+            padding: 5px;
+            border-radius: 3px;
+        }
+
+        /* Стили для ComboBox */
+        QComboBox {
+            background-color: #3c3c3c;
+            border: 1px solid #555555;
+            color: #f0f0f0;
+            border-radius: 3px;
+            padding: 3px;
+        }
+
+        /* Стили для TableWidget */
+        QTableWidget {
+            background-color: #3c3c3c;
+            gridline-color: #555555;
+            color: #f0f0f0;
+            selection-background-color: #4a4a4a;
+            border-radius: 5px;
+        }
+
+        /* Стили для заголовков таблицы */
+        QHeaderView::section {
+            background-color: #444444;
+            color: #f0f0f0;
+            padding: 5px;
+            border: 1px solid #555555;
+        }
+
+        /* Стили для PlotWidget (pyqtgraph) */
+        PlotWidget {
+            background-color: #1e1e1e;
+            border-radius: 5px;
+        }
+
+        /* Стили для QLabel */
+        QLabel {
+            color: #f0f0f0;
+        }
+
+        /* Стили для QMessageBox */
+        QMessageBox {
+            background-color: #2b2b2b;
+            color: #f0f0f0;
+            border: 1px solid #555555;
+        }
+
+        QMessageBox QLabel {
+            color: #f0f0f0;
+        }
+
+        QMessageBox QPushButton {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 3px;
+            min-width: 70px;
+        }
+
+        QMessageBox QPushButton:hover {
+            background-color: #45a049;
+        }
+        """
+
+        self.setStyleSheet(style_sheet)
+        self.logger.info("✅ Встроенные QSS-стили успешно применены.")
 
     def attempt_start_sniffing(self):
         """Проверяет, выбран ли режим, и запускает проверку данных."""
